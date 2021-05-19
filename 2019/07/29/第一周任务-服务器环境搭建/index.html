@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="[TOC] 前言上周花了两百参加了信安之路的小白培训计划，为期一年梅州一个任务。一是为了督促自己复习巩固基础，另一方面也是想系统性的学习一下从web🐶到红蓝对抗。 nginx由于我的服务器之前有安装过apache2并一直使用，对于apache的使用和配置相对来说比较熟练。这次想跟着大家一起熟悉一下nginx。 首先运行命令 1sudo  -s  切换到root用户。我安装的是Ubuntu系统的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一周任务-服务器环境搭建">
+<meta property="og:url" content="http://ama666.cn/2019/07/29/第一周任务-服务器环境搭建/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="[TOC] 前言上周花了两百参加了信安之路的小白培训计划，为期一年梅州一个任务。一是为了督促自己复习巩固基础，另一方面也是想系统性的学习一下从web🐶到红蓝对抗。 nginx由于我的服务器之前有安装过apache2并一直使用，对于apache的使用和配置相对来说比较熟练。这次想跟着大家一起熟悉一下nginx。 首先运行命令 1sudo  -s  切换到root用户。我安装的是Ubuntu系统的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190722220915.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190722221125.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190723232937.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725001058.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725001734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725002910.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190727120907.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190728175041.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190729192651.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190728181431.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190730234142.png">
+<meta property="og:updated_time" content="2019-08-27T20:59:27.781Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第一周任务-服务器环境搭建">
+<meta name="twitter:description" content="[TOC] 前言上周花了两百参加了信安之路的小白培训计划，为期一年梅州一个任务。一是为了督促自己复习巩固基础，另一方面也是想系统性的学习一下从web🐶到红蓝对抗。 nginx由于我的服务器之前有安装过apache2并一直使用，对于apache的使用和配置相对来说比较熟练。这次想跟着大家一起熟悉一下nginx。 首先运行命令 1sudo  -s  切换到root用户。我安装的是Ubuntu系统的">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190722220915.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/07/29/第一周任务-服务器环境搭建/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>第一周任务-服务器环境搭建 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/07/29/第一周任务-服务器环境搭建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第一周任务-服务器环境搭建
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-29 19:21:55" itemprop="dateCreated datePublished" datetime="2019-07-29T19:21:55+08:00">2019-07-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 04:59:27" itemprop="dateModified" datetime="2019-08-28T04:59:27+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/小白成长计划/" itemprop="url" rel="index"><span itemprop="name">小白成长计划</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[TOC]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上周花了两百参加了<strong>信安之路</strong>的小白培训计划，为期一年梅州一个任务。一是为了督促自己复习巩固基础，另一方面也是想系统性的学习一下从web🐶到红蓝对抗。</p>
+<h2 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h2><p>由于我的服务器之前有安装过apache2并一直使用，对于apache的使用和配置相对来说比较熟练。这次想跟着大家一起熟悉一下nginx。</p>
+<p>首先运行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo  -s</span><br></pre></td></tr></table></figure>
+
+<p>切换到root用户。我安装的是Ubuntu系统的服务器，不使用root用户很多地方会报权限问题。接着将之前安装过的apache彻底卸载，运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apt-get --purge remove apache2</span><br><span class="line">apt-get --purge remove apache2-common</span><br><span class="line">apt-get --purge remove apache2-utils</span><br><span class="line">apt-get --purge autoremove apache2</span><br></pre></td></tr></table></figure>
+
+<p>然后运行命令apachectl -v检查apache是否卸载。这本来是一个检查apache版本的命令，如果成功卸载会有如下显示</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190722220915.png" alt="成功卸载"></p>
+<p>然后就可以安装nginx了，简单的执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install nginx</span><br></pre></td></tr></table></figure>
+
+<p>便可安装nginx。安装完成之后访问服务器，也就是访问服务器下的/var/www/html/路径</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190722221125.png" alt></p>
+<p>然后简单学习一下nginx的配置文件，正好这几天在看URL Rewrite，打算写通过写几个规则来学习nginx。</p>
+<p>首先我的<strong>/var/www/html/</strong>目录下有5个文件</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190723232937.png" alt="目录下的文件"></p>
+<p>我想的效果是在<strong>index.php</strong>文件中输入参数获取1.php/2.php/3.php中的信息，然后将URL重写为<strong><a href="http://self-ip/index.php/1.php" target="_blank" rel="noopener">http://self-ip/index.php/1.php</a></strong>这样的。我看网上的nginx配置文件教程说在nginx.conf文件中的server字段写来配置，但是我感觉我刚安装好的nginx.conf和网上的有不小的出入。我先把我的初始配置贴出来，一是方便我看，二也是方便大家参考</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">user www-data;</span><br><span class="line"><span class="meta">#</span><span class="bash">nginx运行的用户为www-data</span></span><br><span class="line">worker_processes auto;</span><br><span class="line"><span class="meta">#</span><span class="bash">开启的进程数</span></span><br><span class="line">pid /run/nginx.pid;</span><br><span class="line"><span class="meta">#</span><span class="bash">指定进程id存储的位置</span></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">        worker_connections 768;</span><br><span class="line">        # multi_accept on;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line"></span><br><span class="line">        ##</span><br><span class="line">        # Basic Settings</span><br><span class="line">        ##</span><br><span class="line"></span><br><span class="line">        sendfile on;</span><br><span class="line">        tcp_nopush on;</span><br><span class="line">        tcp_nodelay on;</span><br><span class="line">        keepalive_timeout 65;</span><br><span class="line">        types_hash_max_size 2048;</span><br><span class="line">        # server_tokens off;</span><br><span class="line"></span><br><span class="line">        # server_names_hash_bucket_size 64;</span><br><span class="line">        # server_name_in_redirect off;</span><br><span class="line"></span><br><span class="line">        include /etc/nginx/mime.types;</span><br><span class="line">        default_type application/octet-stream;</span><br><span class="line"></span><br><span class="line">        ##</span><br><span class="line">        # SSL Settings</span><br><span class="line">        ##</span><br><span class="line"></span><br><span class="line">        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line"></span><br><span class="line">        ##</span><br><span class="line">        # Logging Settings</span><br><span class="line">        ##</span><br><span class="line">        </span><br><span class="line">        access_log /var/log/nginx/access.log;</span><br><span class="line">        error_log /var/log/nginx/error.log;</span><br><span class="line"></span><br><span class="line">        ##</span><br><span class="line">        # Gzip Settings</span><br><span class="line">        ##</span><br><span class="line"></span><br><span class="line">        gzip on;</span><br><span class="line">        gzip_disable "msie6";</span><br><span class="line"></span><br><span class="line">        # gzip_vary on;</span><br><span class="line">        # gzip_proxied any;</span><br><span class="line">        # gzip_comp_level 6;</span><br><span class="line">        # gzip_buffers 16 8k;</span><br><span class="line">        # gzip_http_version 1.1;</span><br><span class="line">        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;</span><br><span class="line"></span><br><span class="line">        ##</span><br><span class="line">        # Virtual Host Configs</span><br><span class="line">        ##</span><br><span class="line"></span><br><span class="line">        include /etc/nginx/conf.d/*.conf;</span><br><span class="line">        include /etc/nginx/sites-enabled/*;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">mail &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">       <span class="comment"># See sample authentication script at:</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">       <span class="comment"># http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">       <span class="comment"># auth_http localhost/auth.php;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">       <span class="comment"># pop3_capabilities "TOP" "USER";</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">       <span class="comment"># imap_capabilities "IMAP4rev1" "UIDPLUS";</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">       server &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               listen     localhost:110;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               protocol   pop3;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               proxy      on;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">       &#125;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">				server &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               listen     localhost:143;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               protocol   imap;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               proxy      on;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">       &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>nginx配置文件我认为分为几大块，第一块就是没有任何嵌套的全局模块，我的理解就是可以给所有的虚拟机使用的配置。之后是一个<strong>events</strong>，从字面含义理解就是事件，从网上的教程看是可以影响用户和nginx的网络连接。我这个默认配置文件里面有最大网络连接数，还有一个注释掉的是否接受多个网络连接。接着是一个http模块，可以嵌套多个server模块。我认为nginx配置文件的灵魂就在于server，其实主要是因为其中定义了监听端口什么的。http里面可以配置代理、缓存、日志定义等绝大多数功能和第三方模块配置。http中可以嵌套很多个server块，用来配置虚拟主机中的相关参数。到现在我还不知道什么是虚拟主机，在我认为nginx是一个web容器是用来解析用户请求的，怎么还弄出一个虚拟主机？接着往下看吧。网上的教程说还有一个location模块用来配置请求路由以及各种页面处理情况，但是我这个配置文件不知道为啥是个mail嵌套模块.</p>
+<p>接下来我想好好了解一下server模块，其中的一些关键字我也不是很懂，我想先调我能看明白的总结，后面剩下的一些再继续学习。其中的listen用于监听端口，指定了可以被访问的ip和端口</p>
+<h2 id="PHP-fpm"><a href="#PHP-fpm" class="headerlink" title="PHP-fpm"></a>PHP-fpm</h2><p>根据网上的文章，php-fpm是继承php-cgi并发扬光大。php-cgi是一个允许webserver和各种动态语言解释器进行通信的一种cgi协议。但是它每接受一个请求，就会fork一个cgi进程，在请求结束的时候再kill掉这个进程。这样的很多多余的动作很浪费资源，于是php-fpm应运而生。php-fpm的全称是Fastcgi process manager，在请求结束的时候它不会kill掉进程，而是会保留这个进程，使这个进程一次可以处理多个请求，并提供了进程管理功能。进程中包含了Master和Worker两种进程。master进程只有一个，用来接收来自Web Server的请求。worker有多个，每一个进程的内部嵌入了一个php解释器，是php代码真正执行的地方。这次我打算使用nginx当作反向代理，将动态请求转向后端php-fpm。</p>
+<p>首先我的服务器是安装了<strong>php7.0</strong>的，使用命令来查看我之前都安装过php7.0的什么包</p>
+<p></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg --list | grep php7.0</span><br></pre></td></tr></table></figure>
+
+<p>发现没有安装php7.0-fpm，于是执行下面的命令进行安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install php7.0-fpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置Nginx-PHP-fpm"><a href="#配置Nginx-PHP-fpm" class="headerlink" title="配置Nginx+PHP-fpm"></a>配置Nginx+PHP-fpm</h2><p>我参考了网上的三篇博客，企图搞清楚我上面在nginx配置里面不清楚的问题。首先在<strong>/etc/nginx/nginx.conf</strong>配置文件的http嵌套中，使用了include语句引用了两个配置文件，使其生效。而这些地方的配置文件就<strong>可以用来写server嵌套</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725001058.png" alt></p>
+<p>我打算在第二行目录的位置中default文件中添加我的配置。我先把我默认的配置贴出来</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725001734.png" alt></p>
+<p>我并不打算更改我的监听端口，至于server_name由于我的服务器没有申请域名我也不打算进行修改，index那里可以在后面根据需求进行调整。目前我想关注的就是在配置下面被注释掉的<strong>pass the PHP scripts tp FastCGI server listening on 127.0.0.1:9000</strong>这里的配置，看注释就呼应上了前面说的nginx作为反向代理将连接请求转发给后端的php-fpm进行处理。按照网上的博客和注释的意思来修改我的配置文件</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190725002910.png" alt></p>
+<p>我将fastcgi配置文件引入，开启了nginx的fastcgi监听本地的9000端口。这样请求的流程就会是这样</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&gt; www.example.com</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;    Nginx</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt; 路由到www.example.com/index.php</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt; 加载nginx的fast-cgi模块</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt; fast-cgi监听127.0.0.1:9000地址</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt; www.example.com/index.php请求到达127.0.0.1:9000</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;      |</span><br><span class="line">&gt;   等待处理...</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>接着我们开启php-fpm来处理到达9000端口的请求，需要寻找php-fpm.conf文件。</p>
+<p>我在<strong>/etc/php/7.0/fpm</strong>路径下找到了配置文件，在配置文件的最后一行看到了一个include语句</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190727120907.png" alt></p>
+<p>在此我有一个疑问，为什么这些配置文件不直接写在这里非得要各种include呢？先保留疑问跟进这个文件继续看.</p>
+<p>在pool.d目录下有一个<a href="http://www.conf文件，在其中查找listen关键字，只找到了一行被注释掉的" target="_blank" rel="noopener">www.conf文件，在其中查找listen关键字，只找到了一行被注释掉的</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen = /run/php/php7.0-fpm.sock</span><br></pre></td></tr></table></figure>
+
+<p>在下面添加对应接受9000端口请求的代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen = 127.0.0.1:9000</span><br></pre></td></tr></table></figure>
+
+<p>现在的流程应该是这样的</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&gt; www.example.com</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;       Nginx</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; 路由到www.example.com/index.php</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; 加载nginx的fast-cgi模块</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; fast-cgi监听127.0.0.1:9000地址</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; www.example.com/index.php请求到达127.0.0.1:9000</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; php-fpm 监听127.0.0.1:9000</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; php-fpm 接收到请求，启用worker进程处理请求</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; php-fpm 处理完请求，返回给nginx</span><br><span class="line">&gt;         |</span><br><span class="line">&gt;         |</span><br><span class="line">&gt; nginx将结果通过http返回给浏览器</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>本来以为这样就可以了，但是访问php页面还是不能正确解析PHP。此时我不经开始思考php-fpm喝ngnixcgi文件中都出现的，被注释掉的默认的一行代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen = /run/php/php7.0-fpm.sock</span><br></pre></td></tr></table></figure>
+
+<p>网上搜索一下，这个东西叫做Unix套接字，是nginx和php-fpm通信的另一种方式。和监听端口的基本相同，nginx作为反向代理将收到的请求发送到unix套接字，php-fpm从unix套接字接受请求并进行处理。上面的流程中就是把<strong>php-fpm 监听127.0.0.1:9000</strong>变成<strong>php-fpm监听unix套接字</strong>。修改为unix套接字方式以后可以在页面成功解析php。</p>
+<h3 id="nginx和php-fpm的两种通信方式对比"><a href="#nginx和php-fpm的两种通信方式对比" class="headerlink" title="nginx和php-fpm的两种通信方式对比"></a>nginx和php-fpm的两种通信方式对比</h3><p>unix socket方式要比tcp的方式快，而且消耗资源少，因为socket之间在nginx和php-fpm的进程之间通信，而tcp需要经过本地回环驱动，还要申请临时端口和tcp相关资源。unix socket会显得不是那么稳定，当并发连接数爆发时，会产生大量的长时缓存，在没有面向连接协议支撑的情况下，大数据包很有可能就直接出错并不会返回异常。而TCP这样的面向连接的协议，多少可以保证通信的正确性和完整性。</p>
+<h2 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h2><p>运行安装命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后查看</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190728175041.png" alt></p>
+<h2 id="Nginx-PHP-Mysql"><a href="#Nginx-PHP-Mysql" class="headerlink" title="Nginx+PHP+Mysql"></a>Nginx+PHP+Mysql</h2><p>写一个PHP脚本简单验证三者是否适配成功</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$serve = <span class="string">'localhost:3306'</span>;</span><br><span class="line">$username = <span class="string">'root'</span>;</span><br><span class="line">$password = <span class="string">'********'</span>;</span><br><span class="line">$dbname = <span class="string">'week_one'</span>;</span><br><span class="line">$link = mysqli_connect($serve,$username,$password,$dbname);</span><br><span class="line">mysqli_set_charset($link,<span class="string">'UTF-8'</span>);</span><br><span class="line">$result = mysqli_query($link,<span class="string">'select * from test'</span>);</span><br><span class="line">$data = mysqli_fetch_all($result);</span><br><span class="line">print_r($data);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>相对应的在mysql数据库中创建表</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190729192651.png" alt></p>
+<p>访问web端</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190728181431.png" alt></p>
+<p>成功解析php脚本并且获得数据库内正确的数据，标志nginx+php+mysql适配成功。</p>
+<h2 id="Linux加固"><a href="#Linux加固" class="headerlink" title="Linux加固"></a>Linux加固</h2><h3 id="列出具有超级权限的用户"><a href="#列出具有超级权限的用户" class="headerlink" title="列出具有超级权限的用户"></a>列出具有超级权限的用户</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | awk -F: '$3==0'</span><br></pre></td></tr></table></figure>
+
+<h3 id="列出具有shell权限的用户"><a href="#列出具有shell权限的用户" class="headerlink" title="列出具有shell权限的用户"></a>列出具有shell权限的用户</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | grep 'bin/bash'</span><br></pre></td></tr></table></figure>
+
+<p>这上面两个命令得到的结果如下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190730234142.png" alt></p>
+<p>表示我的服务器上超级权限的只有root用户，而能使用<strong>bin/bash shell</strong>的有两个，一个是root，另一个是ubuntu。</p>
+<h3 id="禁止root用户登陆"><a href="#禁止root用户登陆" class="headerlink" title="禁止root用户登陆"></a>禁止root用户登陆</h3><p>在linux中，有一个默认的管理组 wheel。在实际生产环境中，即使我们有系统管理员root的权限，也不推荐用root用户登录。一般情况下用普通用户登录就可以了，在需要root权限执行一些操作时，再su登录成为root用户。但是，任何人只要知道了root的密码，就都可以通过su命令来登录为root用户，这无疑为系统带来了安全隐患。所以，将普通用户加入到wheel组，被加入的这个普通用户就成了管理员组内的用户。然后设置只有wheel组内的成员可以使用su命令切换到root用户。</p>
+<p><strong>#sudo vim /etc/ssh/sshd_config</strong></p>
+<p>找到并用<strong>#注释</strong>掉这行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PermitRootLogin prohibit-password</span><br></pre></td></tr></table></figure>
+
+<p>新建一行 <em>*添加</em></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PermitRootLogin yes</span><br></pre></td></tr></table></figure>
+
+<p>重启服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service ssh restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>感觉做加固的时候很麻烦，真的很麻烦。很多平时很方便的地方加固之后变得很麻烦，但确实安全了很多。可能只就是为什么安全漏洞频发，企业人员安全意识不足吧。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/zhangxiang_1102/article/details/78895249" target="_blank" rel="noopener">https://blog.csdn.net/zhangxiang_1102/article/details/78895249</a></p>
+<p><a href="https://blog.csdn.net/XRRRICK/article/details/81062981" target="_blank" rel="noopener">https://blog.csdn.net/XRRRICK/article/details/81062981</a></p>
+<p><a href="https://www.cnblogs.com/wanghaokun/p/10185820.html" target="_blank" rel="noopener">https://www.cnblogs.com/wanghaokun/p/10185820.html</a></p>
+<p><a href="https://www.zhaokeli.com/article/8496.html" target="_blank" rel="noopener">https://www.zhaokeli.com/article/8496.html</a></p>
+<p><a href="https://www.cnblogs.com/walblog/articles/9066563.html" target="_blank" rel="noopener">https://www.cnblogs.com/walblog/articles/9066563.html</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/07/29/第一周任务-服务器环境搭建/" title="第一周任务-服务器环境搭建">http://ama666.cn/2019/07/29/第一周任务-服务器环境搭建/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/04/关于RCE的一些小技巧/" rel="next" title="关于RCE的一些小技巧">
+                <i class="fa fa-chevron-left"></i> 关于RCE的一些小技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/11/第二周任务-认识sql并学习数据库的基本操作/" rel="prev" title="第二周任务-认识sql并学习数据库的基础操作">
+                第二周任务-认识sql并学习数据库的基础操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx"><span class="nav-number">2.</span> <span class="nav-text">nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP-fpm"><span class="nav-number">3.</span> <span class="nav-text">PHP-fpm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Nginx-PHP-fpm"><span class="nav-number">4.</span> <span class="nav-text">配置Nginx+PHP-fpm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx和php-fpm的两种通信方式对比"><span class="nav-number">4.1.</span> <span class="nav-text">nginx和php-fpm的两种通信方式对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装mysql"><span class="nav-number">5.</span> <span class="nav-text">安装mysql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-PHP-Mysql"><span class="nav-number">6.</span> <span class="nav-text">Nginx+PHP+Mysql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux加固"><span class="nav-number">7.</span> <span class="nav-text">Linux加固</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#列出具有超级权限的用户"><span class="nav-number">7.1.</span> <span class="nav-text">列出具有超级权限的用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列出具有shell权限的用户"><span class="nav-number">7.2.</span> <span class="nav-text">列出具有shell权限的用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁止root用户登陆"><span class="nav-number">7.3.</span> <span class="nav-text">禁止root用户登陆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">7.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

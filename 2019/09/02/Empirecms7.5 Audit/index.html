@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="EmpireCMS7.5 Audit结构解压下载的EmpireCMS压缩包之后，所有的代码都存储在upload文件夹中，打开文件夹其中很多以单词命名的目录。我认为如果对一个CMS进行整体的审计，需要弄清楚基本的结构才能着手开始。  d                           附件和数据库存放目录（data） d/file                    附近存放目录 d/js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Empirecms7.5 Audit">
+<meta property="og:url" content="http://ama666.cn/2019/09/02/Empirecms7.5 Audit/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="EmpireCMS7.5 Audit结构解压下载的EmpireCMS压缩包之后，所有的代码都存储在upload文件夹中，打开文件夹其中很多以单词命名的目录。我认为如果对一个CMS进行整体的审计，需要弄清楚基本的结构才能着手开始。  d                           附件和数据库存放目录（data） d/file                    附近存放目录 d/js">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830175933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830180720.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830212635.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831014502.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831020358.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831020828.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901013533.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901023910.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901024357.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901031432.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032016.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032913.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901033819.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901033854.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901034145.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901034555.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901035821.png">
+<meta property="og:updated_time" content="2019-09-02T23:10:27.902Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Empirecms7.5 Audit">
+<meta name="twitter:description" content="EmpireCMS7.5 Audit结构解压下载的EmpireCMS压缩包之后，所有的代码都存储在upload文件夹中，打开文件夹其中很多以单词命名的目录。我认为如果对一个CMS进行整体的审计，需要弄清楚基本的结构才能着手开始。  d                           附件和数据库存放目录（data） d/file                    附近存放目录 d/js">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830175933.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/09/02/Empirecms7.5 Audit/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Empirecms7.5 Audit | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/09/02/Empirecms7.5 Audit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Empirecms7.5 Audit
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-02 18:09:23" itemprop="dateCreated datePublished" datetime="2019-09-02T18:09:23+08:00">2019-09-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-03 07:10:27" itemprop="dateModified" datetime="2019-09-03T07:10:27+08:00">2019-09-03</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="EmpireCMS7-5-Audit"><a href="#EmpireCMS7-5-Audit" class="headerlink" title="EmpireCMS7.5 Audit"></a>EmpireCMS7.5 Audit</h1><h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>解压下载的EmpireCMS压缩包之后，所有的代码都存储在<code>upload</code>文件夹中，打开文件夹其中很多以单词命名的目录。我认为如果对一个CMS进行整体的审计，需要弄清楚基本的结构才能着手开始。</p>
+<blockquote>
+<p>d                           附件和数据库存放目录（data）</p>
+<p>d/file                    附近存放目录</p>
+<p>d/js                       js调用及生成目录</p>
+<p>d/txt                    文本内容目录</p>
+<p>e                           系统文件存放目录，存放如、后台登陆系统、系统核心部分、在线支付安装目录、新闻模块、评论等这是整个系统的心脏目录。</p>
+<p>html                     自定义的内容页面存放目录</p>
+<p>images                 系统默认模板图片存放目录</p>
+<p>s                            专题目录</p>
+<p>search                  搜索页面目录</p>
+<p>skin                     模板及图片存放目录</p>
+<p>index.html           首页</p>
+<p>e/class/connect.php 数据库参数配置文件</p>
+<p>e/member/cp/       前台会员控制面板地址</p>
+</blockquote>
+<h2 id="任意代码执行"><a href="#任意代码执行" class="headerlink" title="任意代码执行"></a>任意代码执行</h2><h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><p>首先阅读代码中的CMS安装流程。在<code>doc/install.html</code>文件中有说明，安装目录为<code>/e/install</code></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830175933.png" alt></p>
+<p>打开安装目录下的<code>index.php</code>，大致看一下应该是在web端安装CMS的控制页面。通常在这里可能会存在例如重新安装的漏洞，也可能会存在校验不足导致的恶意字符拼接入数据库。</p>
+<p>在<code>e/install/index.php</code>文件开头存在代码形成了安装锁</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830180720.png" alt></p>
+<p>在<strong>第657行</strong>中获取用户输入设置为表名前缀</p>
+<p>![](/Users/ama666/Library/Application Support/typora-user-images/image-20190830212358361.png)</p>
+<p>获取用户输入存入变量<code>mydbtbpre</code>，追踪该变量</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190830212635.png" alt></p>
+<p>在<code>/e/install/data/fun.php</code>的<strong>DoRunQuery</strong>函数中使用含有用户输入的变量<code>mydbtbpre</code>替换字符串<strong>`phome_</strong>，拼接入sql变量。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831014502.png" alt></p>
+<p>在<code>e/install/data/fun.php</code>文件中有一个名为<strong>DoRunQuery</strong>的函数</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831020358.png" alt></p>
+<p>在函数开头用含有用户输入的变量<code>mydbtbpre</code>替换了默认表头<strong>phome_</strong>，并将此存入了sql变量中。我们看到后面程序使用正则表达式将用户输入的表头+表名匹配出来并在前端显示，此处可以用来做验证。在本函数中用户输入未经过滤直接拼接进入数据库。跟踪次函数</p>
+<p>还是这个文件，在<strong>第592行</strong>执行了次函数，其中的参数正是用户输入的表头</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190831020828.png" alt></p>
+<p>接下来追踪变量从用户输入到存储进入数据库的过程，真正的过程应该是从后向前，但是为了理解方便，我用从前向后的方式描述变量的传递。</p>
+<ul>
+<li>首先在<code>/e/install/index.php</code>文件中通过用户输入框的形式获取用户输入并存入变量<strong>mydbtbpre</strong>，用户提交后存入_POST数组中。</li>
+<li>接下来调用统一文件下的<strong>SetDb</strong>函数将_POST数组作为参数设置数据库。</li>
+<li>在<code>/e/install/data/fun.php</code>文件中定义了<strong>SetDb</strong>函数，该函数将变量<strong>mydbtbpre</strong>作为参数调用了函数<strong>DoRunQuery</strong>。</li>
+<li><strong>DoRunQuery</strong>将未经过滤的变量变量<strong>mydbtbpre</strong>替换默认的表头拼接入sql查询语句中并执行创建数据表语句。</li>
+</ul>
+<h3 id="2"><a href="#2" class="headerlink" title="2"></a>2</h3><p>在文件<code>/e/admin/ebak/ChangeTable.php</code>中。<strong>第247行</strong>，使用短标签的形式将数组<strong>r</strong>中的<strong>Number</strong>字段的内容复制给了<strong>tablename</strong>数组。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901013533.png" alt></p>
+<p>数组内的内容直接显示在了前端，其实也可以是一个XSS漏洞</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901023910.png" alt></p>
+<p>在文件<strong>第294行</strong>调用了<strong>DoEbak</strong>函数进行备份，将带有恶意代码的数据库表进行备份，导致了任意代码执行，可以直接拦截请求将<strong>tbname</strong>参数之改为你想要执行的代码。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901024357.png" alt></p>
+<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3><p>在文件<code>/e/admin/db/DoSql.php</code>中<strong>第143行</strong>开始的函数是为了执行后台的<code>执行SQL语句</code>功能。首先使用如下sql命令</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> sqltext <span class="keyword">from</span> &#123;$dbtbpre&#125;enewssql <span class="keyword">where</span> <span class="keyword">id</span>=<span class="string">'$id'</span></span><br></pre></td></tr></table></figure>
+
+<p>将要执行的sql语句存入变量<strong>r</strong>中。接下来没有对语句进行任何的过滤直接作为参数传递给了<strong>DoRunQuery</strong>函数。前面已经分析过，此函数内也是没有任何的过滤语句，仅仅使用了<strong>RepSqlTbpre</strong>函数替换了表名前缀之后，将要执行的SQL语句赋值给变量<strong>query</strong>后传参。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901031432.png" alt></p>
+<p>在文件的<strong>第189行</strong>执行了<strong>ExecSql</strong>函数</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032016.png" alt></p>
+<p>只需要在<code>执行SQL语句</code>功能的输入框内输入任何想执行的代码就可以了</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032846.png" alt></p>
+<p>但是一定注意要符合SQL语句的格式，否则会报错无法执行。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901032913.png" alt></p>
+<h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><h3 id="1-1"><a href="#1-1" class="headerlink" title="1"></a>1</h3><p>在文件<code>/e/admin/openpage/AdminPage.php</code>文件中使用<strong>hRepPostStr</strong>函数过滤了<strong>leftfile、mainfile和title</strong>变量</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901033819.png" alt></p>
+<p>跟踪这一函数，<code>/e/class/connect.php</code>文件中</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901033854.png" alt></p>
+<p>继续调用<strong>ehtmlaspcialchars</strong>函数对内容进行过滤。</p>
+<p>次函数的实质就是调用<strong>htmlspecialchars</strong>函数处理字符串。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901034145.png" alt></p>
+<p>回到<strong>hRepPostStr</strong>函数，在将上图中的字符进行转义之后，调用<strong>CkPostStrChar</strong>函数，检查结尾是否含有”<strong>:\\</strong>“，最后调用<strong>AddAddData</strong>函数使用<strong>addslashes</strong>函数继续为字符产转义。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901034555.png" alt></p>
+<p>至此，程序只是对有限的特殊字符进行了过滤，甚至不包含括号。在此文件的<strong>第81行</strong>将变量<strong>leftfile</strong>在iframe的src标签中输出，因此可以简单的使用javascript伪协议进行弹窗。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190901035821.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/09/02/Empirecms7.5 Audit/" title="Empirecms7.5 Audit">http://ama666.cn/2019/09/02/Empirecms7.5 Audit/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/通过HTTP反向代理进行网络钓鱼/" rel="next" title="通过Modlishka HTTP反向代理进行网络钓鱼">
+                <i class="fa fa-chevron-left"></i> 通过Modlishka HTTP反向代理进行网络钓鱼
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/10/MySQL数据库注入方法总结/" rel="prev" title="MySQL数据库注入方法总结">
+                MySQL数据库注入方法总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EmpireCMS7-5-Audit"><span class="nav-number">1.</span> <span class="nav-text">EmpireCMS7.5 Audit</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构"><span class="nav-number">1.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任意代码执行"><span class="nav-number">1.2.</span> <span class="nav-text">任意代码执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1"><span class="nav-number">1.2.1.</span> <span class="nav-text">1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2"><span class="nav-number">1.2.2.</span> <span class="nav-text">2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3"><span class="nav-number">1.2.3.</span> <span class="nav-text">3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XSS"><span class="nav-number">1.3.</span> <span class="nav-text">XSS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">1</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

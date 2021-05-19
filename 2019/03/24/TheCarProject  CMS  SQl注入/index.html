@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言前一阵一直在忙着申请研究生，所以审计这一块落下了好多，今天拿出键盘都落灰了。最近在学习的时候遇到了一些瓶颈，无论是wbe挖洞还是审计都感觉自己只是懂得一些表面知识，比较肤浅，对于整个流程在脑子里面没有办法构成一张完整的图。还是看了一位师傅的代码审计学习道路，找到一些Poc据此进行分析，跟进整个流程希望通过借鉴这种学习方法可以提升自己一点。另外写文章的文笔也需要提高，其实就是思路上要理清楚，一环">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" TheCarProject  CMS  SQl注入		">
+<meta property="og:url" content="http://ama666.cn/2019/03/24/TheCarProject  CMS  SQl注入/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言前一阵一直在忙着申请研究生，所以审计这一块落下了好多，今天拿出键盘都落灰了。最近在学习的时候遇到了一些瓶颈，无论是wbe挖洞还是审计都感觉自己只是懂得一些表面知识，比较肤浅，对于整个流程在脑子里面没有办法构成一张完整的图。还是看了一位师傅的代码审计学习道路，找到一些Poc据此进行分析，跟进整个流程希望通过借鉴这种学习方法可以提升自己一点。另外写文章的文笔也需要提高，其实就是思路上要理清楚，一环">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c977744d3b4a.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9777826fd71.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c97779d5ad0d.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9777a75b536.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9777b7f38dc.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9777d9c9a86.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9777efbbb69.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c977809404b4.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c97781395550.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c97781b70da2.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c9778268867c.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c97783170c6c.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/24/5c97783eb8eac.png">
+<meta property="og:updated_time" content="2019-08-27T21:05:51.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" TheCarProject  CMS  SQl注入		">
+<meta name="twitter:description" content="前言前一阵一直在忙着申请研究生，所以审计这一块落下了好多，今天拿出键盘都落灰了。最近在学习的时候遇到了一些瓶颈，无论是wbe挖洞还是审计都感觉自己只是懂得一些表面知识，比较肤浅，对于整个流程在脑子里面没有办法构成一张完整的图。还是看了一位师傅的代码审计学习道路，找到一些Poc据此进行分析，跟进整个流程希望通过借鉴这种学习方法可以提升自己一点。另外写文章的文笔也需要提高，其实就是思路上要理清楚，一环">
+<meta name="twitter:image" content="https://i.loli.net/2019/03/24/5c977744d3b4a.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/03/24/TheCarProject  CMS  SQl注入/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> TheCarProject  CMS  SQl注入		 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/03/24/TheCarProject  CMS  SQl注入/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> TheCarProject  CMS  SQl注入		
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-24 20:25:25" itemprop="dateCreated datePublished" datetime="2019-03-24T20:25:25+08:00">2019-03-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:05:51" itemprop="dateModified" datetime="2019-08-28T05:05:51+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/php审计-从Poc开始/" itemprop="url" rel="index"><span itemprop="name">php审计 - 从Poc开始</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前一阵一直在忙着申请研究生，所以审计这一块落下了好多，今天拿出键盘都落灰了。最近在学习的时候遇到了一些瓶颈，无论是wbe挖洞还是审计都感觉自己只是懂得一些表面知识，比较肤浅，对于整个流程在脑子里面没有办法构成一张完整的图。还是看了一位师傅的代码审计学习道路，找到一些Poc据此进行分析，跟进整个流程希望通过借鉴这种学习方法可以提升自己一点。另外写文章的文笔也需要提高，其实就是思路上要理清楚，一环扣一环，把不懂的人给讲清楚，本篇文章我也会尽我所能将细枝末节的地方理清楚，讲清楚。</p>
+<h3 id="从Poc开始"><a href="#从Poc开始" class="headerlink" title="从Poc开始"></a>从Poc开始</h3><p>从舍友推荐的<a href="https://www.exploit-db.com/exploits/46555" target="_blank" rel="noopener">网站</a>上看到了这个CMS的漏洞，主要是其中的SQL注入比较多，首先将所有的Poc放出来一个接一个分析。 <code>http://localhost/TheCarProject/cp/info.php?man_id=3&amp;car_id=-1 or 1=1 and (SELECT 1 and ROW(1,1)&gt;(SELECT COUNT(*),CONCAT(CHAR(95),CHAR(33),CHAR(64),CHAR(52),CHAR(100),CHAR(105),CHAR(108),CHAR(101),CHAR(109),CHAR(109),CHAR(97),0x3a,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.COLLATIONS GROUP BY x)a)</code> <code>http://localhost/TheCarProject/cp/info.php?man_id=3&amp;car_id=-1 or 1=1 and (SELECT 1 and ROW(1,1)&gt;(SELECT COUNT(*),CONCAT(CHAR(95),CHAR(33),CHAR(64),CHAR(52),CHAR(100),CHAR(105),CHAR(108),CHAR(101),CHAR(109),CHAR(109),CHAR(97),0x3a,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.COLLATIONS GROUP BY x)a)</code> 首先分析一下Poc， <strong>car_id</strong> 提交正常参数 <strong>1</strong> 之后未使用单/双引号<strong>\‘ \“</strong> 进行闭合，所以判断为数字型SQL注入。后面跟随的是SQL查询语句，<strong>concat</strong> 函数作用是连接括号内所有字符串参数成为一个字符串，第一个参数均使用了ASCII进行转码，第二个参数是一个16进制编码字符，将concat函数中的参数翻译过来的Poc语句是 : <code>SELECT 1 and (ROW(1,1)&gt;(SELECT COUNT(*), CONCAT(_!@4dilemma,:, FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.COLLECTIONS GROUP BY x)a;</code> 可能有些小伙伴跟我一样平时也不太在意SQL注入语句中的具体含义，sqlmap直接跑一下就好，但是秉承着给自己找麻烦的原则，我来分析一下这个语句的含义。首先将目光聚焦在语句前面部分的比较符号上 <strong>(&gt;)</strong> ， <strong>ROW函数</strong> 函数在<a href="https://dev.mysql.com/doc/refman/8.0/en/row-subqueries.html" target="_blank" rel="noopener">MySQL官方文档</a>中给出的定义如下: [<img src="https://i.loli.net/2019/03/24/5c977744d3b4a.png" alt="ROW函数定义"> 翻译过来的意思为：标量或列子查询返回一个值或一列值。<br>行子查询是返回单行的子查询变体，因此可以返回多个列值。听起来是不是十分拗口难懂。其实Poc中的ROW(1,1)包含两部分，一部分是ROW函数本身，另一部分是被称作行构造函数表达式的(1,1)。<a href="https://dev.mysql.com/doc/refman/8.0/en/row-constructor-optimization.html" target="_blank" rel="noopener">MySQL官方文档</a>中有一个例子: <a href="https://i.loli.net/2019/03/24/5c9777826fd71.png" title="行构造函数表达式" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9777826fd71.png" alt="行构造函数表达式" title="行构造函数表达式"></a> 第一个和第二个表达式的意义是相等的。那么再回头看一看整体的 <strong>ROW(1,1)&gt;</strong> 便能理解其中的含义，即第一个查询结果的第一列要大于第二个查询结果的第一列。如果成功就返回结果，不成功返回空值。至于为什么不是 <strong>ROW(1)</strong> 而是 <strong>ROW(1,1)</strong> 同样的MySQL官方文档也给了我们解释: <a href="https://i.loli.net/2019/03/24/5c97779d5ad0d.png" title="行构造函数参数问题" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c97779d5ad0d.png" alt="行构造函数参数问题" title="行构造函数参数问题"></a> 理解了其中的细节之后我们在从总体上看这一句Poc，很明显是一个报错型SQL注入，报错原因是因为临时表中的主键值重复，造成重复的原因是Poc语句中的 <strong>FLOOR(RAND(0)*2)</strong> 产生规律的 <strong>011011011……</strong> 序列导致分组统计 <strong>count(*)…group by</strong> 时临时表中的主键值重复抛出错误信息。实现起来是这样的： 首先使用 <strong>floor(rand(0)*2)</strong> 生成011序列作为临时表中的键值： <a href="https://i.loli.net/2019/03/24/5c9777a75b536.png" title="临时表" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9777a75b536.png" alt="临时表" title="临时表"></a> 接着使用分组统计触发临时表主键值重复问题爆出错误： <a href="https://i.loli.net/2019/03/24/5c9777b7f38dc.png" title="主键值重复报错" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9777b7f38dc.png" alt="主键值重复报错" title="主键值重复报错"></a> 可以看到上图中已经爆出错误信息，其中包含我们希望查询到的数据库版本 <strong>10.3.12-MariaDB-2</strong> . <a href="https://i.loli.net/2019/03/24/5c9777d9c9a86.png" title="爆数据库" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9777d9c9a86.png" alt="爆数据库" title="爆数据库"></a> 爆数据库 分析完了Poc中的各个部分之后让我们总体看一下： <a href="https://i.loli.net/2019/03/24/5c9777efbbb69.png" title="Poc总体分析" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9777efbbb69.png" alt="Poc总体分析" title="Poc总体分析"></a></p>
+<h3 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h3><p>从Poc可以看出存在SQL注入的文件是 <strong>cp/info.php</strong> <a href="https://i.loli.net/2019/03/24/5c977809404b4.png" title="car_id" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c977809404b4.png" alt="car_id" title="car_id"></a> 代码 <strong>第9行</strong> 中出现了<strong>car_id</strong> 参数，是由用户以 <strong>get</strong> 方式从url提交的变量，直接赋值给 <strong>motor_id</strong> 参数，跟进一下 <a href="https://i.loli.net/2019/03/24/5c97781395550.png" title="1" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c97781395550.png" alt="1" title="1"></a> <a href="https://i.loli.net/2019/03/24/5c97781b70da2.png" title="10" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c97781b70da2.png" alt="10" title="10"></a> <a href="https://i.loli.net/2019/03/24/5c9778268867c.png" title="11" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c9778268867c.png" alt="11" title="11"></a> 看到文件中包含多个将 <strong>motor_id</strong> 拼接入内的sql查询语句，均未使用单/双引号包裹，参数也未经过任何过滤函数，因此可以判断存在注入。接下来我们需要寻找SQL注入的回显地点，上面三张图中 <strong>第191行 第289行 第343行</strong> 分别使用变量接受了SQL查询结果 选取最后一个一个为例子，参数 <strong>$cpr_image_mail</strong> 接受了函数 <strong>mysqli_fetch_array</strong> 读取的MySQL返回结果，并假设其中存在以 <strong>FILE_NAME</strong> 为数组键的数组值，将数组值赋给了变量 <strong>$cpr_image_single</strong>，跟进 <a href="https://i.loli.net/2019/03/24/5c97783170c6c.png" title="cpr_image_single" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c97783170c6c.png" alt="cpr_image_single" title="cpr_image_single"></a> 在代码 <strong>第350行</strong> 中，参数 <strong>$cpr_image_single</strong> 在hidden型的input输入框中作为输入值在 <strong>第347行</strong> 提交给了 <strong>smtp_info.php</strong> ，抓包即可获取发送数据得到SQL注入的信息回显。</p>
+<h3 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h3><p>SQL注入的修复我认为要从SQL注入的成因开始针对，本漏洞中成因简单的不能再简单，在拼接入SQL语句的时候没有进行单/双/反引号的闭合，对变量也没有进行消毒处理，根据此原因，首先在SQL查询语句中使用双引号包裹变量之外，还要对用户输入变量进行消毒处理，给出的修复代码如下: <code>if(isset($_GET[&#39;car_id&#39;])) { $motor_id = mysqli_real_escape_string($_GET[&#39;car_id&#39;]); //$motor_id = PDO::quote($_GET[&#39;car_id&#39;]); ...... }</code> <strong>mysqli_real_escape_string</strong> 函数的作用是过滤字符串参数中的非法字符，<a href="http://php.net/manual/en/mysqli.real-escape-string.php" target="_blank" rel="noopener">MySQL官方文档</a>中给出定义： <a href="https://i.loli.net/2019/03/24/5c97783eb8eac.png" title="mysqli_real_escape_string" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/24/5c97783eb8eac.png" alt="mysqli_real_escape_string" title="mysqli_real_escape_string"></a> 同时还要补充两点：一是应避免使用GBK编码数据库，以免造成宽字节注入。二是由于在写入数据库的时候写入的是原始信息，所以在获取数据库查询信息的时候也应该调用此函数进行消毒处理，以免造成二次注入。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>整体看漏洞触发链比较短，产生原因也是最简单的原因，但是作为一个学习过程的开始还算合适。本篇文章主要秉承着将最细节的地方搞清楚的原则写成，现在看来主要在Poc分析的时候细节比较多，下次要选择一个漏洞触发链长或者是触发条件苛刻的CMS来审计。自己也是第一次脱离网上的任何现有文章，所以难免会有一些错误和文笔不通顺，如果哪位师傅看到了还烦请指正小弟，感激不尽。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/204.html" title=" TheCarProject  CMS  SQl注入		">204.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/18/文件读取引发的思/" rel="next" title=" 文件读取引发的思考		">
+                <i class="fa fa-chevron-left"></i>  文件读取引发的思考		
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/31/WordPress 5.0 RCE详细分析/" rel="prev" title=" WordPress 5.0 RCE详细分析		">
+                 WordPress 5.0 RCE详细分析		 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从Poc开始"><span class="nav-number">2.</span> <span class="nav-text">从Poc开始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码审计"><span class="nav-number">3.</span> <span class="nav-text">代码审计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修复"><span class="nav-number">4.</span> <span class="nav-text">修复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

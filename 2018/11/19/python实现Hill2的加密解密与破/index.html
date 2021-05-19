@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="密码学实验代码0x00写在前面本周密码学作业利用python写一个Hill2的已知明文密文的破译，代码没有什么难度，就当是一个练手。但是发现大多数同学们还是存在抄袭现象啊，直接把结果print出来，检查的学长也是好心给了这些同学通过。其实老师给的实验环境是有一些错误的，如果按照老师的ppt来是做不出来的，我当时加密结果一直不对可以破译结果却很正确，也是一直不明白为什么直到发现了PPT上的错误，和学">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" python实现Hill2的加密解密与破译		">
+<meta property="og:url" content="http://ama666.cn/2018/11/19/python实现Hill2的加密解密与破/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="密码学实验代码0x00写在前面本周密码学作业利用python写一个Hill2的已知明文密文的破译，代码没有什么难度，就当是一个练手。但是发现大多数同学们还是存在抄袭现象啊，直接把结果print出来，检查的学长也是好心给了这些同学通过。其实老师给的实验环境是有一些错误的，如果按照老师的ppt来是做不出来的，我当时加密结果一直不对可以破译结果却很正确，也是一直不明白为什么直到发现了PPT上的错误，和学">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T21:05:21.144Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" python实现Hill2的加密解密与破译		">
+<meta name="twitter:description" content="密码学实验代码0x00写在前面本周密码学作业利用python写一个Hill2的已知明文密文的破译，代码没有什么难度，就当是一个练手。但是发现大多数同学们还是存在抄袭现象啊，直接把结果print出来，检查的学长也是好心给了这些同学通过。其实老师给的实验环境是有一些错误的，如果按照老师的ppt来是做不出来的，我当时加密结果一直不对可以破译结果却很正确，也是一直不明白为什么直到发现了PPT上的错误，和学">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2018/11/19/python实现Hill2的加密解密与破/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> python实现Hill2的加密解密与破译		 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2018/11/19/python实现Hill2的加密解密与破/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> python实现Hill2的加密解密与破译		
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-19 14:25:20" itemprop="dateCreated datePublished" datetime="2018-11-19T14:25:20+08:00">2018-11-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:05:21" itemprop="dateModified" datetime="2019-08-28T05:05:21+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="密码学实验代码"><a href="#密码学实验代码" class="headerlink" title="密码学实验代码"></a>密码学实验代码</h2><h2 id="0x00写在前面"><a href="#0x00写在前面" class="headerlink" title="0x00写在前面"></a>0x00写在前面</h2><p>本周密码学作业利用python写一个Hill2的已知明文密文的破译，代码没有什么难度，就当是一个练手。但是发现大多数同学们还是存在抄袭现象啊，直接把结果print出来，检查的学长也是好心给了这些同学通过。其实老师给的实验环境是有一些错误的，如果按照老师的ppt来是做不出来的，我当时加密结果一直不对可以破译结果却很正确，也是一直不明白为什么直到发现了PPT上的错误，和学长求证也确实存在。还是感慨一下现在的大学教育真的是水的可以。</p>
+<h2 id="0x01Hill"><a href="#0x01Hill" class="headerlink" title="0x01Hill"></a>0x01Hill</h2><p>Hill加密利用的是矩阵相乘加密，简单来说就是将明文分组左乘加密矩阵。解密的方法和加密类似，将密文矩阵左乘加密矩阵的模26的逆矩阵。数学基础不太好的小伙伴可以参考一下<a href="https://en.wikipedia.org/wiki/Hill_cipher" target="_blank" rel="noopener">这篇文章</a>，原理讲的很清楚了，当然你可能需要一些帮助才能看到。</p>
+<h2 id="0x02实现步骤"><a href="#0x02实现步骤" class="headerlink" title="0x02实现步骤"></a>0x02实现步骤</h2><p>1．密钥生成 采用python的扩展模块numpy的numpy.arra()函数生成矩阵，再用numpy.reshape()调整行、列数。加密矩阵选择了很简单的[[1 2];[0 3]] 2. 加密 在所给环境下用Hill2体制给明文进行加密，随机生成一个两行两列的矩阵，将明文换成对应表值的数字矩阵后左乘加密矩阵，将得到的密文矩阵对应表值转换为字符串密文即可完成加密。 3. 解密 在所给环境下用Hill2体制给密文进行解密，将加密密钥利用公式： 矩阵的逆=矩阵的行列式值<em>伴随矩阵(mod 26) 进行求逆矩阵即为解密矩阵，将密文换成对应表值的数字矩阵后左乘解密矩阵即可得到明文矩阵，再将明文矩阵转换为表值对应的明文字符串即可完成解密。因为加密解密利用的是同一原理，只是密钥不同，所以解密函数我直接调用的加密函数。 4. 已知明文攻击原理 （1）已知一组明文和一组密文，根据Hill的加密原理可知当当有足够数量个明文密文的时候可以求出密钥矩阵的逆矩阵: inverse_key = inverse_ciphertext * plaintext 将密文和明文两两一组对照表值转换为两行一列的矩阵，明文矩阵左乘密文矩阵的模26的逆可以得到加密矩阵的逆，可以用此作为解密密钥破译出所有的密文。在所给实验条件下，Hill2密码得到四个明文、密文字符串即可。 PS: 表值和数字-字符转换在里面并没有提及，可以从代码中找到。 &lt;2&gt;0x03python实现 [cc lang=”python” fontsize = 16] #author: ama666 #date: 2018.11.17 #title: Hill2 import numpy as np import itertools import string def findModReverse(a,m): “”” 求数字的模逆运算 :param a: 数字 :param m: 模数 :return: 模逆 “”” for b in itertools.count(1): if (a\</em>b)%m==1: return b #表值 dic = {1: ‘A’, 2: ‘B’, 3: ‘C’, 4: ‘D’, 5: ‘E’, 6: ‘F’, 7: ‘G’, 8: ‘H’, 9: ‘I’, 10: ‘J’, 11: ‘K’, 12: ‘L’, 13: ‘M’, 14: ‘N’, 15: ‘O’, 16: ‘P’, 17: ‘Q’, 18: ‘R’, 19: ‘S’, 20: ‘T’, 21: ‘U’, 22: ‘V’, 23: ‘W’, 24: ‘X’, 25: ‘Y’, 26: ‘Z’} #二阶加密矩阵以及其逆矩阵 key = ([1,2],[0,3]) #加密矩阵：[[1 2] key = np.array(key) # [0 3]] key_value = key[0][0]*key[1][1] - key[0][1]*key[1][0] #矩阵行列式的值为9 inverse_key_value = findModReverse(key_value,26) #行列式的值模逆 star = ([3,-2],[0,1]) #伴随矩阵[[3 -2] key_star = np.array(star) # [0 1]] inverse_key = inverse_key_value*key_star #逆矩阵[[1 8] #将矩阵中的数字元素模26 [0 9]] for i in range(len(inverse_key)): for j in range(len(inverse_key[i])): inverse_key[i][j] = int(inverse_key[i][j])%26 def convert_to_number(plaintext): “”” 将密文字符串转换为与表值对应的数字 :param plaintext: 密码密文 :return: 数字列表 “”” “”” :param plaintext: :return: “”” #判断字符产长度是奇是偶，若为奇数最后一位重复一次 if len(plaintext)%2 == 1: plaintext += plaintext[-1] plaintext = plaintext.upper() #将字符串转换为与表值对应的数字 plaintext_number = [] for i in plaintext: for k,v in dic.items(): if i == v: plaintext_number.append(k) break return(plaintext_number) def convert_to_string(number): “”” 将数字转换位表值对应的字符串 :param number: 数字列表 :return: 字符串 “”” string = ‘’ for i in number: #取模运算 i = i%26 for k,v in dic.items(): if i == 0: string += ‘Z’ break elif i == k: string += v break return string def encryption(plaintext_number,keys): “”” 将数字明文进行加密 :param plaintext_number: 数字明文列表 :param keys: 加密矩阵 :return: 密文字符串 “”” #将数字明文两两一组创建为向量保存在临时字典之中 vector = {} m = 0 n = 0 while(n &lt; len(plaintext_number)): vector[m] = np.array([plaintext_number[n],plaintext_number[n+1]]).reshape((2,1)) m += 1 n += 2 #将向量字典中的value依次左乘加密矩阵 for k,v in vector.items(): vector[k] = np.dot(keys,v) #将两两一组的矩阵转换为密文数字列表 ciphertext_number = [] for k,v in vector.items(): v = list(v) ciphertext_number.append(round(v[0][0])) ciphertext_number.append(round(v[1][0])) #将数字密文转换为字符串 ciphertext = convert_to_string(ciphertext_number) return ciphertext def decrypt(ciphertext_number,keys): “”” 将数字密文进行解密 :param ciphertext: 数字密文 :param keys: 解密矩阵 :return: 明文字符串 “”” string = encryption(ciphertext_number,keys) return string message = ‘ABCDEFGHIJKLMNOPQRSTUVWXYZ’ print(“明文”,message) encode_message = encryption(convert_to_number(message),key) print(“加密结果”,encode_message) print(“解密结果”,decrypt(convert_to_number(encode_message),inverse_key)) def deciper(cipher,plain): “”” 破解加密矩阵 :param cipher: 密文 :param plain: 明文 :return: 加密矩阵的逆 “”” #先将密文以及明文转换为表值对应的数字 cipher = convert_to_number(cipher) plain = convert_to_number(plain) #两两一组构建向量 vector_cipher = {} vector_plain = {} m = 0 n = 0 while (n &lt; len(cipher)): vector_cipher[m] = np.array([cipher[n], cipher[n + 1]]).reshape((2, 1)) m += 1 n += 2 m = 0 n = 0 while(n &lt; len(plain)): vector_plain[m] = np.array([plain[n],plain[n + 1]]).reshape((2,1)) m += 1 n += 2 #将明文密文重构成二阶行列式 a,b,c,d = vector_plain[0][0][0], vector_plain[1][0][0],vector_plain[0][1][0], vector_plain[1][1][0] ls = ([a, b], [c, d]) vector_plain = np.array(ls).reshape((2,2)) #明文矩阵 a,b,c,d = vector_cipher[0][0][0],vector_cipher[1][0][0],vector_cipher[0][1][0], vector_cipher[1][1][0] ls = ([a,b],[c,d]) vector_cipher = np.array(ls).reshape((2,2)) #密文矩阵 #计算加密矩阵的逆矩阵 (明文矩阵<em>密文矩阵的逆) value = (a\</em>d-b*c)%26 inverse_value = 15#findModReverse(value,26) ls = ([d,-b],[-c,a]) vector_star = np.array(ls) inverse_vector_cipher = inverse_value*vector_star #将矩阵中的数字元素模26 for i in range(len(inverse_vector_cipher)): for j in range(len(inverse_vector_cipher[i])): inverse_vector_cipher[i][j] = int(inverse_vector_cipher[i][j]) % 26 #求加密矩阵的逆 inverse_vector = np.dot(vector_plain,inverse_vector_cipher) #print(“密文矩阵”,vector_cipher) #print(“密文逆矩阵”,inverse_vector_cipher) #print(“明文矩阵”,vector_plain) #print(“结果”,inverse_vector) for i in range(len(inverse_vector)): for j in range(len(inverse_vector[i])): inverse_vector[i][j] = int(inverse_vector[i][j]) % 26 return inverse_vector print(“已知明文:TACO”,”已知密文:UCRS”) print(“解密矩阵的逆”,deciper(‘UCRS’,’TACO’)) [/cc]</p>
+<h2 id="0x05写在后面"><a href="#0x05写在后面" class="headerlink" title="0x05写在后面"></a>0x05写在后面</h2><p>代码写的不好看，基本上就是我一个小时左右写出来的没有注意美观性什么的。但是跟着代码读下来应该能对Hill加解密和破译有一个了解。代码小伙伴们可以拿去用，但是还是鼓励原创，或者看懂了之后修修改改，多少也能学到一点东西，不然水过去真的没啥收获。真的希望中国的大学教育可以更严谨一些。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/134.html" title=" python实现Hill2的加密解密与破译		">134.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/24/Linux:Ubuntu 下搭建openLDAP + BerkeleyD/" rel="next" title=" Linux/Ubuntu 下搭建openLDAP + BerkeleyDB		">
+                <i class="fa fa-chevron-left"></i>  Linux/Ubuntu 下搭建openLDAP + BerkeleyDB		
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/01/Python基于UDP的聊天软件/" rel="prev" title=" Python基于UDP的聊天软件		">
+                 Python基于UDP的聊天软件		 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#密码学实验代码"><span class="nav-number">1.</span> <span class="nav-text">密码学实验代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00写在前面"><span class="nav-number">2.</span> <span class="nav-text">0x00写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01Hill"><span class="nav-number">3.</span> <span class="nav-text">0x01Hill</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02实现步骤"><span class="nav-number">4.</span> <span class="nav-text">0x02实现步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05写在后面"><span class="nav-number">5.</span> <span class="nav-text">0x05写在后面</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

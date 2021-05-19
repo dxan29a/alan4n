@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://ama666.cn/2021/05/19/CVE-2021-3129%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2021-05-19T12:34:43.415Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/05/16/%E4%B8%9A%E5%8A%A1%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/</loc>
+    
+    <lastmod>2021-05-16T06:47:29.432Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/03/08/RCE-ByPass/</loc>
+    
+    <lastmod>2021-03-09T07:27:24.250Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/03/01/Apache-Flink-RCE%E5%A4%8D%E7%8E%B0/</loc>
+    
+    <lastmod>2021-03-01T22:35:06.746Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/02/12/%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81%E5%88%9D%E6%8E%A2/</loc>
+    
+    <lastmod>2021-02-18T05:08:31.936Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/02/09/SSRF%E4%B8%AD%E7%9A%84Bypass/</loc>
+    
+    <lastmod>2021-02-10T20:15:37.813Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/02/08/JSON%E6%83%85%E6%99%AF%E4%B8%8B%E7%9A%84CSRF%E6%94%BB%E5%87%BB/</loc>
+    
+    <lastmod>2021-02-08T20:05:59.748Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/09/01/ctf%E4%B8%AD%E7%9A%84Flask-ssti/</loc>
+    
+    <lastmod>2020-09-03T23:51:16.848Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/08/01/Hack-The-Box-Magic/</loc>
+    
+    <lastmod>2020-08-01T07:07:30.795Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/06/30/2020-TCTF-Writeup/</loc>
+    
+    <lastmod>2020-07-08T22:04:04.625Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/07/01/T-Star%E9%9D%B6%E5%9C%BA%E8%B5%9BCTF/</loc>
+    
+    <lastmod>2020-07-01T21:55:12.411Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/06/28/360%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4-CTF/</loc>
+    
+    <lastmod>2020-07-01T04:31:54.634Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/06/26/DASCTF-6%E6%9C%88%E8%B5%9B%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2020-06-28T08:46:37.792Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/06/04/%E6%97%A0%E5%88%97%E5%90%8D%E7%9B%B2%E6%B3%A8/</loc>
+    
+    <lastmod>2020-06-04T08:36:29.549Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/05/29/%E5%85%B3%E4%BA%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E4%B8%A4%E9%81%93CTF/</loc>
+    
+    <lastmod>2020-05-30T07:07:15.803Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/05/25/Redis%E4%B8%BB%E4%BB%8E%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</loc>
+    
+    <lastmod>2020-05-25T18:49:06.309Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/03/22/Hack-the-Box-FreeLancer/</loc>
+    
+    <lastmod>2020-04-06T08:23:12.183Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/baidu_verify_wD6I1h8lGi.html</loc>
+    
+    <lastmod>2020-04-06T05:49:46.626Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/</loc>
+    
+    <lastmod>2020-04-05T01:58:22.147Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/03/28/Hack-the-Box-OpenAdmin/</loc>
+    
+    <lastmod>2020-03-28T22:46:40.973Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/10/02/Hack%20the%20Box_Heist/</loc>
+    
+    <lastmod>2020-03-27T17:20:19.662Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/10/17/Hack-the-Box-Bitlab/</loc>
+    
+    <lastmod>2020-03-26T16:46:12.911Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/03/20/Hack-the-Box-Console/</loc>
+    
+    <lastmod>2020-03-20T16:27:21.611Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2020/01/12/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%AF%A6%E8%A7%A3-%E5%AE%9E%E6%88%98/</loc>
+    
+    <lastmod>2020-01-13T13:44:36.178Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/11/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E8%AE%A1%E7%AE%97%E7%9B%B8%E6%9C%BA%E7%A9%BA%E9%97%B4%E4%BD%8D%E7%BD%AE/</loc>
+    
+    <lastmod>2019-11-11T06:17:51.782Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/10/25/%E6%B3%A8%E5%85%A5%E7%8E%AF%E5%A2%83/</loc>
+    
+    <lastmod>2019-10-27T18:48:29.855Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/about/index.html</loc>
+    
+    <lastmod>2019-10-26T05:00:11.244Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/10/02/web%E9%A1%B5%E9%9D%A2%E8%A7%A3%E6%9E%90%E6%B5%81%E7%A8%8B/</loc>
+    
+    <lastmod>2019-10-02T23:17:39.712Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/09/24/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8FLampiao/</loc>
+    
+    <lastmod>2019-09-25T04:53:34.850Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/09/17/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8FTrOll-3/</loc>
+    
+    <lastmod>2019-09-22T07:17:44.170Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/09/10/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2019-09-11T01:19:01.315Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/09/02/%E9%80%9A%E8%BF%87HTTP%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%BB%9C%E9%92%93%E9%B1%BC/</loc>
+    
+    <lastmod>2019-09-02T23:25:18.726Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/09/02/Empirecms7.5%20Audit/</loc>
+    
+    <lastmod>2019-09-02T23:10:27.902Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/08/29/SMTP%E4%B8%AD%E7%BB%A7-%E8%BD%AC%E5%8F%91/</loc>
+    
+    <lastmod>2019-08-29T23:58:06.873Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/08/27/HTTP%E8%BD%AC%E5%8F%91%E5%99%A8/</loc>
+    
+    <lastmod>2019-08-27T21:18:40.594Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/06/27/%E7%BB%95%E8%BF%87===%E6%AF%94%E8%BE%83md5%E5%AD%97%E7%AC%A6%E4%B8%B2/</loc>
+    
+    <lastmod>2019-08-27T21:09:00.799Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/04/02/%E7%A9%BF%E8%B6%8Acdn%E8%AE%BF%E9%97%AE%E7%9C%9F%E5%AE%9EIP/</loc>
+    
+    <lastmod>2019-08-27T21:08:42.052Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/06/25/%E7%A9%BA%E7%99%BD%E5%AD%97%E7%AC%A6%E6%88%AA%E6%96%AD---php%E5%AE%A1%E8%AE%A1/</loc>
+    
+    <lastmod>2019-08-27T21:08:33.152Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/06/27/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%EF%BC%88CVE-2017-10271%EF%BC%89/</loc>
+    
+    <lastmod>2019-08-27T21:08:20.560Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/03/18/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D/</loc>
+    
+    <lastmod>2019-08-27T21:07:55.514Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/06/15/%E6%90%AC%E5%AE%B6/</loc>
+    
+    <lastmod>2019-08-27T21:07:37.744Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/07/19/%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3%EF%BC%88%E4%B8%8B%EF%BC%89/</loc>
+    
+    <lastmod>2019-08-27T21:07:22.563Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/07/19/%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3%EF%BC%88%E4%B8%8A%EF%BC%89/</loc>
+    
+    <lastmod>2019-08-27T21:07:14.594Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/07/04/%E5%85%B3%E4%BA%8ERCE%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E6%8A%80%E5%B7%A7/</loc>
+    
+    <lastmod>2019-08-27T21:07:06.595Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/06/29/%E5%85%B3%E4%BA%8Ephp%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2019-08-27T21:06:47.477Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/04/19/%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B&%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/</loc>
+    
+    <lastmod>2019-08-27T21:06:38.882Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/07/03/XSS_Challenge/</loc>
+    
+    <lastmod>2019-08-27T21:06:26.976Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/03/31/WordPress%205.0%20RCE%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2019-08-27T21:06:12.562Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/03/24/TheCarProject%20%20CMS%20%20SQl%E6%B3%A8%E5%85%A5/</loc>
+    
+    <lastmod>2019-08-27T21:05:51.941Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/11/19/python%E5%AE%9E%E7%8E%B0Hill2%E7%9A%84%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86%E4%B8%8E%E7%A0%B4/</loc>
+    
+    <lastmod>2019-08-27T21:05:21.144Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/12/01/Python%E5%9F%BA%E4%BA%8EUDP%E7%9A%84%E8%81%8A%E5%A4%A9%E8%BD%AF%E4%BB%B6/</loc>
+    
+    <lastmod>2019-08-27T21:05:08.606Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/10/15/preg_replace%E5%87%BD%E6%95%B0RCE/</loc>
+    
+    <lastmod>2019-08-27T21:05:01.967Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/08/05/php%E5%AE%A1%E8%AE%A1%20%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96+%E5%BC%95%E5%8F%B7%E9%80%83%E8%84%B1/</loc>
+    
+    <lastmod>2019-08-27T21:04:54.934Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/06/21/PHP%E5%87%BD%E6%95%B0%E6%BA%90%E4%BB%A3%E7%A0%81%E5%B1%82%E9%9D%A2%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2019-08-27T21:04:48.402Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/01/25/phpwind%209.0.2%20%E4%BB%BB%E6%84%8F%E6%89%A7%E8%A1%8CSQL%E8%AF%AD%E5%8F%A5(%E5%8F%AFgetshell)/</loc>
+    
+    <lastmod>2019-08-27T21:04:32.118Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/10/24/Linux:Ubuntu%20%E4%B8%8B%E6%90%AD%E5%BB%BAopenLDAP%20+%20BerkeleyD/</loc>
+    
+    <lastmod>2019-08-27T21:04:20.850Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/08/28/json-web-token/</loc>
+    
+    <lastmod>2019-08-27T21:04:06.575Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/09/14/HongCSM%E5%90%8E%E5%8F%B0SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/</loc>
+    
+    <lastmod>2019-08-27T21:03:13.709Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/04/11/freesms-sql-injection/</loc>
+    
+    <lastmod>2019-08-27T21:03:06.815Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/06/26/Bug%20#69892%20%E6%95%B0%E7%BB%84%E6%AF%94%E8%BE%83%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E9%94%AE%E6%88%AA/</loc>
+    
+    <lastmod>2019-08-27T21:02:59.347Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2018/09/23/MYSQL%E6%95%B0%E7%BB%84%E5%BA%93UpdateXml()%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2019-08-27T21:02:41.135Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/08/24/%E7%AC%AC%E5%9B%9B%E5%91%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%8A%9F%E8%83%BD%E7%9B%B8%E5%85%B3%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2019-08-27T21:01:40.527Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/08/11/%E7%AC%AC%E4%BA%8C%E5%91%A8%E4%BB%BB%E5%8A%A1-%E8%AE%A4%E8%AF%86sql%E5%B9%B6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</loc>
+    
+    <lastmod>2019-08-27T21:01:33.183Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/08/18/%E7%AC%AC%E4%B8%89%E5%91%A8-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E8%A1%A8%E7%9B%B8%E5%85%B3%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2019-08-27T21:01:27.168Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2019/07/29/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BB%BB%E5%8A%A1-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    
+    <lastmod>2019-08-27T20:59:27.781Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/categories/index.html</loc>
+    
+    <lastmod>2019-08-27T20:54:09.051Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/catrgories/index.html</loc>
+    
+    <lastmod>2019-06-16T04:27:38.055Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/tags/index.html</loc>
+    
+    <lastmod>2019-06-16T04:27:23.221Z</lastmod>
+    
+  </url>
+  
+</urlset>

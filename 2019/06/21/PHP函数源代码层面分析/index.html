@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言一个从POC出发系列还没完结，有开了一个新坑，最近在实习实在是没有大段时间去做审计(借口)。和同学聊天感悟那些大佬在挖洞的时候看到的东西和我们这种小菜鸡不一样，因为他们是从源码层面上去理解函数，看到了比较底层的东西。外加最近在公司受打击，发现php在实际生产里面用的太少了，都是C、JAVA、GO居多。于是抱着一是锻炼C代码能力，二加强对不安全函数的理解的目的，开了一个新的系列——函数源代码层面">
+<meta name="keywords" content="php函数分析上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP函数源代码层面分析">
+<meta property="og:url" content="http://ama666.cn/2019/06/21/PHP函数源代码层面分析/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言一个从POC出发系列还没完结，有开了一个新坑，最近在实习实在是没有大段时间去做审计(借口)。和同学聊天感悟那些大佬在挖洞的时候看到的东西和我们这种小菜鸡不一样，因为他们是从源码层面上去理解函数，看到了比较底层的东西。外加最近在公司受打击，发现php在实际生产里面用的太少了，都是C、JAVA、GO居多。于是抱着一是锻炼C代码能力，二加强对不安全函数的理解的目的，开了一个新的系列——函数源代码层面">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235542.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235630.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234650.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190621000007.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235048.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235015.png">
+<meta property="og:image" content="http://ama666.cn/Users/ama666/Desktop/myblog/source/_posts/images/intval%E5%87%BD%E6%95%B0%E6%BA%90%E4%BB%A3%E7%A0%81.png">
+<meta property="og:image" content="http://ama666.cn/Users/ama666/Desktop/myblog/source/_posts/images/convert_to_long_base.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234913.png">
+<meta property="og:updated_time" content="2019-08-27T21:04:48.402Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHP函数源代码层面分析">
+<meta name="twitter:description" content="前言一个从POC出发系列还没完结，有开了一个新坑，最近在实习实在是没有大段时间去做审计(借口)。和同学聊天感悟那些大佬在挖洞的时候看到的东西和我们这种小菜鸡不一样，因为他们是从源码层面上去理解函数，看到了比较底层的东西。外加最近在公司受打击，发现php在实际生产里面用的太少了，都是C、JAVA、GO居多。于是抱着一是锻炼C代码能力，二加强对不安全函数的理解的目的，开了一个新的系列——函数源代码层面">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235542.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/06/21/PHP函数源代码层面分析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>PHP函数源代码层面分析 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/06/21/PHP函数源代码层面分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHP函数源代码层面分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-21 07:45:15" itemprop="dateCreated datePublished" datetime="2019-06-21T07:45:15+08:00">2019-06-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:04:48" itemprop="dateModified" datetime="2019-08-28T05:04:48+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/php审计/" itemprop="url" rel="index"><span itemprop="name">php审计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一个<strong>从POC出发</strong>系列还没完结，有开了一个新坑，最近在实习实在是没有大段时间去做审计(借口)。和同学聊天感悟那些大佬在挖洞的时候看到的东西和我们这种小菜鸡不一样，因为他们是从源码层面上去理解函数，看到了比较底层的东西。外加最近在公司受打击，发现php在实际生产里面用的太少了，都是C、JAVA、GO居多。于是抱着一是锻炼C代码能力，二加强对不安全函数的理解的目的，开了一个新的系列——<strong>函数源代码层面分析</strong>。还是由简入繁，先从一些CTF中常见的不安全函数入手。</p>
+<h2 id="函数介绍"><a href="#函数介绍" class="headerlink" title="函数介绍"></a>函数介绍</h2><p>php中 <strong>intval</strong> 函数，获取变量的整数值。参考php手册</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235542.png" alt></p>
+<p>到这里的时候突然想到，如果判断两个变量的值是否相同，当函数作用于对象的时候会返回1，函数作用于’<strong>1</strong>‘的时候也会返回1，来测试一下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235630.png" alt></p>
+<p>看到我的想法是正确的，当一个对象被当作intval函数的参数时返回值和intval(1)的返回值是相等的，经过进一步测试使用<strong>===</strong>判断也是返回<strong>true</strong>。</p>
+<p>好像有点跑题了，基本功能介绍完了，然后看一看这个函数为什么不安全。网上随便搜一搜得到：</p>
+<blockquote>
+<p>直到遇上数字或正负符号才开始做转换，再遇到非数字或字符串结束时(\0)结束转换</p>
+</blockquote>
+<blockquote>
+<p>最大的值取决于操作系统。 32 位系统最大带符号的 integer 范围是 -2147483648 到 2147483647。举例，在这样的系统上， intval(‘1000000000000’) 会返回 2147483647。64 位系统上，最大带符号的 integer 值是 9223372036854775807</p>
+</blockquote>
+<h2 id="函数源代码分析"><a href="#函数源代码分析" class="headerlink" title="函数源代码分析"></a>函数源代码分析</h2><p>接下来就来从源码层面对这个函数的这两个特性进行分析。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234650.png" alt></p>
+<p>我是第一次看到php函数的源代码，之前只是知道底层使用C语言实现的，看到函数里的第一行我就蒙了，zval是个啥啊，百度了一下，原来是自定义了一个结构体，这个结构体可以表示php的一切数据类型。因为是这个系列的开篇，加上我也是确实不了解，所以这里就把这个结构体好好看一下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190621000007.png" alt></p>
+<p>是不是又看不懂了，定义的变量名字倒是很直观，就是变量类型依旧不是C内置的，没关系我们耐心一点一个一个看下去，首先第一个是zvalue_value</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235048.png" alt></p>
+<p>这里使用union关键字定义了一个C语言中的联合变量，意思是里面会有很多种类型的变量，但是公用一个内存存储位置，在不同时间存储不同类型的变量。可以看到这里面基本上把C语言中应用频率很高的几个变量都囊括进来了。</p>
+<p>回到<strong>zval</strong>结构体，第二个定义的变量表示一个计数器，该计数器表示有多少个变量指向该zval。在变量生成的时候，refcount=1，简单的赋值语句例如a=b会让refcount加一，当引用为0的时候就释放存储空间。</p>
+<p>第三个变量定义了变量的具体类型，用于表示php变量的实际类型</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620235015.png" alt></p>
+<p>最后一个变量表示是否是引用变量。对于普通变量，该值为0；对于引用型变量，该值为1。它与第二个refcount变量是PHP的GC(垃圾回收)机制的重要字段。</p>
+<p><strong>剩下的一些例子就不一一列举了，对于想继续了解ZVAL的朋友可以点击本文底部的参考文章进一步阅读</strong></p>
+<p><strong>zval</strong>搞清楚了之后我们回到<strong>intval</strong>函数源代码，为了防止小伙伴频繁滑动滚轮，贴心的我再一次把源代码贴到这里</p>
+<p><img src="/Users/ama666/Desktop/myblog/source/_posts/images/intval%E5%87%BD%E6%95%B0%E6%BA%90%E4%BB%A3%E7%A0%81.png" alt="intval函数源代码"></p>
+<p>图中<strong>第六行</strong>接收传参，看一看两个case里面的代码，应该是intval函数的进制转换功能的实现，可以将餐素转换为2，8，10，16进制。<strong>第24行</strong>调用了<strong>convert_to_long_base</strong>函数处理接收到的字符串参数，跟进这个函数</p>
+<p><img src="/Users/ama666/Desktop/myblog/source/_posts/images/convert_to_long_base.png" alt="convert_to_long_base"></p>
+<p>当传入参数<strong>IS_STRING</strong>时，继续吊用<strong>Z_LVAL_P</strong>处理，而此方法在图中也有具体的代码实现，跟进<strong>strtol</strong>函数</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234846.png" alt></p>
+<p>函数功能是把参数所指向的字符串根据参数所指定的base转换为有符号长整型(long int)，base值介于2到36之间</p>
+<p>这个C语言函数的执行流程：首先扫描*nptr指定的字符串，跳过前面的空格，知道遇到数字或者正负符号才开始做转换，遇到非数字或者字符串结束符号(\0)结束转换。</p>
+<p>到这里就很清晰了，PHP函数<strong>intval</strong>的特性源自于C语言函数<strong>strtol</strong>。</p>
+<p>那么此函数还有一些问题：32 位系统最大带符号的 integer 范围是 -2147483648 到 2147483647。在这样的系统上， intval(‘1000000000000’) 会返回 2147483647。64 位系统上，最大带符号的 integer 值是 9223372036854775807。那么<strong>strtol</strong>函数是否也是这样呢？我们测试一下</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190620234913.png" alt></p>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>写完这篇文章已经整整过了一周了，并不是有多难，而是真的没时间。而且在工作，学习中用到php真的越来越少了，可能以后真的就见不到php了吧。马上要开始跟着小组做Java审计项目了，还要搭一个docker平台，甚至还想学一学逆向工程。PHP就当作一个小爱好吧，这个系列有时间会在写，应该起码是9月份了吧。最后要好好注意身体早点睡觉，真的身体最重要。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/06/21/PHP函数源代码层面分析/" title="PHP函数源代码层面分析">http://ama666.cn/2019/06/21/PHP函数源代码层面分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/php函数分析上/" rel="tag"># php函数分析上</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/15/搬家/" rel="next" title="搬家">
+                <i class="fa fa-chevron-left"></i> 搬家
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/27/漏洞复现（CVE-2017-10271）/" rel="prev" title="漏洞复现（CVE-2017-10271）">
+                漏洞复现（CVE-2017-10271） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数介绍"><span class="nav-number">2.</span> <span class="nav-text">函数介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数源代码分析"><span class="nav-number">3.</span> <span class="nav-text">函数源代码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束语"><span class="nav-number">4.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言本周做了一道师傅出的CTF题目，题目本身是考察文件包含、文件读取的。对我来说考察的还是挺深入的，所以顺便就像好好整理一下关于 LFI 的场景和利用，提升一下自己在这一方面的能力。 关于CTF题目一上来就给出了源代码  可以很明显的看到是一个文件包含漏洞，$action 变量没有进行过滤和任何限制，唯一的限制就是文件后缀名必须是 .php 这里是不是可以进行截断操作呢？我们放在后面专门说一下截断">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" 文件读取引发的思考		">
+<meta property="og:url" content="http://ama666.cn/2019/03/18/文件读取引发的思/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言本周做了一道师傅出的CTF题目，题目本身是考察文件包含、文件读取的。对我来说考察的还是挺深入的，所以顺便就像好好整理一下关于 LFI 的场景和利用，提升一下自己在这一方面的能力。 关于CTF题目一上来就给出了源代码  可以很明显的看到是一个文件包含漏洞，$action 变量没有进行过滤和任何限制，唯一的限制就是文件后缀名必须是 .php 这里是不是可以进行截断操作呢？我们放在后面专门说一下截断">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f34d0bb80e.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f34e840975.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f34f47c61a.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35056c435.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f3513ad728.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f352373d10.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f352e2b2ba.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f353767046.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35592b2ca.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35665930e.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f3576597ab.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f358425038.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f3591e6a0d.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35d735fe4.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35e494462.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f35f407d30.png">
+<meta property="og:image" content="https://i.loli.net/2019/03/18/5c8f3615b5c01.png">
+<meta property="og:updated_time" content="2019-08-27T21:07:55.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" 文件读取引发的思考		">
+<meta name="twitter:description" content="前言本周做了一道师傅出的CTF题目，题目本身是考察文件包含、文件读取的。对我来说考察的还是挺深入的，所以顺便就像好好整理一下关于 LFI 的场景和利用，提升一下自己在这一方面的能力。 关于CTF题目一上来就给出了源代码  可以很明显的看到是一个文件包含漏洞，$action 变量没有进行过滤和任何限制，唯一的限制就是文件后缀名必须是 .php 这里是不是可以进行截断操作呢？我们放在后面专门说一下截断">
+<meta name="twitter:image" content="https://i.loli.net/2019/03/18/5c8f34d0bb80e.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/03/18/文件读取引发的思/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> 文件读取引发的思考		 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/03/18/文件读取引发的思/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> 文件读取引发的思考		
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-18 14:06:27" itemprop="dateCreated datePublished" datetime="2019-03-18T14:06:27+08:00">2019-03-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:07:55" itemprop="dateModified" datetime="2019-08-28T05:07:55+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/php审计-CTF学习/" itemprop="url" rel="index"><span itemprop="name">php审计 - CTF学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本周做了一道师傅出的CTF题目，题目本身是考察文件包含、文件读取的。对我来说考察的还是挺深入的，所以顺便就像好好整理一下关于 <strong>LFI</strong> 的场景和利用，提升一下自己在这一方面的能力。</p>
+<h3 id="关于CTF"><a href="#关于CTF" class="headerlink" title="关于CTF"></a>关于CTF</h3><p>题目一上来就给出了源代码 <a href="https://i.loli.net/2019/03/18/5c8f34d0bb80e.png" title="第一关源码" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f34d0bb80e.png" alt="第一关源码" title="第一关源码"></a> 可以很明显的看到是一个文件包含漏洞，<strong>$action</strong> 变量没有进行过滤和任何限制，唯一的限制就是文件后缀名必须是 <strong>.php</strong> 这里是不是可以进行截断操作呢？我们放在后面专门说一下截断。回归到题目本身，按照既定剧情试一试几个常用的敏感文件名称发现没有东西，猛然想到了看一看 <strong>robots.txt</strong> 果不其然发现了敏感目录 <a href="https://i.loli.net/2019/03/18/5c8f34e840975.png" title="robots.txt" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f34e840975.png" alt="robots.txt" title="robots.txt"></a> admin目录下是一个提示 <strong>Congratulate hack to here, But flag in /var/www/flag.flag</strong> 明晃晃的显示了flag的位置，直接尝试用截断包含此文件，发现截断没有用，用的是php7。于是继续看一看install目录下的东西，发现是空白的网页，蒙了一会之后想到可能是把源代码隐藏了。在知道了文件的相对路径情况下可以使用php伪协议为文件进行包含，paylaod为 <strong>php://filter/read=convert.base64-encode/resource=install/index</strong> 拿到了base64加密之后的源代码 <a href="https://i.loli.net/2019/03/18/5c8f34f47c61a.png" title="第二关源代码" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f34f47c61a.png" alt="第二关源代码" title="第二关源代码"></a> 看到代码中可以传入四个未经过率的变量还以为可以把命令写入到config.php中再进行包含执行命令，但是看到 <strong>第23行</strong> 有 <strong>var_export</strong> 函数梦想破灭了，没有办法进行闭合，思路到这里有点堵塞。后来经过师傅提醒看一看最近的phpmyadmin爆出的文件读取漏洞，最终用一台恶意的服务器向目标服务器发送了一个greeting数据包，收到回复之后利用服务器端 <strong>LOAD DATA LOCAL INFILE</strong> 命令的配置错误，读取到了flag。下面主要讲一下关于MySQL文件读取漏洞的原理。</p>
+<h2 id="MySQL文件读取"><a href="#MySQL文件读取" class="headerlink" title="MySQL文件读取"></a>MySQL文件读取</h2><p>在MySQL服务器中支持一个SQL语句 <strong>LOAD DATA LOCAL INFILE</strong> 可以将文件的内容读入数据库表中。比如：<strong>load data local infile /root/public/desktop/uname into table uname;</strong> 是将uname这个文件读入uname表中。本来是一个正常的命令，但是根据MySQL官方文档中记录的 <a href="https://i.loli.net/2019/03/18/5c8f35056c435.png" title="命令问题" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35056c435.png" alt="命令问题" title="命令问题"></a> 大概意思是<br><strong>①</strong> 文件从客户端传送到服务器的这一行为是由MySQL服务器发起的，理论上服务器可以请求一个文件，而这 个文件并不是客户端LOAD DATA 中指定的文件，这个文件只要客户端可以访问就可以进行传输。<br><strong>②</strong> 在客户机从Web服务器连接的Web环境中，用户可以使用LOAD DATA LOCAL读取Web服务器进程具有读取访问权限的任何文件(假设用户可以对SQL服务器运行任何语句)。在这个环境中，与MySQL服务器相关的客户机实际上是Web服务器，而不是由连接到Web服务器的用户运行的远程程序。 针对第一个问题可以进行一下思考，假设我们发现了一台服务器的端口在公网中开放或者说我们可以连接到一台装有MySQL的内网服务器，那么实际上我们可以使用这台服务器作为跳板查看服务器在内网环境中可以访问的所有文件（当然要知道文件存放目录）。或者是窃取这个服务器内部存储的本地文件，获得有效的渗透信息。</p>
+<h2 id="过程还原"><a href="#过程还原" class="headerlink" title="过程还原"></a>过程还原</h2><p><a href="https://i.loli.net/2019/03/18/5c8f3513ad728.png" title="正常请求" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f3513ad728.png" alt="正常请求" title="正常请求"></a> 在一个正常的 <strong>load data infile</strong> 请求中，客户端首先会告诉服务器我会将 <strong>A</strong> 文件写入你的某一个表中，之后服务器回复接受客户端的 <strong>A</strong> 文件，最后客户端将 <strong>A</strong> 文件发给服务器。 <a href="https://i.loli.net/2019/03/18/5c8f352373d10.png" title="恶意请求" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f352373d10.png" alt="恶意请求" title="恶意请求"></a> 当客户端连接到了一个恶意服务器的时候，客户端依旧执行相同的命令，此时服务器回复的消息是同意接受客户端的 <strong>B</strong> 文件，与客户端请求的 <strong>A</strong> 文件不同，客户端会根据服务器回复的消息发送 <strong>B</strong> 文件给服务器而不是一开始计划发送的 <strong>A</strong> 文件。 我使用kali系统在本地搭建一个安装 <strong>MySQL数据库</strong> 并使用 <strong>wirehsark</strong> 抓包分析这一过程。 <a href="https://i.loli.net/2019/03/18/5c8f352e2b2ba.png" title="normal_process" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f352e2b2ba.png" alt="normal_process" title="normal_process"></a> 首先客户端发送给服务器请求在test.test表中写入文件。 <a href="https://i.loli.net/2019/03/18/5c8f353767046.png" title="normal_process_2" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f353767046.png" alt="normal_process_2" title="normal_process_2"></a> 服务器回复一个 <strong>Response TABULAR</strong> 数据包，接受 <strong>/etc/passwd</strong> 文件。 <a href="https://i.loli.net/2019/03/18/5c8f35592b2ca.png" title="normal_process_3" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35592b2ca.png" alt="normal_process_3" title="normal_process_3"></a> 最后客户端将 <strong>/etc/passwd</strong> 文件内容发送给服务器。 是不是只有在客户端发起一个 load data infile 的情况下才能实现文件读取呢？构建一个恶意MySQL服务器抓包分析 <a href="https://i.loli.net/2019/03/18/5c8f35665930e.png" title="rogue" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35665930e.png" alt="rogue" title="rogue"></a> 首先客户端向服务器发一个greeting包 版本信息，之后发送登录请求，接着一些简单的查询如包内数据所示。 <a href="https://i.loli.net/2019/03/18/5c8f3576597ab.png" title="rogue_2" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f3576597ab.png" alt="rogue_2" title="rogue_2"></a> 紧接着服务器在没有收到客户端请求时，<strong>直接回复了一个 Response TABULAR 包</strong> 。 <a href="https://i.loli.net/2019/03/18/5c8f358425038.png" title="rogue_3" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f358425038.png" alt="rogue_3" title="rogue_3"></a> 客户端义无反顾地根据服务器的回复发送了指定文件。经过验证，恶意服务器在未收到 <strong>load data infile</strong> 请求时，只需要构造一个 <strong>TABULAR</strong> 数据包发送给客户端，客户端就会将服务器指定文件发送过去。</p>
+<h2 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h2><p>在上面提到的漏洞利用中，是否有一种熟悉的感觉，“让客户端传递自己不想传递的文件”，没错这跟SSRF很相似。SSRF（服务端请求伪造）的实质就是让服务端请求计划外的网址。如果web应用对于用户提交的网址没有进行限制或者对于返回内容没有进行过滤，则可能会导致SSRF。 举一个例子，Tpshop是一款基于ThinkPHP开发的CMS。在 <strong>Tpshop&lt;= 2.0.8</strong> 版本中存在SSRF是由于对用户输入参数过滤不当导致的。 <a href="https://i.loli.net/2019/03/18/5c8f3591e6a0d.png" title="ssrf" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f3591e6a0d.png" alt="ssrf" title="ssrf"></a> 代码 <strong>第7、8、9行</strong> 定义了三个由用户输入的变量。$fileUrl是请求资源连接，$path是请求资源保存路径，$path变量要求其中不能含有php。代码从 <strong>第13行</strong> 开始首先初始化一个cURL句柄并设置以字符串形式返回，最后将执行结果输入到 <strong>$file</strong> 变量之中，断开连接，最终没有将 <strong>$file</strong> 变量做任何过滤便写入文件中。可以将一个后门文件写入安装了此版本CMS的服务器，也可以让服务器请求URL行程SSRF漏洞，通过写入的文件查看结果，扫描端口。写入后门可以直接写入一句话木马，由于写入文件存放路径只要不包含php即可，可以写入以.asp结尾的文件，使用菜刀进行连接，由于这里不是本文讲述的重点，故不多做赘述。下面实践一下如何使用该漏洞进行端口扫描。 <a href="https://i.loli.net/2019/03/18/5c8f35d735fe4.png" title="ssrf复现" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35d735fe4.png" alt="ssrf复现" title="ssrf复现"></a> 看到上图中通过让服务器请求 <strong><a href="http://www.ama666.cn" target="_blank" rel="noopener">www.ama666.cn</a></strong> 的 <strong>80</strong> 端口，返回的文件中该页面被以字符串形式返回，表示端口开放。 <a href="https://i.loli.net/2019/03/18/5c8f35e494462.png" title="ssrf_2" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35e494462.png" alt="ssrf_2" title="ssrf_2"></a> 再次让服务器请求同一网址的 <strong>21</strong> 端口返回结果为空，表示端口未开放。或者一般在cURL的请求代码中会有一句判断语句，<strong>if ($ch == False) {echo “CURL Error:”.curl_error($ch); }</strong> 也可以在存在该漏洞的网页上直接看到。也可以根据响应时间，当请求网页或者端口开放的时候，返回包的响应时间一般要长于请求未开放端口。</p>
+<h2 id="关于截断"><a href="#关于截断" class="headerlink" title="关于截断"></a>关于截断</h2><p>下面这一段代码有很明显的本地文件包含漏洞 <strong>LFI</strong> <a href="https://i.loli.net/2019/03/18/5c8f35f407d30.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f35f407d30.png" alt></a> 没有对用户输入的变量 <strong>$file</strong> 进行任何过滤和限制，理论上用户可以查看任何文件。唯一的限制就是在 <strong>第四行</strong> 只能查看文件php文件。但我们都知道，PHP内核是C语言实现的，包含的文件路径是以字符串形式向内核进行传递。C语言在处理字符串的时候遇到0字节（\x00）便会认为字符串已经结束，因此只需要在web端输入%00在进行URL编码之后转换为0字节就可以将后面的 <strong>.php</strong> 截断，读取任何文件。因此在编写程序的时候要对用户输入进行过滤，例如下面这一段代码 <a href="https://i.loli.net/2019/03/18/5c8f3615b5c01.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2019/03/18/5c8f3615b5c01.png" alt></a> 看到代码的第4行对用户输入的代表路径的字符串将0字节过滤防止截断。但仅仅是这样就可以防止截断了吗？我们知道操作系统对于文件目录是有长度限制的，Windows下是256个字节，Linux下是4096个字节。操作系统会自动忽略最大长度之后的字符串。也就是说如果用户输入一个超长字符串将php脚本自动添加在路径中的 <strong>.php</strong> “挤出”最大长度，就实现了不使用0字节的截断。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/198.html" title=" 文件读取引发的思考		">198.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/25/phpwind 9.0.2 任意执行SQL语句(可getshell)/" rel="next" title=" phpwind 9.0.2 任意执行SQL语句(可getshell)		">
+                <i class="fa fa-chevron-left"></i>  phpwind 9.0.2 任意执行SQL语句(可getshell)		
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/24/TheCarProject  CMS  SQl注入/" rel="prev" title=" TheCarProject  CMS  SQl注入		">
+                 TheCarProject  CMS  SQl注入		 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于CTF"><span class="nav-number">2.</span> <span class="nav-text">关于CTF</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL文件读取"><span class="nav-number"></span> <span class="nav-text">MySQL文件读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程还原"><span class="nav-number"></span> <span class="nav-text">过程还原</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSRF"><span class="nav-number"></span> <span class="nav-text">SSRF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于截断"><span class="nav-number"></span> <span class="nav-text">关于截断</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
