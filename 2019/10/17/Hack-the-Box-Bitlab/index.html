@@ -15,7 +15,7 @@
 
 
 <html class="theme-next gemini use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -544,7 +544,7 @@
 <p>查询git pull命令实际上是先执行<code>git fetch</code>之后执行<code>git merge</code>。</p>
 <p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191022153920.png" alt></p>
 <p>git中有个功能叫<strong>hooks</strong>，是指在执行特定的git命令的时候会自动执行的脚本。hook脚本在<code>.ssh/hooks</code>目录下存储，需要使用的话讲命名后缀<code>.sample</code>删除即可。捋一下思路，如果使用管理员权限执行git pull，那么也就回同时用管理员权限执行相对应的hooks，而hooks是可控的，我们可以编写脚本执行一切管理员操作，当然也可以将目标文件<strong>root.txt</strong>打印出来。编写一个hooks脚本</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"></span><br><span class="line">echo /root/root.txt &gt; /tmp/root.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/sh</span><br><span class="line"></span><br><span class="line">echo /root/root.txt &gt; /tmp/root.txt</span><br></pre></td></tr></table></figure>
 
 <p>不同的hooks有不同的命名，会跟随不同的git命令自动执行，<strong>post-merge</strong> 是一个会跟随merge命令自动执行的hook，前面也提到了，git pull就是fetch和merge操作的结合，所以post-merge也会在git pull之后自动执行，将此脚本命名为post-merge，执行<code>sudo git pull</code></p>
 <p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191022154224.png" alt></p>
@@ -690,7 +690,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-count">64</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -861,7 +861,7 @@
 </div>
 
 
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
 
 
 

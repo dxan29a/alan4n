@@ -15,7 +15,7 @@
 
 
 <html class="theme-next gemini use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -536,7 +536,7 @@
 <p>注意我们这次如何观察原始主机的详细信息，例如主机名和IP地址。这是我们不想要的，我们需要将这些信息移除。</p>
 <h3 id="在Postfix中移除头部敏感信息"><a href="#在Postfix中移除头部敏感信息" class="headerlink" title="在Postfix中移除头部敏感信息"></a>在Postfix中移除头部敏感信息</h3><p>我们需要在中继服务器上改变一些配置，这是为了在发出的邮件中移除信息头。</p>
 <p>首先我们在服务器上穿件一个文件包含用于搜索我们想要删除的头部信息的正则表达式。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/etc/postfix/header_checks</span></span><br><span class="line">/^Received:.*/          IGNORE</span><br><span class="line">/^X-Originating-IP:/    IGNORE</span><br><span class="line">/^X-Mailer:/            IGNORE</span><br><span class="line">/^Mime-Version:/        IGNORE</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>/etc/postfix/header_checks</span><br><span class="line">/^Received:.*/          IGNORE</span><br><span class="line">/^X-Originating-IP:/    IGNORE</span><br><span class="line">/^X-Mailer:/            IGNORE</span><br><span class="line">/^Mime-Version:/        IGNORE</span><br></pre></td></tr></table></figure>
 
 <p>接下来我们需要修改<code>/etc/postfix/master.cf</code> 让它包含<code>-o header_checks=regexp:/etc/postfix/header_checks</code></p>
 <p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LFEMnER3fywgFHoroYn%2F-LNtTTiNhwqDa0cMmWfB%2F-LNtUXkB3G5ZOBDWnKKP%2Fsmtp-relay-header-checks.png?alt=media&token=63666539-28b0-4c91-95b8-1260ca4ca486" alt></p>
@@ -689,7 +689,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-count">64</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -860,7 +860,7 @@
 </div>
 
 
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
 
 
 

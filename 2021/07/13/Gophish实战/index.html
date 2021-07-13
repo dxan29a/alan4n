@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Gophish实战[TOC] Gophish是一个最近开源的钓鱼邮件测试平台。它本身不具备发送邮件的功能，而是一个集成了邮件模板定制、钓鱼页面、统计结果的管理平台。  ！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！ Gophish的安装Gophish的安装非常简单。首先用一台Linux系统的服务器（其他的系统也可以），笔者用的是CentOS8，参照gophish的指导进行安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gophish实战">
+<meta property="og:url" content="http://ama666.cn/2021/07/13/Gophish实战/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="Gophish实战[TOC] Gophish是一个最近开源的钓鱼邮件测试平台。它本身不具备发送邮件的功能，而是一个集成了邮件模板定制、钓鱼页面、统计结果的管理平台。  ！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！ Gophish的安装Gophish的安装非常简单。首先用一台Linux系统的服务器（其他的系统也可以），笔者用的是CentOS8，参照gophish的指导进行安">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713091941.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713101028.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104252.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104611.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105430.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105923.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713091941.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713101028.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104252.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104611.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105430.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105923.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713111347.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112003.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112122.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112729.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713113037.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713113543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713114149.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713114149.png">
+<meta property="og:updated_time" content="2021-07-13T06:08:11.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gophish实战">
+<meta name="twitter:description" content="Gophish实战[TOC] Gophish是一个最近开源的钓鱼邮件测试平台。它本身不具备发送邮件的功能，而是一个集成了邮件模板定制、钓鱼页面、统计结果的管理平台。  ！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！ Gophish的安装Gophish的安装非常简单。首先用一台Linux系统的服务器（其他的系统也可以），笔者用的是CentOS8，参照gophish的指导进行安">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713091941.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2021/07/13/Gophish实战/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Gophish实战 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2021/07/13/Gophish实战/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Gophish实战
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-07-13 13:59:22 / 修改时间：14:08:11" itemprop="dateCreated datePublished" datetime="2021-07-13T13:59:22+08:00">2021-07-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Gophish实战"><a href="#Gophish实战" class="headerlink" title="Gophish实战"></a>Gophish实战</h1><p>[TOC]</p>
+<p>Gophish是一个最近开源的钓鱼邮件测试平台。它本身不具备发送邮件的功能，而是一个集成了邮件模板定制、钓鱼页面、统计结果的管理平台。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713091941.png" alt></p>
+<p><strong>！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！</strong></p>
+<h2 id="Gophish的安装"><a href="#Gophish的安装" class="headerlink" title="Gophish的安装"></a>Gophish的安装</h2><p>Gophish的安装非常简单。首先用一台Linux系统的服务器（其他的系统也可以），笔者用的是CentOS8，参照gophish的指导进行安装。执行命令将zip压缩包下载到本地，压缩文件链接可以在<a href="https://github.com/gophish/gophish/releases/" target="_blank" rel="noopener">这里</a>找到。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/gophish/gophish/releases/download/v0.11.0/gophish-v0.11.0-linux-64bit.zip</span><br></pre></td></tr></table></figure>
+
+<p>下载完成之后解压，进入对应目录下编辑config.json文件，更改对应的ip地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        &quot;admin_server&quot;: &#123;</span><br><span class="line">                &quot;listen_url&quot;: &quot;127.0.0.1:3333&quot;,	#管理平台入口，改成本机ip或者不改使用ssh链接</span><br><span class="line">                &quot;use_tls&quot;: true,</span><br><span class="line">                &quot;cert_path&quot;: &quot;gophish_admin.crt&quot;,</span><br><span class="line">                &quot;key_path&quot;: &quot;gophish_admin.key&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;phish_server&quot;: &#123;</span><br><span class="line">                &quot;listen_url&quot;: &quot;0.0.0.0:80&quot;,		#钓鱼网页入口</span><br><span class="line">                &quot;use_tls&quot;: false,</span><br><span class="line">                &quot;cert_path&quot;: &quot;example.crt&quot;,</span><br><span class="line">                &quot;key_path&quot;: &quot;example.key&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;db_name&quot;: &quot;sqlite3&quot;,</span><br><span class="line">        &quot;db_path&quot;: &quot;gophish.db&quot;,</span><br><span class="line">        &quot;migrations_prefix&quot;: &quot;db/db_&quot;,</span><br><span class="line">        &quot;contact_address&quot;: &quot;&quot;,</span><br><span class="line">        &quot;logging&quot;: &#123;</span><br><span class="line">                &quot;filename&quot;: &quot;&quot;,</span><br><span class="line">                &quot;level&quot;: &quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动gophish</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod +x gophish</span><br><span class="line">./gophish</span><br></pre></td></tr></table></figure>
+
+<p>如果使用ssh链接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@ip -L3333:localhost:3333 -N -f</span><br></pre></td></tr></table></figure>
+
+<p>从服务器端看到如下输出</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713101028.png" alt></p>
+<p>第一次启动gophish会在这里显示初始密码，默认用户名为admin，第一次登陆管理平台需要设置密码，设置完成后进入到主页面。</p>
+<h2 id="配置SMTP中继器"><a href="#配置SMTP中继器" class="headerlink" title="配置SMTP中继器"></a>配置SMTP中继器</h2><p>进行钓鱼测试的管理平台搭建好了，接下来需要搭建一个邮件服务器。这里有两个选择，第一个是使用163一类的邮件服务器，另一类就是自己另起一台邮件服务器。前者的好处在于方便快捷，只需要获取一个SMTP认证的key就可以开始钓鱼测试，缺点就是不灵活不逼真。后者虽然搭建工作比较繁琐，但是可以解析到一个高仿域名上进行逼真的钓鱼欺骗。</p>
+<p>选择了后者之后还分为两种情况。第一种是将gophish与邮件服务器搭建在同一台主机上，另一种选择是分开搭建。笔者选用的后者，将gophish搭建在内网，邮件服务器在外网。这样在测试的时候万一被大佬反过来搞了，已经收集到的存储在gophish上的数据也不会丢。</p>
+<p>笔者使用的postfix作为发信工具。先安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install postfix -y</span><br></pre></td></tr></table></figure>
+
+<p>安装完毕之后默认的配置文件在<code>/etc/postfix/main.cf</code>，配置邮件服务器主要就是要对这个配置文件进行修改，但现在还不及，还需要一个域名。</p>
+<p>笔者是在<code>Godaddy</code>上买了一个便宜的域名，xyz作为结尾第一年只要7块钱，如果是为了实验可以买一个玩玩。</p>
+<p>需要一个指向主机ip的<code>A</code>记录，一个指向<code>mail.domianName.xyz</code>的<code>MX</code>邮件记录，一个<code>CNAME</code>记录。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104252.png" alt></p>
+<p>配置完成后可以在邮件服务器上使用telnet命令看一看</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104611.png" alt></p>
+<p>接下来就可以开始更改配置文件了，postfix的配置文件很长，笔者也是参考了很多的博客+实验才拼出来一个符合我自己需求的配置方法。大家可以参考我的配置，如果出现了问题去网上搜搜别人的配置，仔细看看配置文件的描述就行。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#配置文件第77行，添加DNS解析的域名</span><br><span class="line">myhostname = mail.*****ship.xyz</span><br><span class="line"></span><br><span class="line">#配置文件第85行，添加DNS的解析域名</span><br><span class="line">mydomain = *****ship.xyz</span><br><span class="line"></span><br><span class="line">#配置文件第101行</span><br><span class="line">myorigin = $mydomain</span><br><span class="line"></span><br><span class="line">#配置文件第115行</span><br><span class="line">inet_interfaces = all</span><br><span class="line"></span><br><span class="line">#配置文件第121行</span><br><span class="line">inet_protocols = all</span><br><span class="line"></span><br><span class="line">#注释掉配置文件的第166行，取消第167行的注释</span><br><span class="line">#mydestination = $myhostname, localhost.$mydomain, localhost</span><br><span class="line">mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain</span><br><span class="line"></span><br><span class="line">#在配置文件的第267行，将gophish服务器的ip，邮件服务器的ip加上</span><br><span class="line">mynetworks = 104.*.*.131, 122.*.*.18, 10.*.*.153</span><br><span class="line"></span><br><span class="line">#在配置文件的第299行，将邮件服务器的ip，对应的DNS解析域名加上</span><br><span class="line">relay_domains = $mydestination, 104.*.*.131, 122.14.62.18, *****sihp.xyz</span><br></pre></td></tr></table></figure>
+
+<p>到此，邮件服务器基本配置完毕，测试一下是否能成功发送邮件。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105430.png" alt></p>
+<p>登录我的gmail，看到邮件已经发过来了，红框里应该显示DNS解析的高仿域名。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105923.png" alt></p>
+<p>现在邮件服务器已经可以正常转发邮件了，但是任何知道这台服务器的人都可以用它来进行邮件转发。为了不让我们的劳动成果被别人窃取，还需要对postfix服务添加认证服务。</p>
+<p>这里我是直接搬砖的，所以直接把原文链接放在这里<a href="https://blog.51cto.com/shani/363788。" target="_blank" rel="noopener">https://blog.51cto.com/shani/363788。</a></p>
+<p>跟着文章到最后进行发信测试后，SMTP中继器就算配置完毕了。</p>
+<h1 id="Gophish实战-1"><a href="#Gophish实战-1" class="headerlink" title="Gophish实战"></a>Gophish实战</h1><p>[TOC]</p>
+<p>Gophish是一个最近开源的钓鱼邮件测试平台。它本身不具备发送邮件的功能，而是一个集成了邮件模板定制、钓鱼页面、统计结果的管理平台。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713091941.png" alt></p>
+<p><strong>！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！</strong></p>
+<h2 id="Gophish的安装-1"><a href="#Gophish的安装-1" class="headerlink" title="Gophish的安装"></a>Gophish的安装</h2><p>Gophish的安装非常简单。首先用一台Linux系统的服务器（其他的系统也可以），笔者用的是CentOS8，参照gophish的指导进行安装。执行命令将zip压缩包下载到本地，压缩文件链接可以在<a href="https://github.com/gophish/gophish/releases/" target="_blank" rel="noopener">这里</a>找到。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/gophish/gophish/releases/download/v0.11.0/gophish-v0.11.0-linux-64bit.zip</span><br></pre></td></tr></table></figure>
+
+<p>下载完成之后解压，进入对应目录下编辑config.json文件，更改对应的ip地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        &quot;admin_server&quot;: &#123;</span><br><span class="line">                &quot;listen_url&quot;: &quot;127.0.0.1:3333&quot;,	#管理平台入口，改成本机ip或者不改使用ssh链接</span><br><span class="line">                &quot;use_tls&quot;: true,</span><br><span class="line">                &quot;cert_path&quot;: &quot;gophish_admin.crt&quot;,</span><br><span class="line">                &quot;key_path&quot;: &quot;gophish_admin.key&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;phish_server&quot;: &#123;</span><br><span class="line">                &quot;listen_url&quot;: &quot;0.0.0.0:80&quot;,		#钓鱼网页入口</span><br><span class="line">                &quot;use_tls&quot;: false,</span><br><span class="line">                &quot;cert_path&quot;: &quot;example.crt&quot;,</span><br><span class="line">                &quot;key_path&quot;: &quot;example.key&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;db_name&quot;: &quot;sqlite3&quot;,</span><br><span class="line">        &quot;db_path&quot;: &quot;gophish.db&quot;,</span><br><span class="line">        &quot;migrations_prefix&quot;: &quot;db/db_&quot;,</span><br><span class="line">        &quot;contact_address&quot;: &quot;&quot;,</span><br><span class="line">        &quot;logging&quot;: &#123;</span><br><span class="line">                &quot;filename&quot;: &quot;&quot;,</span><br><span class="line">                &quot;level&quot;: &quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动gophish</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod +x gophish</span><br><span class="line">./gophish</span><br></pre></td></tr></table></figure>
+
+<p>如果使用ssh链接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@ip -L3333:localhost:3333 -N -f</span><br></pre></td></tr></table></figure>
+
+<p>从服务器端看到如下输出</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713101028.png" alt></p>
+<p>第一次启动gophish会在这里显示初始密码，默认用户名为admin，第一次登陆管理平台需要设置密码，设置完成后进入到主页面。</p>
+<h2 id="配置SMTP中继器-1"><a href="#配置SMTP中继器-1" class="headerlink" title="配置SMTP中继器"></a>配置SMTP中继器</h2><p>进行钓鱼测试的管理平台搭建好了，接下来需要搭建一个邮件服务器。这里有两个选择，第一个是使用163一类的邮件服务器，另一类就是自己另起一台邮件服务器。前者的好处在于方便快捷，只需要获取一个SMTP认证的key就可以开始钓鱼测试，缺点就是不灵活不逼真。后者虽然搭建工作比较繁琐，但是可以解析到一个高仿域名上进行逼真的钓鱼欺骗。</p>
+<p>选择了后者之后还分为两种情况。第一种是将gophish与邮件服务器搭建在同一台主机上，另一种选择是分开搭建。笔者选用的后者，将gophish搭建在内网，邮件服务器在外网。这样在测试的时候万一被大佬反过来搞了，已经收集到的存储在gophish上的数据也不会丢。</p>
+<p>笔者使用的postfix作为发信工具。先安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install postfix -y</span><br></pre></td></tr></table></figure>
+
+<p>安装完毕之后默认的配置文件在<code>/etc/postfix/main.cf</code>，配置邮件服务器主要就是要对这个配置文件进行修改，但现在还不及，还需要一个域名。</p>
+<p>笔者是在<code>Godaddy</code>上买了一个便宜的域名，xyz作为结尾第一年只要7块钱，如果是为了实验可以买一个玩玩。</p>
+<p>需要一个指向主机ip的<code>A</code>记录，一个指向<code>mail.domianName.xyz</code>的<code>MX</code>邮件记录，一个<code>CNAME</code>记录。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104252.png" alt></p>
+<p>配置完成后可以在邮件服务器上使用telnet命令看一看</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713104611.png" alt></p>
+<p>接下来就可以开始更改配置文件了，postfix的配置文件很长，笔者也是参考了很多的博客+实验才拼出来一个符合我自己需求的配置方法。大家可以参考我的配置，如果出现了问题去网上搜搜别人的配置，仔细看看配置文件的描述就行。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#配置文件第77行，添加DNS解析的域名</span><br><span class="line">myhostname = mail.*****ship.xyz</span><br><span class="line"></span><br><span class="line">#配置文件第85行，添加DNS的解析域名</span><br><span class="line">mydomain = *****ship.xyz</span><br><span class="line"></span><br><span class="line">#配置文件第101行</span><br><span class="line">myorigin = $mydomain</span><br><span class="line"></span><br><span class="line">#配置文件第115行</span><br><span class="line">inet_interfaces = all</span><br><span class="line"></span><br><span class="line">#配置文件第121行</span><br><span class="line">inet_protocols = all</span><br><span class="line"></span><br><span class="line">#注释掉配置文件的第166行，取消第167行的注释</span><br><span class="line">#mydestination = $myhostname, localhost.$mydomain, localhost</span><br><span class="line">mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain</span><br><span class="line"></span><br><span class="line">#在配置文件的第267行，将gophish服务器的ip，邮件服务器的ip加上</span><br><span class="line">mynetworks = 104.*.*.131, 122.*.*.18, 10.*.*.153</span><br><span class="line"></span><br><span class="line">#在配置文件的第299行，将邮件服务器的ip，对应的DNS解析域名加上</span><br><span class="line">relay_domains = $mydestination, 104.*.*.131, 122.14.62.18, *****sihp.xyz</span><br></pre></td></tr></table></figure>
+
+<p>到此，邮件服务器基本配置完毕，测试一下是否能成功发送邮件。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105430.png" alt></p>
+<p>登录我的gmail，看到邮件已经发过来了，红框里应该显示DNS解析的高仿域名。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713105923.png" alt></p>
+<p>现在邮件服务器已经可以正常转发邮件了，但是任何知道这台服务器的人都可以用它来进行邮件转发。为了不让我们的劳动成果被别人窃取，还需要对postfix服务添加认证服务。</p>
+<p>这里我是直接搬砖的，所以直接把原文链接放在这里<a href="https://blog.51cto.com/shani/363788。" target="_blank" rel="noopener">https://blog.51cto.com/shani/363788。</a></p>
+<p>跟着文章到最后进行发信测试后，SMTP中继器就算配置完毕了。</p>
+<h2 id="Gophish启动钓鱼测试"><a href="#Gophish启动钓鱼测试" class="headerlink" title="Gophish启动钓鱼测试"></a>Gophish启动钓鱼测试</h2><p>首先点击<code>Sending Profiles</code>，在这里配置与SMTP中继器的联动。<code>From</code>中填写想要冒充的发信人，可以是hr部门，企业高管等等。<code>Host</code>中填写邮件服务器的域名，下面用户名密码填写<code>postfix</code>认证的用户名密码，而不是SMTP中继服务器的用户名密码。在最下面有一个<code>Send Test Email</code>，可以点击测试一下是否成功设置。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713111347.png" alt></p>
+<p>接下来在<code>Email Templates</code>中撰写邮件模板。笔者建议将想要伪造的邮件从邮件客户端中保存到本地，用浏览器打开复制HTML源代码，粘贴到gophosh邮件模板生成器中。Gophish自带的<code>Import Email</code>笔者个人觉得不是很好用。接下来在名字（如果有）的地方加上Gophish自己的占位符</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112003.png" alt></p>
+<p>还有更多的占位符，可以去查看Gophish的手册获得。</p>
+<p>最重要的是插入钓鱼链接，为了逼真可以将钓鱼链接藏在按钮后面，一定注意链接要用URL占位符表示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;.URL&#125;&#125;	#URL占位符</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112122.png" alt></p>
+<p>最后可以点击<code>Add Tracker</code>加上一个图片标签，也可以为了真实性不勾选。这里的Tracker起到的作用是检测收件人是否打开了邮件，如果打开了就会请求Tracker图片，服务器就能收到一条特定的请求，从而判断邮件是否被打开（注意不是链接是否被点击）。</p>
+<p>在<code>Users&amp;Groups</code>中添加测试目标，当进行大型测试的时候最好直接导入，小范围测试一个一个添加也可以。这里添加的姓名，职位都会被占位符读取。</p>
+<p>点击<code>Landing Pages</code>，使用<code>Import Site</code>功能输入想要模仿的网页网址，导入做成钓鱼页面。<strong>千万不要忘记勾选下面的两个选项！</strong></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713112729.png" alt></p>
+<p>最后点击<code>Campaings</code>，选择本次测试的名称，使用的钓鱼邮件模板，模仿的钓鱼网页，监听URL就写Gophish服务器的地址，最后选择发信方式和目标，点击启动即可。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713113037.png" alt></p>
+<p>Gophish的测试效果展示非常好看，可以看到每一个被测人员的整体时间线，提交的数据，使用的操作系统以及浏览器。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713113543.png" alt></p>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><p>当使用自己的域名发送邮件的时候，因为缺失了SPF记录，有时候会被收信服务器拒绝。添加SPF记录的方式也很简单，在DNS解析的时候配置TXT记录即可。</p>
+<blockquote>
+<p>邮件伪造之SPF绕过的5种思路（可以伪造qq）<br><a href="https://zhuanlan.zhihu.com/p/147372091" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/147372091</a><br>关于邮件伪造的一些新思路（详细讲解伪造）<br><a href="https://www.jianshu.com/p/671bce334ea7?from=groupmessage" target="_blank" rel="noopener">https://www.jianshu.com/p/671bce334ea7?from=groupmessage</a></p>
+</blockquote>
+<p>另外有些收信服务器对邮件头进行检查，Gophish可以提供一定程度的邮件头自定义，在设置邮件发送（Sending Profiles）的时候可以添加自定义的邮件头，但是这个功能并不好用，修改的话则需要重新编译Gophish。使用Swaks的话可以伪造，但又涉及到联动等一系列问题。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713114149.png" alt></p>
+<p>本文并没有针对如何避免钓鱼邮件被探测到等技术进行阐述，只是介绍了基础设置的搭建方法，最后重复强调一下。<strong>！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！</strong></p>
+<h2 id="改进-1"><a href="#改进-1" class="headerlink" title="改进"></a>改进</h2><p>当使用自己的域名发送邮件的时候，因为缺失了SPF记录，有时候会被收信服务器拒绝。添加SPF记录的方式也很简单，在DNS解析的时候配置TXT记录即可。</p>
+<blockquote>
+<p>邮件伪造之SPF绕过的5种思路（可以伪造qq）<br><a href="https://zhuanlan.zhihu.com/p/147372091" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/147372091</a><br>关于邮件伪造的一些新思路（详细讲解伪造）<br><a href="https://www.jianshu.com/p/671bce334ea7?from=groupmessage" target="_blank" rel="noopener">https://www.jianshu.com/p/671bce334ea7?from=groupmessage</a></p>
+</blockquote>
+<p>另外有些收信服务器对邮件头进行检查，Gophish可以提供一定程度的邮件头自定义，在设置邮件发送（Sending Profiles）的时候可以添加自定义的邮件头，但是这个功能并不好用，修改的话则需要重新编译Gophish。使用Swaks的话可以伪造，但又涉及到联动等一系列问题。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210713114149.png" alt></p>
+<p>本文并没有针对如何避免钓鱼邮件被探测到等技术进行阐述，只是介绍了基础设置的搭建方法，最后重复强调一下。<strong>！！！注意，请不要将文中所述的技术用于攻击，或者未得到授权的测试！！！</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2021/07/13/Gophish实战/" title="Gophish实战">http://ama666.cn/2021/07/13/Gophish实战/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/19/CVE-2021-3129详解/" rel="next" title="CVE-2021-3129详解">
+                <i class="fa fa-chevron-left"></i> CVE-2021-3129详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">64</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Gophish实战"><span class="nav-number">1.</span> <span class="nav-text">Gophish实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gophish的安装"><span class="nav-number">1.1.</span> <span class="nav-text">Gophish的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置SMTP中继器"><span class="nav-number">1.2.</span> <span class="nav-text">配置SMTP中继器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Gophish实战-1"><span class="nav-number">2.</span> <span class="nav-text">Gophish实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gophish的安装-1"><span class="nav-number">2.1.</span> <span class="nav-text">Gophish的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置SMTP中继器-1"><span class="nav-number">2.2.</span> <span class="nav-text">配置SMTP中继器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gophish启动钓鱼测试"><span class="nav-number">2.3.</span> <span class="nav-text">Gophish启动钓鱼测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进"><span class="nav-number">2.4.</span> <span class="nav-text">改进</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进-1"><span class="nav-number">2.5.</span> <span class="nav-text">改进</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
