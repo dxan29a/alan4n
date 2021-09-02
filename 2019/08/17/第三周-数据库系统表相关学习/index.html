@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言刚搬进新公寓，被时差害惨了，熬夜写这个。。。 MySQL读写文件我记得半年前有一个CTF题就是利用的MySQL read_local_file可以读取本地文件的特性配合其他的触发任意文件读取漏洞。当时就知道了MySQL这个特性，也是写了一篇博客，有兴趣的小伙伴可以去看看，这次对此特性进行一个复习。 load_file使用MySQL的自带sql语句读取本地文件。首先在/tmp目录下新建一个文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三周-数据库系统表相关学习">
+<meta property="og:url" content="http://ama666.cn/2019/08/17/第三周-数据库系统表相关学习/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言刚搬进新公寓，被时差害惨了，熬夜写这个。。。 MySQL读写文件我记得半年前有一个CTF题就是利用的MySQL read_local_file可以读取本地文件的特性配合其他的触发任意文件读取漏洞。当时就知道了MySQL这个特性，也是写了一篇博客，有兴趣的小伙伴可以去看看，这次对此特性进行一个复习。 load_file使用MySQL的自带sql语句读取本地文件。首先在/tmp目录下新建一个文件">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818090346.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818091131.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234159.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234457.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234931.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819235752.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190820004058.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818091509.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818092840.png">
+<meta property="og:updated_time" content="2019-08-27T21:01:27.168Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第三周-数据库系统表相关学习">
+<meta name="twitter:description" content="前言刚搬进新公寓，被时差害惨了，熬夜写这个。。。 MySQL读写文件我记得半年前有一个CTF题就是利用的MySQL read_local_file可以读取本地文件的特性配合其他的触发任意文件读取漏洞。当时就知道了MySQL这个特性，也是写了一篇博客，有兴趣的小伙伴可以去看看，这次对此特性进行一个复习。 load_file使用MySQL的自带sql语句读取本地文件。首先在/tmp目录下新建一个文件">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818090346.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/08/17/第三周-数据库系统表相关学习/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>第三周-数据库系统表相关学习 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/08/17/第三周-数据库系统表相关学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">第三周-数据库系统表相关学习
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-18 01:01:04" itemprop="dateCreated datePublished" datetime="2019-08-18T01:01:04+08:00">2019-08-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:01:27" itemprop="dateModified" datetime="2019-08-28T05:01:27+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/小白成长计划/" itemprop="url" rel="index"><span itemprop="name">小白成长计划</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>刚搬进新公寓，被时差害惨了，熬夜写这个。。。</p>
+<h1 id="MySQL读写文件"><a href="#MySQL读写文件" class="headerlink" title="MySQL读写文件"></a>MySQL读写文件</h1><p>我记得半年前有一个CTF题就是利用的<strong>MySQL read_local_file</strong>可以读取本地文件的特性配合其他的触发任意文件读取漏洞。当时就知道了MySQL这个特性，也是写了<a href="https://ama666.cn/2019/03/18/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D/#more">一篇博客</a>，有兴趣的小伙伴可以去看看，这次对此特性进行一个复习。</p>
+<h2 id="load-file"><a href="#load-file" class="headerlink" title="load_file"></a>load_file</h2><p>使用MySQL的自带sql语句读取本地文件。首先在<strong>/tmp</strong>目录下新建一个文件</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818090346.png" alt></p>
+<p>然后新建一个表，通过<strong>insert</strong>语句将文件内容插入表中</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span>  <span class="keyword">table</span> read_file(<span class="keyword">content</span> <span class="built_in">varchar</span>(<span class="number">20</span>));</span><br><span class="line"><span class="keyword">insert</span>  <span class="keyword">into</span> read_file <span class="keyword">values</span>(<span class="keyword">load_file</span>(<span class="string">'/tpm/test_file'</span>));</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> read_file;</span><br></pre></td></tr></table></figure>
+
+<p>但是并没有将文件中的内容读取出来</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818091131.png" alt></p>
+<p>经过看群里小伙伴分享的<a href="https://bingslient.github.io/2019/08/16/MySQL%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E8%A1%A8%E7%9A%84%E5%88%A9%E7%94%A8/#%E8%83%8C%E6%99%AF" target="_blank" rel="noopener">一篇文章</a>中讲的，可能是Ubuntu自己的访问控制系统导致的无法读取文件中的信息。当用户使用mysql的时候，对系统进行操作的用户是<strong>mysql</strong>，所以对一些文件可能没有操作权限。现在我把文件权限改为777再试一次。</p>
+<p>首先将文件权限改为777</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234159.png" alt></p>
+<p>登陆mysql数据库再次执行上面的命令</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234457.png" alt></p>
+<p>依然还是读取不到文件内容。尝试读取<strong>secure_file_prvi</strong>指定的目录下的文件</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819234931.png" alt></p>
+<p>依旧返回值为NULL。至此我自己思考的方法用完了，只能继续往下看博客。</p>
+<blockquote>
+<p>Ubuntu 自带的强制访问控制系统 AppArmor 强制限制了每个程序可使用的资源，它并非针对用户，而是针对程序的，所以不论用户是否能访问某一资源，只要程序被 AppArmor 限制访问该资源，则程序就不能访问该资源。因此需要修改 AppArmor 针对于 MySQL 的访问控制策略，修改文件 <code>/etc/apparmor.d/usr.sbin.mysqld</code>，在其中添加需要访问的目录, 修改完成后，重新加载 AppArmor 配置：<code>sudo /etc/init.d/apparmor reload</code>。</p>
+</blockquote>
+<p>豁然开朗。<strong>chmod</strong>命令针对的对象是用户，也就是说更改这个权限之后只是针对不同的用户，而mysql作为一个程序并不起效，而Ubuntu中的强制访问控制系统针对的对象是程序，修改之后也许有效。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190819235752.png" alt></p>
+<p>更改完成之后依旧返回NULL，奇了怪了:(</p>
+<p>经过我反复的检查发现了两个问题</p>
+<blockquote>
+<p>第一个就是我的目录格式写错了，应该在最后一个斜线后面加上星号表示可以访问目录下所有文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; /tmp/* r,</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>第二个错误就是<strong>load_file</strong>可以读取的文件位置也和<strong>secure_file_priv</strong>参数有关，只能读取这个参数设置目录下的文件。</p>
+</blockquote>
+<p>解决这两个问题之后成功读取到了文件内容</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190820004058.png" alt></p>
+<h2 id="load-data-infile"><a href="#load-data-infile" class="headerlink" title="load_data_infile"></a>load_data_infile</h2><p>这个方法就是我在上文提到的博客中配合LFI使用的函数。其实load data infile和load_file()用法上没有什么区别,只是在注入过程中，往往会过滤掉load_file()这个函数，但是仍然有load data infile可以使用。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">infile</span> <span class="string">'/tmp/test_file'</span> <span class="keyword">into</span> <span class="keyword">table</span> read_file;</span><br></pre></td></tr></table></figure>
+
+<p>出现了错误提示，原来是安全权限的问题</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818091509.png" alt></p>
+<p>可以关闭此设置，也可以在此设置下的指定目录存放文件并读取，我的mysql设置的security-files-priv目录如图，可以读取此目录下的文件</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190818092840.png" alt></p>
+<h1 id="MySQL数据库系统表"><a href="#MySQL数据库系统表" class="headerlink" title="MySQL数据库系统表"></a>MySQL数据库系统表</h1><p>这个东西真的用了无数遍，最简单的就是在sql注入的时候查询<strong>information_schema</strong>然后继续查询<strong>teables</strong>，接着是<strong>columns</strong>。这样以此查下来就可以找到想获取的数据。网上这种资料太多了，感觉我写也不可能比现有的写得好，所以就不多赘述了。</p>
+<h1 id="hash-crack"><a href="#hash-crack" class="headerlink" title="hash crack"></a>hash crack</h1><p>我感觉hash crack除非你有很强大的彩虹表，不然都不如在网上破解的效果好。</p>
+<p>使用hashcat工具</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat64.exe -a <span class="number">0</span> <span class="number">5</span>f4dcc3b5aa765d61d8327deb882cf99 example.dict</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/08/17/第三周-数据库系统表相关学习/" title="第三周-数据库系统表相关学习">http://ama666.cn/2019/08/17/第三周-数据库系统表相关学习/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/11/第二周任务-认识sql并学习数据库的基本操作/" rel="next" title="第二周任务-认识sql并学习数据库的基础操作">
+                <i class="fa fa-chevron-left"></i> 第二周任务-认识sql并学习数据库的基础操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/23/第四周数据库系统功能相关学习/" rel="prev" title="第四周任务-数据库系统功能相关学习">
+                第四周任务-数据库系统功能相关学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL读写文件"><span class="nav-number">2.</span> <span class="nav-text">MySQL读写文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#load-file"><span class="nav-number">2.1.</span> <span class="nav-text">load_file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load-data-infile"><span class="nav-number">2.2.</span> <span class="nav-text">load_data_infile</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL数据库系统表"><span class="nav-number">3.</span> <span class="nav-text">MySQL数据库系统表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hash-crack"><span class="nav-number">4.</span> <span class="nav-text">hash crack</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

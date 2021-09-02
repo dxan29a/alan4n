@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="网络程序设计结课的小项目0x00 写在前面这个代码是网络程序设计的大作业，写一个聊天软件可以支持用户注册，登陆验证，在线用户查询，与用户一对一聊天，文件传输，断点续传。代码是基于UDP协议的，所有的数据包都是先发给服务器再由服务器转发给用户。没有使用数据库因为python3对MySqlDB这一块的支持好像不是很好，反正我是一直没有安上。 0x01 程序构架Chat_Room |–Server ——">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" Python基于UDP的聊天软件		">
+<meta property="og:url" content="http://ama666.cn/2018/11/30/Python基于UDP的聊天软件/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="网络程序设计结课的小项目0x00 写在前面这个代码是网络程序设计的大作业，写一个聊天软件可以支持用户注册，登陆验证，在线用户查询，与用户一对一聊天，文件传输，断点续传。代码是基于UDP协议的，所有的数据包都是先发给服务器再由服务器转发给用户。没有使用数据库因为python3对MySqlDB这一块的支持好像不是很好，反正我是一直没有安上。 0x01 程序构架Chat_Room |–Server ——">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T21:05:08.606Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" Python基于UDP的聊天软件		">
+<meta name="twitter:description" content="网络程序设计结课的小项目0x00 写在前面这个代码是网络程序设计的大作业，写一个聊天软件可以支持用户注册，登陆验证，在线用户查询，与用户一对一聊天，文件传输，断点续传。代码是基于UDP协议的，所有的数据包都是先发给服务器再由服务器转发给用户。没有使用数据库因为python3对MySqlDB这一块的支持好像不是很好，反正我是一直没有安上。 0x01 程序构架Chat_Room |–Server ——">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2018/11/30/Python基于UDP的聊天软件/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> Python基于UDP的聊天软件		 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2018/11/30/Python基于UDP的聊天软件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> Python基于UDP的聊天软件		
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-01 12:19:14" itemprop="dateCreated datePublished" datetime="2018-12-01T12:19:14+08:00">2018-12-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:05:08" itemprop="dateModified" datetime="2019-08-28T05:05:08+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="网络程序设计结课的小项目"><a href="#网络程序设计结课的小项目" class="headerlink" title="网络程序设计结课的小项目"></a>网络程序设计结课的小项目</h2><h2 id="0x00-写在前面"><a href="#0x00-写在前面" class="headerlink" title="0x00 写在前面"></a>0x00 写在前面</h2><p>这个代码是网络程序设计的大作业，写一个聊天软件可以支持用户注册，登陆验证，在线用户查询，与用户一对一聊天，文件传输，断点续传。代码是基于UDP协议的，所有的数据包都是先发给服务器再由服务器转发给用户。没有使用数据库因为python3对MySqlDB这一块的支持好像不是很好，反正我是一直没有安上。</p>
+<h2 id="0x01-程序构架"><a href="#0x01-程序构架" class="headerlink" title="0x01 程序构架"></a>0x01 程序构架</h2><p>Chat_Room |–Server ——Server.py ——user.txt |–Client —-Client.py</p>
+<blockquote>
+<p>一共有两个脚本，一个是服务器，一个是客户端。服务器地址写在客户端的全局变量之中。</p>
+</blockquote>
+<blockquote>
+<p>在服务器脚本所在文件目录下新建了user.txt文件作为记录已注册用户，当客户端发出注册请求时服务器会查询是否已经注册或者用户名是否重复，如果都没有的话则将用户名密码写入文件之中</p>
+</blockquote>
+<blockquote>
+<p>服务器维护一个动态字典，用来记录在线用户。键值对为用户名-通讯地址(ip : port)。当用户发出登录请求时判断用户是否已经存在于字典之中即是否重复登陆，若不是将用户名和通讯地址储存在字典之中。当用户退出时删除对应的键值对。当用户发出查询在线用户请求时返回字典中所有的键名。</p>
+</blockquote>
+<blockquote>
+<p>服务器创建一个套接字用于接受客户端发来的消息并进行判断是何命令，当客户端发出send(聊天命令)时会在字典中查找目标用户通讯地址将聊天内容通过socket.sendto()函数的方式发送给目标用户。</p>
+</blockquote>
+<blockquote>
+<p>当客户端发出sendfile(文件传输命令)时会事先确定文件大小并进行分片标记序号，依次发送数据包，服务器在字典中查找目标用户通讯地址，依次将数据包发送给目标用户。当客户端发出itr(文件传输打断命令)时，客户端会停止发送数据包，服务器也会因为没有数据包传送过来而继续其他工作。客户端再次发出sendfile命令时会从断点序号数据包开始继续发送文件，服务器会将文件继续传输给目标用户。客户端存在一个套接字用来接收文件，会将发来的文件存入缓冲区直到收到文件中断或者结束标志序号的数据包再将文件输出在客户端脚本所在文件目录下。</p>
+</blockquote>
+<blockquote>
+<p>程序采用多线程编程，客户端两个套接字: 用于接受聊天消息和文件; 服务器一个套接字: 用于接受客户端发来的命令。</p>
+</blockquote>
+<h2 id="0x02-代码"><a href="#0x02-代码" class="headerlink" title="0x02 代码"></a>0x02 代码</h2><h3 id="Client-py"><a href="#Client-py" class="headerlink" title="Client.py"></a>Client.py</h3><p>[cc lang=”python”] from socket import * import json from threading import Thread from cmd import Cmd import time import os class Client(Cmd): prompt = ‘&gt;&gt;’ intro = ‘输入help获取帮助’ def __init__(self): #初始化 super().__init__() #要连接的服务器ip地址以及端口号 self.SerHOST=’localhost’ self.SerPORT=10000 #接收信息缓冲区大小 self.BUFSIZE=1024 #发送信息地址 self.ADDR = (self.SerHOST,self.SerPORT) #客户端套接字 self.Clisock = socket(AF_INET, SOCK_DGRAM) #客户端文件套接字 self.filsock = socket(AF_INET, SOCK_DGRAM) #文件正常传输标志位 self.sendflag = 0 #逐块发送文件大小 self.sendsize = 1 #??? self.filepoint = 0 #登陆之后的登陆用户的昵称 self.name = ‘’ self.loged = 0 def do_help(self,args): print(“欢迎使用本程序！！”) print(“下面是您可以输入的命令以及格式,每一个中括号中都是参数,每个参数之间使用空格分隔\n”) print(“<strong><em>注册</em></strong>“) print(“register: register [您希望注册的用户名] [您希望注册的密码]\n”) print(“<strong><em>登陆</em></strong>“) print(“loginin: loginin [用于登陆的用户名] [用于登陆的密码]\n”) print(“<strong><em>查询在线用户</em></strong>“) print(“online_users: online_users\n”) print(“<strong><em>发送消息给指定用户</em></strong>“) print(“send: send [您发送消息的目标用户] [您想要发送的消息]\n”) print(“<strong><em>发送文件</em></strong>“) print(“sendfile: sendfile\n”) print(“<strong><em>退出</em></strong>“) print(“logout: logout”) def do_register(self,args): “”” 用户注册 :param args: 用户名和密码，用空格分离 :return: NULL “”” msg={ ‘cmd’:’register’, ‘data’:[] } #用户名密码 account=args.split(‘ ‘)[0] password=args.split(‘ ‘)[1] msg[‘data’].append(account) msg[‘data’].append(password) #发送消息 msg=json.dumps(msg) self.Clisock.sendto(msg.encode(‘utf-8’),self.ADDR) data,addr=self.Clisock.recvfrom(self.BUFSIZE) if data: print(data.decode(‘utf-8’)) return def send_message_thread(self,target_user, message): “”” 发送消息线程 :param target_user: 目标用户 :param message: 消息内容 :param suer: 发送消息目标用户 “”” self.Clisock.sendto(json.dumps({ ‘cmd’: ‘send’, ‘account’: self.name, ‘target_user’: target_user, ‘data’: message }).encode(‘utf-8’),(self.ADDR)) def msgrecv(self): “”” 接收消息 :return: NULL “”” #接收消息的时候要判断消息中是否含有字典的键: data表示是来自于其他用户的消息 若没有data则是online_users while True: data, addr = self.Clisock.recvfrom(self.BUFSIZE) data = data.decode(‘utf-8’) #print(data) if ‘“data”‘ in str(data): data = eval(data) print(“发送人: “, data[‘msg_source’], “\n消息: “, data[‘data’]) else: print(data) pass def start(self): self.cmdloop() def sendfile(self,file_path,target_user): “”” 断点发送文件 :param target_user:发送的目标用户 :param file_path: 发送文件路径 :return: NULL “”” if self.loged == 0: print(“您还未登录！”) return msg={ ‘cmd’:’sendfile’ } #文件正常传输标志，置0时停止传输 self.sendflag=1 #读文件操作 f=open(file_path,’rb’) filelen=len(f.read()) filename=f.name #将文件读取指针设置到文件头 f.seek(self.filepoint,0) #当标志位非0的时候发送文件 while (self.sendflag): filedata=f.read(self.sendsize) #文件读取结束 if not filedata: msg[‘over’]=1 msg[‘destination’]=target_user msg_b=json.dumps(msg).encode(‘utf-8’)+b’#’*self.sendsize self.filsock.sendto(msg_b,self.ADDR) self.filepoint=0 f.close() return msg[‘num’]=f.tell() msg[‘destination’]=target_user msg[‘filelen’]=filelen msg[‘filename’]=filename msg_b=json.dumps(msg).encode(‘utf-8’)+filedata self.filsock.sendto(msg_b,self.ADDR) time.sleep(0.3); if not self.sendflag: msg[‘over’]=1 msg[‘destination’]=target_user msg_b=json.dumps(msg).encode(‘utf-8’)+b’#’*self.sendsize self.filsock.sendto(msg_b,self.ADDR) self.filepoint=0 self.filepoint=f.tell() f.close() def do_sendfile(self,arg): “”” 发送文件 :param arg: :return: NULL “”” target_user=arg.split(‘ ‘)[1] file_path=arg.split(‘ ‘)[0] t=Thread(target=self.sendfile,args=(target_user,file_path)) t.start() def do_itr(self,arg): “”” 打断文件传输 :param arg: :return: NULL “”” self.sendflag=0 def do_send(self,args): “”” 发送消息 :param args: 发送消息目标用户以及消息主体 :return: NULL “”” if self.loged == 0: print(“您还未登录！”) return #目标用户 user = args.split(‘ ‘)[0] #消息主体 message = args[len(user):] #显示自己发送的消息 print(“[已发送]·”,message) t = Thread(target = self.send_message_thread,args = (user,message)) t.start() def do_loginin(self,args): #消息主体 msg={ ‘cmd’:’loginin’, ‘data’:[] } msg2={ ‘cmd’:’loginin_file’, ‘data’:[] } #用户名密码 account=args.split(‘ ‘)[0] #将用户名赋值给类变量 self.name = account password=args.split(‘ ‘)[1] msg[‘data’].append(account) msg[‘data’].append(password) msg=json.dumps(msg) self.Clisock.sendto(msg.encode(‘utf-8’),self.ADDR) msg2[‘data’].append(account) msg2[‘data’].append(password) msg2=json.dumps(msg2) self.filsock.sendto(msg2.encode(‘utf-8’),self.ADDR) data,addr=self.Clisock.recvfrom(self.BUFSIZE) data=data.decode(‘utf-8’) print(data) if data==’登录成功’: #接收文件线程 t1 = Thread(target=self.filerecv) t1.setDaemon(True) t1.start() #接收消息线程 t2 = Thread(target = self.msgrecv) t2.setDaemon(True) t2.start() self.loged = 1 return def do_logout(self,addr): “”” 用户推出操作 :return: NULL “”” msg = { ‘cmd’: ‘logout’, ‘user’:self.name } msg = json.dumps(msg) self.Clisock.sendto(msg.encode(‘utf-8’),self.ADDR) self.loged = 0 return def filerecv(self): recvdata=[] while True: msg,addr=self.filsock.recvfrom(self.BUFSIZE) data_head=json.loads(msg[:-self.sendsize]) filename=json.loads(msg[:-self.sendsize])[‘filename’] if ‘over’ in data_head: f=open(os.getcwd()+’/‘+filename,’wb’) for i in range(0,len(recvdata)): if recvdata[i]==b’#’*self.sendsize: continue f.write(recvdata[i]) f.close() data=msg[-self.sendsize:] recvdata.append(data) def do_online_users(self,args): “”” 查询在线用户 :param args: 用于接受发送查询请求用户的地址，方便服务器给对应的客户端返回消息 :return: NULL “”” msg={ ‘cmd’:’online_users’ } msg=json.dumps(msg) #print(‘当前在线用户:’) self.Clisock.sendto(msg.encode(‘utf-8’),self.ADDR) ‘’’ data,addr=self.Clisock.recvfrom(self.BUFSIZE) data=json.loads(data) for key in data: print(key) return; ‘’’ #这里不需要再弄接收消息的了，有另外的线程收服务器的消息 def emptyline(self): pass; if __name__==’__main__‘: client=Client() client.start() [/cc]</p>
+<h3 id="Server-py"><a href="#Server-py" class="headerlink" title="Server.py"></a>Server.py</h3><p>[cc lang=”python”] from socket import * import json from threading import Thread HOST=’’ #ip PORT=10000 #端口 BUFSIZ=1024 #缓冲区 ADDR=(HOST,PORT) #地址 sendsize=1 #发送文件大小 #建立雾服务器接字 Sersock=socket(AF_INET,SOCK_DGRAM) Sersock.bind(ADDR) #在线用户 logined_user={} logined_user_file={} #已注册用户 user={} def register(addr,account,password): “”” 用户注册 :param addr: :param account: :param password: :return: “”” print(addr) if account not in user: Sersock.sendto(‘注册成功’.encode(‘utf-8’),addr) user[account] = password else: Sersock.sendto(‘账号已存在’.encode(‘utf-8’),addr) f=open(‘user.txt’,’r+’) for key in user: f.write(key+’ ‘+user[key]+’\n’) f = open(‘log.txt’, ‘a’) f.write(‘用户’ + account + ‘注册’) f.write(‘\n’) f.close() def loginin(addr,account,password): “”” 验证用户登陆 :param addr: 用户套接字地址 :param account: 用户名 :param password: 密码 :return: NULL “”” if account in user: if password==user[account]: logined_user[account]=addr #将已登陆用户的通讯地址存在文件中 #f = open(‘addr.txt’,’a’) #f.write(account + ‘ ‘ + addr.__str__()) #f.write(‘\n’) Sersock.sendto(‘登录成功’.encode(‘utf-8’),addr) else: Sersock.sendto(‘密码错误’.encode(‘utf-8’),addr) else: Sersock.sendto(‘账号不存在’.encode(‘utf-8’),addr) print(logined_user) f = open(‘log.txt’, ‘a’) f.write(‘用户: ‘ + account + ‘登陆’) f.write(‘\n’) f.close() def loginin_file(addr,account,password): “”” 验证用户登陆 :param addr: 用户文件套接字地址 :param account: 用户名 :param password: 密码 :return: NULL “”” if account in user: if password==user[account]: logined_user_file[account]=addr print(logined_user_file) def online_users(addr): “”” 查询在线用户 :param addr: :return: “”” ‘’’ online_user = ‘’ f = open(‘addr.txt’,’r’) txt = f.readlines() for i in txt: user = i.split(‘ ‘)[0] online_user += user + ‘\n’ print(online_user) Sersock.sendto(online_user.encode(‘utf-8’),addr) ‘’’ online_user = ‘’ for key in logined_user: online_user += key + ‘ , ‘ msg=’当前在线用户为:’+online_user Sersock.sendto(msg.encode(‘utf-8’),addr) f = open(‘log.txt’, ‘a’) f.write(msg) f.write(‘\n’) f.close() def send(user,target_user,message): “”” 发送消息 :param user: 发消息的用户 :param target_addr: 目标用户地址 :param message: 消息内容 :param suer: 发送消息目标用户 “”” print(user,’发送给’,target_user,message) ‘’’ user_addr = {} #打开文件获取已登陆用户通讯地址 f = open(‘addr.txt’,’r’) txt = f.readlines() for line in txt: user_addr[line.split(‘ ‘)[0]] = line.split(‘ ‘)[1] + line.split(‘ ‘)[2] target_addr_raw = user_addr[target_user].strip(‘\n’) target_addr_raw = target_addr_raw.strip(‘[()]‘) target_addr = [target_addr_raw.split(‘,’)[0], target_addr_raw.split(‘,’)[1]] #创建套接字发送消息 msg ={ ‘msg_source’: user, ‘data’: message } msg = json.dumps(msg) #print(target_addr[1]) Sersock.sendto(msg.encode(‘utf-8’),(‘127.0.0.1’,int(target_addr[1]))) ‘’’ if target_user in logined_user: msg ={ ‘msg_source’: user, ‘data’: message } msg = json.dumps(msg) Sersock.sendto(msg.encode(‘utf-8’),logined_user[target_user]) else: Sersock.sendto(‘用户不在线’.encode(‘utf-8’),logined_user[user]) f = open(‘log.txt’, ‘a’) f.write(user + ‘发送消息给’ + target_user + ‘消息内容为’ + message) f.write(‘\n’) f.close() def sendfile(msg,addr): “”” 发送文件 :param msg: 文件，包含目标用户(destination)和文件 :param addr: 消息来源地址 :return: NULL “”” head=msg[:-sendsize] head_dic=json.loads(head) target_user=head_dic[‘destination’] print(head_dic) Sersock.sendto(msg,logined_user_file[target_user]) f = open(‘log.txt’, ‘a’) f.write(‘发送文件给’ + head_dic[‘destination’]) f.write(‘\n’) f.close() def logout(user,addr): “”” 建立一个mid.txt文件用来临时存储未退出用户，在执行完之后用mid.txt的内容替换addr.txt :param addr: 推出用户的地址 :return: NULL “”” ‘’’ port = str(addr).strip(‘[()]‘) port = port.split(‘ ‘)[1] f_addr = open(‘addr.txt’,’r+’) f_mid = open(‘mid.txt’,’r+’) txt = f_addr.readlines() for line in txt: if str(port) not in line: f_mid.write(line) f_addr.seek(0) # 将文件指针移到文件头 f_addr.truncate() # 清空文件 f_mid.seek(0) txt = f_mid.readlines() for line in txt: f_addr.write(str(line)) ‘’’ logined_user.pop(user) logined_user_file.pop(user) Sersock.sendto(‘登出成功’.encode(‘utf-8’),addr) f = open(‘log.txt’,’a’) f.write(user + ‘登出’) f.write(‘\n’) f.close() def do_users_cmd(msg,addr): #注册 if msg[‘cmd’] == ‘register’: register(addr,msg[‘data’][0],msg[‘data’][1]) #登陆 if msg[‘cmd’] == ‘loginin’: loginin(addr,msg[‘data’][0],msg[‘data’][1]) if msg[‘cmd’] == ‘loginin_file’: loginin_file(addr,msg[‘data’][0],msg[‘data’][1]) #查询在线用户 if msg[‘cmd’] == ‘online_users’: online_users(addr) #发送消息 if msg[‘cmd’] == ‘send’: send(msg[‘account’],msg[‘target_user’],msg[‘data’]) #发送文件 if msg[‘cmd’] == ‘sendfile’: sendfile(msg,addr) #退出登录 if msg[‘cmd’] == ‘logout’: logout(msg[‘user’],addr) def main(): cmd_list=[‘online_users’,’loginin’,’loginin_file’,’register’,’sendfile’,’send’,’logout’] #读取已注册用户信息 f=open(‘user.txt’,’r+’) user_list=f.readlines() for i in range(0,len(user_list)): user[user_list[i].split(‘ ‘)[0]]=user_list[i].split(‘ ‘)[1][:-1] f.close() ‘’’ #初始化用户地址 with open(‘addr.txt’, “r+”) as f: f.seek(0) # 将文件指针移到文件头 f.truncate() # 清空文件 ‘’’ #开始监听 print(user) while(True): print(“waiting……”) msg,addr=Sersock.recvfrom(BUFSIZ) try: msg=json.loads(msg) print(msg) #收到正确的操作消息 if msg[‘cmd’] in cmd_list: t=Thread(target=do_users_cmd,args=(msg,addr)) t.start() else: print(‘命令错误’) except: print(msg) t=Thread(target=sendfile,args=(msg,addr)) t.start() Sersock.close() main() [/cc]</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/141.html" title=" Python基于UDP的聊天软件		">141.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/python实现Hill2的加密解密与破/" rel="next" title=" python实现Hill2的加密解密与破译		">
+                <i class="fa fa-chevron-left"></i>  python实现Hill2的加密解密与破译		
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/25/phpwind 9.0.2 任意执行SQL语句(可getshell)/" rel="prev" title=" phpwind 9.0.2 任意执行SQL语句(可getshell)		">
+                 phpwind 9.0.2 任意执行SQL语句(可getshell)		 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络程序设计结课的小项目"><span class="nav-number">1.</span> <span class="nav-text">网络程序设计结课的小项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-写在前面"><span class="nav-number">2.</span> <span class="nav-text">0x00 写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-程序构架"><span class="nav-number">3.</span> <span class="nav-text">0x01 程序构架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-代码"><span class="nav-number">4.</span> <span class="nav-text">0x02 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Client-py"><span class="nav-number">4.1.</span> <span class="nav-text">Client.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Server-py"><span class="nav-number">4.2.</span> <span class="nav-text">Server.py</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

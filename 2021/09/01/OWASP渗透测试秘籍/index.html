@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="《渗透测试》通过积累测试经验，逐渐建立自己的成体系化的测试方法论。目标是随着经验的累积，从一开始对照着checklist逐步排查，到心中有清晰的测试脉络，到最后纵心所欲不逾矩。 本文很长，是我根据《OWASP安全测试指南》和从将近一年的渗透测试经历中整理的方法论。文中涉及的技术干货比较少，更多的是对于企业/安服渗透测试的思路层面的分享。我认为高级渗透测试工程师除了必备的技术以外，更重要的是面对系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OWASP渗透测试秘籍">
+<meta property="og:url" content="http://ama666.cn/2021/09/01/OWASP渗透测试秘籍/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="《渗透测试》通过积累测试经验，逐渐建立自己的成体系化的测试方法论。目标是随着经验的累积，从一开始对照着checklist逐步排查，到心中有清晰的测试脉络，到最后纵心所欲不逾矩。 本文很长，是我根据《OWASP安全测试指南》和从将近一年的渗透测试经历中整理的方法论。文中涉及的技术干货比较少，更多的是对于企业/安服渗透测试的思路层面的分享。我认为高级渗透测试工程师除了必备的技术以外，更重要的是面对系统">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210806174242.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210807011015.png">
+<meta property="og:updated_time" content="2021-09-02T14:57:16.432Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OWASP渗透测试秘籍">
+<meta name="twitter:description" content="《渗透测试》通过积累测试经验，逐渐建立自己的成体系化的测试方法论。目标是随着经验的累积，从一开始对照着checklist逐步排查，到心中有清晰的测试脉络，到最后纵心所欲不逾矩。 本文很长，是我根据《OWASP安全测试指南》和从将近一年的渗透测试经历中整理的方法论。文中涉及的技术干货比较少，更多的是对于企业/安服渗透测试的思路层面的分享。我认为高级渗透测试工程师除了必备的技术以外，更重要的是面对系统">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210806174242.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2021/09/01/OWASP渗透测试秘籍/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>OWASP渗透测试秘籍 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2021/09/01/OWASP渗透测试秘籍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OWASP渗透测试秘籍
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-09-02 09:55:53 / 修改时间：22:57:16" itemprop="dateCreated datePublished" datetime="2021-09-02T09:55:53+08:00">2021-09-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="《渗透测试》"><a href="#《渗透测试》" class="headerlink" title="《渗透测试》"></a>《渗透测试》</h1><p>通过积累测试经验，逐渐建立自己的成体系化的测试方法论。目标是随着经验的累积，从一开始对照着checklist逐步排查，到心中有清晰的测试脉络，到最后纵心所欲不逾矩。</p>
+<p>本文很长，是我根据《OWASP安全测试指南》和从将近一年的渗透测试经历中整理的方法论。文中涉及的技术干货比较少，更多的是对于企业/安服渗透测试的思路层面的分享。我认为高级渗透测试工程师除了必备的技术以外，更重要的是面对系统能有自己的成体系的测试矩阵。与漏洞挖掘，Web攻击不同的是，我认为渗透测试工作讲究的是在高代码测试覆盖的同时提升测试效率，确保业务系统的各个组件的安全独立性。希望能够帮助还在处于渗透测试新人的同行们快速建立自己的测试体系架构。</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>一次测试的完成度取决于信息收集的完整度，在不断的测试中对这句话的体验越来越深。在我现在看来不仅仅要将信息收集完整，还要有将信息整合建立体系的能力，类似于星状图，测试中要将和该功能相关的所有信息点全部覆盖。</p>
+<h3 id="谷歌搜索"><a href="#谷歌搜索" class="headerlink" title="谷歌搜索"></a>谷歌搜索</h3><p>这个在测试业务的时候倒没那么需要，毕竟会拿到一份资产报告，里面囊括的需要涵盖的所有对象。但是在红蓝对抗或者打靶场的时候，就需要着重搜集类似于代码泄露，用户名，有时候还能搜索到一些重要文档，登录接口等等。使用’site’、’intext’、’inurl’等等关键字进行准对搜索。</p>
+<h3 id="Web服务器指纹"><a href="#Web服务器指纹" class="headerlink" title="Web服务器指纹"></a>Web服务器指纹</h3><p>识别网站使用的框架可以缩小我们的攻击范围。一些Web中间件可能由于版本老旧，存在漏洞可以直接利用。另外获取Web服务器信息，从而了解其特点也可以在我们的后续渗透过程中提供帮助，比如测试文件上传绕过的时候。</p>
+<p>识别Web服务器指纹最直接的方式就是看数据包响应头中的’Server’字段，但是绝大多数的厂商为了安全考虑都会想方设法隐藏Web服务器的banner，此时有几种方法来帮助进行判断。</p>
+<ol>
+<li>HTTP报头字段排序，不同的Web服务器对字段的排序不同。</li>
+<li>请求不存在的/报错的页面，观察响应。</li>
+<li>通过扫描器，在线工具等进行识别。</li>
+</ol>
+<h3 id="Web服务器元文件"><a href="#Web服务器元文件" class="headerlink" title="Web服务器元文件"></a>Web服务器元文件</h3><p>robots.txt中罗列了禁止爬虫爬取的目录，测试指南上只写了关于robots.txt文件的存在的信息，我认为这里还可能有更多可以挖掘的存在，其他的敏感文件如果泄露后果也一样致命。前端源代码打包下载这个问题发生过不少次，直接把代码下载下来审计相当于不穿衣服。在前端的JS代码中也可以寻找Cookie的生成规则；注释内容中可能存在硬编码口令；应用测试阶段写在代码的内部IP、邮箱、账号等等信息也可能存在。这些多存在于小公司/小制作，大型的Web应用一般不存在上述这类问题。另外Sitemap、.DS_Store、cross domain.xml等等文件也会暴露敏感信息。</p>
+<p>在做渗透测试的时候这些工作一般都是交给扫描器的，对于不能扫描的网站可以找一些fuzzDict来做专项的测试。</p>
+<h3 id="枚举Web服务器应用"><a href="#枚举Web服务器应用" class="headerlink" title="枚举Web服务器应用"></a>枚举Web服务器应用</h3><p>尽可能地探索Web服务器上运行的所有应用。有的时候同一个IP地址有可能映射到不同的web应用中，根据域名的不同也会映射到不同的web应用上去。我记得有一个HackTheBox上的题目就是虚拟主机，需要修改hosts文件，将另一个域名和ip绑定，才能访问到有漏洞的Web应用。</p>
+<p>同一个IP下，根据URL可能会解析到不同的Web应用中去</p>
+<ul>
+<li><a href="http://www.example.com/url1" target="_blank" rel="noopener">http://www.example.com/url1</a></li>
+<li><a href="http://www.example.com/url2" target="_blank" rel="noopener">http://www.example.com/url2</a></li>
+<li><a href="http://www.example.com/url3" target="_blank" rel="noopener">http://www.example.com/url3</a></li>
+</ul>
+<p>对于这类隐藏的Web应用，如果没有机会浏览目录，就只能寄希望于爬虫/扫描器进行发现，或者在谷歌搜索的时候就可以发现site:<a href="http://www.example.com。" target="_blank" rel="noopener">www.example.com。</a></p>
+<p>对于开放了多端口的Web服务器，我们可以使用Nmap等工具对全端口进行扫描，防止厂商将一些敏感入口配置到高端口，平时难以发现。</p>
+<p>对于使用了虚拟主机的Web服务器，可以通过查询DNS记录或者是反向IP查询，找到这些隐藏的Web应用。借助在线工具即可。</p>
+<h3 id="识别应用入口"><a href="#识别应用入口" class="headerlink" title="识别应用入口"></a>识别应用入口</h3><p>根据测试指南对本节的解释，主要是使用Burp拦截请求来测试参数，也就是传入应用的参数。根据实际经验，有一些参数是框架参数，几乎在所有的请求中都会存在。这些参数可的名称可能是符号或者是各种缩写，可以先针对这些频繁出现的参数进行测试。这样会为整个的测试流程大大的节省时间，也能搞清楚这些参数的意义，避免出现一大堆参数不知道该测哪一个的情况出现。</p>
+<h3 id="映射应用程序的执行路径"><a href="#映射应用程序的执行路径" class="headerlink" title="映射应用程序的执行路径"></a>映射应用程序的执行路径</h3><p>测试中面对一个庞大的Web应用，很难去做到代码库的测试全覆盖，只能尽力的去多测一些代码。根据测试指南上总结的，将提高代码测试覆盖率的方法总结为了三种：路径数据流和竞争。</p>
+<p>从黑盒测试的角度来说，我们能看到的仅仅就是URL中的路径。一开始拿到应用的时候，最好能开一个excel表格或者带结构的记事本，来记录一下几条比较容易出问题的路径。昨天我在测试的时候发现了一个api接口的越权问题，推测应该是普遍存在的现象。但是由于我一开始没有对路径做记录，导致重新翻找的很痛苦。还有一点就是在记录路径/api的时候，一定要注明入口链接，不然找到最后找到漏洞点了，完全忘了是从哪里进来的。</p>
+<h3 id="识别Web应用框架"><a href="#识别Web应用框架" class="headerlink" title="识别Web应用框架"></a>识别Web应用框架</h3><p>和识别Web服务器一样，知道应用框架可以从已知漏洞库入手，先过一遍。如果又惊喜就可以直接提交，有些地方因为业务比较特殊，无法按照框架提供厂商的修复建议修复，都是Web应用厂商自己修的，难免会有一些疏漏。如果测试的时候感觉不对劲，可以尝试进行绕过。</p>
+<p>至于识别Web应用框架一是凭借自己的经验，比如你是一个经验丰富的测试者，测试过许许多多的框架了，通过一个页面或者一个报错提示就能分辨。有的时候厂商刻意的隐藏了框架特点，这种时候可以借用一些在线的工具来进行识别。</p>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li><p>netcraft。在线工具，识别Web服务器以及页面基本信息。<a href="https://sitereport.netcraft.com/" target="_blank" rel="noopener">What’s that site running?</a></p>
+</li>
+<li><p>Nmap。扫端口查服务、版本，用的时候对着手册看看参数就行。</p>
+</li>
+<li><p>BurpSuite。没啥好说的，2.0联动sqlmap和Xray挺好用的。</p>
+</li>
+<li><p>WhatWeb。识别Web应用。<a href="https://www.whatweb.net/" target="_blank" rel="noopener">WhatWeb - Next generation web scanner.</a></p>
+</li>
+<li><p>BlindElephant。原理是根据静态文件不同版本的校验值不同来识别，所以精准度很高。<a href="https://tools.kali.org/web-applications/blindelephant" target="_blank" rel="noopener">BlindElephant</a></p>
+</li>
+</ul>
+<h2 id="配置管理测试"><a href="#配置管理测试" class="headerlink" title="配置管理测试"></a>配置管理测试</h2><p>对于渗透攻击，挖SRC的时候，对于配置的测试可能很少涉及到。但是在工作中，业务上线前必须要对配置的安全性进行核验。这里更多的是从厂商角度对即将上线的产品的配置安全与否做测试。在这其中涉及到一个很重要的安全思想，即安全的不可依赖性。比如我的Web应用有SQL注入漏洞，但是前端有waf防护，攻击者看起来并不能对Web应用造成伤害。但实际上这是不安全的，就如同串联电路一样，一个灯泡坏了一条电路的灯泡也不能亮了。同一个思想从Web应用层面迁移到Web服务器/网络配置层面，不能仅依赖于Web应用安全来确保服务器的安全，服务器自身的配置也要正确来确保安全的最大化。</p>
+<h3 id="网络与基础设施"><a href="#网络与基础设施" class="headerlink" title="网络与基础设施"></a>网络与基础设施</h3><p>首先识别所有的组件，确保这些组件不存在已知漏洞，并且用于管理这些组建的系统也不能存在漏洞。严格控制对于这些组件的访问，维护一个应用程序所需端口的列表。</p>
+<p>对于服务器的测试很难做，一般都会使用一些自动化的工具或是脚本。在使用工具的时候也要慎重，可能会造成服务器宕机/拒绝服务，同样的情况也存在于对Web的测试中。自动化工具对Web服务器的测试存在漏报和误报，漏报是因为有些管理员为了隐藏服务器信息，将版本信息做了删除或者混淆，倒是工具无法正确检测服务器组件版本。误报是因为管理员对已知漏洞用补丁进行了修复，却没有更新Web服务器的版本。</p>
+<p>作为测试人员在测试主机的时候，更多的是用扫描器扫描，报出来的多为一些弱加密套件，支持低版本协议等等，对于漏报的漏洞很难加以侦察。这里又用到了安全性不可依赖的思想，开发/运维人员应当遵守安全开发规则进行服务器配置，运维人员应及时修复新公布的漏洞，不能全依靠渗透测试发现漏洞。</p>
+<h3 id="应用平台配置"><a href="#应用平台配置" class="headerlink" title="应用平台配置"></a>应用平台配置</h3><p>Web应用可能残留demo，测试页面。或者是在测试环境下为了方便所设置的一些配置，包括但不限于同账号同时登录，万能密码/验证码。</p>
+<p>黑盒测试人员是没有配置指南的，所以测试起来会有些盲目。根据OWASP测试指南上的整理归纳，我结合我自己的测试总结了一下</p>
+<ul>
+<li>发送几个畸形参数，类似于负值，字符等等，检查Debug模式有没有关闭。</li>
+<li>继续发送畸形参数，请求不存在的文件，看返回页面不包含报错信息。</li>
+<li>看日志，增删改查是不是都在日志上，是不是遵守三员分立原则(admin, audit, user)。</li>
+<li>中间件的配置文件，网站的配置文件不能被访问</li>
+<li>查看管理员面板中的各种奇奇怪怪功能。</li>
+</ul>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>日志文件重要性不言而喻，Web应用对日志的记录，管理，存储都要测试。</p>
+<p>首先应该避免日志文件不能泄露敏感信息，与之相关的就是信息的加密，加密算法是否可靠都要在这里及逆行考虑。</p>
+<p>日志是否只有日志审计员能看，日志是否不可被删除，审计日志的记录由谁来审计？这里涉及到三员分立的思想比较多。</p>
+<p>日志是否存储在日志服务器上，日志是否设置了最大存储限制，达到了最大存储限制时怎么办？</p>
+<h3 id="敏感文件"><a href="#敏感文件" class="headerlink" title="敏感文件"></a>敏感文件</h3><p>开发完成后上线应用时对敏感文件的清理不彻底，更新之后敏感文件清理不彻底等多种情况会造成敏感文件泄露。可能是服务器配置文件，可能是源代码泄露。测试的时候一是凭借经验，二是靠扫描器扫到，三是偶尔可以从注释里面发现（不过现在扫描器也会顺便扫一下注释内有没有敏感内容），还有就是Google hacking。有的时候虽然删除了敏感文件，但是因为之前存在过导致敏感文件位置会残留在Google hacking数据库里，可以进行同类文件推断。</p>
+<h3 id="HTTP方法测试"><a href="#HTTP方法测试" class="headerlink" title="HTTP方法测试"></a>HTTP方法测试</h3><p>HTTP的其他方法可能会对Web应用程序造成安全问题</p>
+<ul>
+<li>PUT方法允许攻击者上传文件到服务器，最经典的IIS PUT漏洞。</li>
+<li>DELETE方法允许攻击者删除服务器上的文件。</li>
+<li>CONNECT允许攻击者将Web服务器作为代理。</li>
+<li>TRACE一开始被认为无害，后被发现可以被用于跨站跟踪（CST）。</li>
+</ul>
+<p>测试的时候使用OPTIONS请求检查一下都支持什么请求，或者一个一个试一下也行。注意一下一些框架允许使用HEAD方法代替GET，会造成基于角色的访问控制越权，另外GET和POST两个方法替换越权也要注意测试一下。</p>
+<p>目前绝大多数厂商都要求了强制HTTPS，测试一下HTTP是否能用</p>
+<h2 id="身份管理测试"><a href="#身份管理测试" class="headerlink" title="身份管理测试"></a>身份管理测试</h2><p>这里所说的身份管理并不特指为权限管理，更多指向的是在用户注册过程中所涉及到的一些管理相关的测试。</p>
+<h3 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h3><p>我们熟知的网络应用注册功能可以大致分为几种</p>
+<ul>
+<li>后台注册，不开放注册接口</li>
+<li>邀请码注册，例如XssPlatform，t00ls</li>
+<li>手机号/邮箱注册</li>
+<li>账号密码注册</li>
+</ul>
+<p>对于渗透测试来说，第一种后台注册不在我们的测试范围之内，或者说不在本节所讨论的测试范围之内。这种注册涉及到的弱口令，测试口令残留等等可以放在后面的认证测试之中。</p>
+<p>邀请码注册中，主要的问题在于邀请码的安全性。是否可猜解？是否可以重复使用？获取验证码的过程如何？如果验证码中包含了所注册用户应有的权限自不必说，如果邀请码仅仅是验证用户拥有注册资格，而不决定用户权限的时候，安全性就要和下面两个一起讨论。</p>
+<p>手机号，邮箱，乃至社交平台注册是当今最流行的一种注册方式，与前面两个相比，这种注册是面向任何人开放的。在做测试的时候主要针对一下几个方面</p>
+<ul>
+<li>同一个用户/身份能否多次注册</li>
+<li>能否注册多种权限的用户</li>
+<li>输入的邮箱/手机是否进行了验证</li>
+</ul>
+<p>关于最后一种账号密码测试，其实与第三个类似，不同点在于账号分为系统发放和用户输入。系统发放的账号既要关注账号的随机性和不可预知性（视情况而定是否需要），用户输入的话就是要验证重复和是否符合统一格式。</p>
+<h3 id="账户枚举"><a href="#账户枚举" class="headerlink" title="账户枚举"></a>账户枚举</h3><p>通常在测试的时候出现横向越权漏洞，我们会去搜集其他用户的身份鉴别符，类似于UID等等的信息。对于Web应用来说，这种用来鉴别用户的敏感参数原则上要保证它难以被枚举。举例微信的用户id就是十分复杂难以被枚举的，感兴趣的朋友可以去看一看。</p>
+<p>那么作为测试人员，可以用下面的几种方法来尝试收集用户标识</p>
+<ul>
+<li>Web应用响应。发送HTTP请求的时候更换uid观察response是否一致，或者说会不会提示用户不存在。响应的范围还可以是报错，404/403/200等等。</li>
+<li>URI中收集。有些Web应用使用了路由功能，可以从URI中看到。这时可以找到类似于好友列表，关注/粉丝列表，评论区等等出现其他用户的地方进行收集</li>
+<li>规则推测。注册多个用户来推测用户名生成的原理，一般都会有时间戳、注册信息的介入。</li>
+</ul>
+<h2 id="认证测试"><a href="#认证测试" class="headerlink" title="认证测试"></a>认证测试</h2><p>认证，指的是确定或证实一个人或者事务的行为是真实可信的。在网络安全中，认证是企图验证通信发起者数字身份的过程。比如登录就是一个最简单的验证过程。而相对安全员来说，测试验证就意味着要理解验证模式，测试能否利用漏洞或者策略绕过认证。</p>
+<h3 id="传输测试"><a href="#传输测试" class="headerlink" title="传输测试"></a>传输测试</h3><p>现在的但凡是有点规模的厂商推出的Web应用产品都应该强制支持HTTPS。在黑盒测试中我们主要关注在数据传输的过程中，比如登录页输入用户名密码的时候，是不是通过POST请求强制使用HTTPS协议发送的。</p>
+<p>首先必须是HTTPS请求，为了防止课本上经常看到的MITM攻击，也就是中间人攻击。谁也不想大家在咖啡厅，被隔壁桌子的黑客搞了个arp欺骗转发，然后你访问了个HTTP网站，所有的访问记录裸奔在黑客的电脑上。这个防范措施真的不可小觑，因为出了家里或者单位，没有人回到了一个地方就将网关写死，arp欺骗总是防不胜防。</p>
+<p>其次为什么要使用POST请求而非GET请求，虽然HTTPS处在七层协议的第五层，GET请求中的数据也是被加密保护起来的，但是GET请求中的URL记录经常会被保存在日志文件、访问记录中，而且一般也是明文存储，增加了敏感信息被泄露的风险。</p>
+<p>最后就是要验证referer也要是HTTPS的网页，不然会存在SSL-Strip攻击。</p>
+<h3 id="账号密码测试"><a href="#账号密码测试" class="headerlink" title="账号密码测试"></a>账号密码测试</h3><p>首先就是密码强度测试，一般的Web应用如果有注册功能都会要求使用8位以上数字+字母+一位大写+特殊字符的模式。对于黑盒测试来说，可以在创建账号密码的地方看一看密码规则来测试。</p>
+<p>然后就是弱口令测试，一般在开发阶段，开发人员都会用一组便于输入的密码来登录。同时有些Web应用登陆的时候要求输入验证码，开发人员也会为了方便留下一组万能验证码。我们测试的目的就是要找到这些可能存在的弱口令。另外管理员创建的新用户是不是使用了默认密码，第一次登录是不是强制要求修改密码等等。</p>
+<p>另外一个角度就是锁定，比如当输入密码超过多少次错误的时候锁定账号多久，具体策略应该和Web应用的敏感程度有关，但毫无疑问应该存在这一机制避免密码被爆破。</p>
+<h3 id="认证绕过"><a href="#认证绕过" class="headerlink" title="认证绕过"></a>认证绕过</h3><p>这里仅仅讨论一些认证功能的绕过，越权等问题不在这里做讨论。绕过登录框最常见的手段还是SQL万能密码注入。另外上古时代还有一些网页不做登陆验证，明明应该是登陆之后的展示页，结果在浏览器里输入URL就可以直接访问。现在还有一些鉴别登陆状态的方法是通过参数，类似于“authorized”等等，还有些开发人员自作聪明，将这类四段换个名字，或者写在Cookie里面，感觉很难被发现，其实一碰就碎。</p>
+<h2 id="授权测试"><a href="#授权测试" class="headerlink" title="授权测试"></a>授权测试</h2><p>这个授权测试不是说你的测试经过授权，而是对授权本身进行测试。其实我认为叫鉴权测试更好，但是OWASP指南上这么写的，我也就照搬了。</p>
+<h3 id="目录遍历-文件包含"><a href="#目录遍历-文件包含" class="headerlink" title="目录遍历/文件包含"></a>目录遍历/文件包含</h3><p>黑盒测试的时候要找到这样的测试点，主要关注</p>
+<ul>
+<li>是否存在用于文件操作的请求参数</li>
+<li>是否存在异常的文件扩展名</li>
+<li>是否存在有趣的变量名称</li>
+<li>是否可以确定Web应用通过Cookie动态生成页面内容</li>
+</ul>
+<p>我们见得多的都是在CTF题目里发现了目录遍历或者是最后RCE需要文件包含，但是在测试中这些利用简单，修复简单的漏洞很难跑到公网上去，因此我们在留意URL的同时，还要注意一些接API接口。现在前后端交互经常使用json，xml等等，这些数据中的参数也可能是文件标识符，有时候多关注这些地方会有意外的收获。这里有点像最后一条Cookie内容动态生成网页，本质上也是文件标识符写在Cookie里面。</p>
+<p>这里当然在测试的时候有一些技巧，需要熟悉Web环境，针对不同的服务器/中间件构造不同的测试payload。这里还有一个好玩的漏洞，叫做相对路径覆盖，天师同学写过一篇文章讲的很清楚。</p>
+<p><a href="https://www.freebuf.com/articles/web/166731.html" target="_blank" rel="noopener">RPO攻击方式的探究 - FreeBuf网络安全行业门户</a></p>
+<p>前几天测试的微信小程序，上传图片之后将图片存储到了专门的文件服务器，返回包中有图片存储地址，跟进去一看有目录穿越。感觉目录穿越就是要多加小心，没啥技术可言，仔细找总能碰到。</p>
+<h3 id="授权绕过"><a href="#授权绕过" class="headerlink" title="授权绕过"></a>授权绕过</h3><p>账号注册再注销是否还能使用功能？支持同时在线的账号一个PC下线了另一个是否能使用功能？访问高权限页面被拒绝是否跳转？前端是否泄露信息？API是否未授权使用？</p>
+<p>对于最后一个API问题其实大量存在，这需要有一个好的开发。我前两周测试的一个系统，初测的时候反馈了API未授权问题，结果复测发现反馈的API修了，其他API还是未授权。发现此类问题最好跟开发一起进行API的稽查，统一使用一套鉴权逻辑。</p>
+<p>对于绕过权限判断逻辑的方法有很多种，出了最基本的替换id，参数等等，还可以替换HTTP方法从POST改GET之类的。</p>
+<p>还有一些逻辑上的问题例如修改密码页面/注册页面氛围Page1到5，但是没有经过page3就可以直接在地址栏里输入page4跳转等等。</p>
+<h3 id="权限提升"><a href="#权限提升" class="headerlink" title="权限提升"></a>权限提升</h3><p>根据三元分离法则，一套业务系统氛围管理员，审计员和用户，也可以将未登陆用户算成一种角色。在测试的时候，根据不同业务系统区分出所有的角色并梳理出各自可以使用的功能。举例来说，所有公司都会有客服热线电话。这种客服电话并不是用手机接听的那种，而是接入一套客服电话系统分配给所有的业务员进行接听。各位可以想象一下这套业务系统会有什么样的角色？首先三元分立模型中的管理员和日志审计员是必须存在的，用户这个角色在这个场景科技进行拆分。首先是前台接线员，他们应该没有权限查看用户的个人资料以及用户所咨询设备的信息，他们只负责听取用户的需求并将用户转接到对应话务员。前台接线员应该能查看所有业务员的接入编号与信息。具体的业务员接到客户电话后应该可以查看客户信息以及自己部门所负责的业务设备信息，不能查看别的部门。</p>
+<p>再举一个例子，一套SRC系统应该分别设立几个角色呢？首先还是三元分立原则，其中的用户又可以分为两种：企业和白帽子。白帽子可以向对应的企业提交漏洞，但是只能查看自己提交的漏洞。可以查看其他白帽子的部分信息。；企业可以查看所有自身相关的漏洞，不能查看友商。除此之外还有未登录用户，他们不能查看白帽子的信息，但是可以浏览部分内容等等。</p>
+<p>诸如此类的，核心思想就是要理清每一套系统的角色功能特点，再进行测试。</p>
+<p>具体在测试过程中要注意不是看不到就不存在越权，直接输入仅高权限用户可查看的URL或许可以访问。高权限用户在高权限页面的一些操作例如刷新、编辑、点赞等等都可能出现越权造成信息泄漏，注意留心。</p>
+<h2 id="会话管理测试"><a href="#会话管理测试" class="headerlink" title="会话管理测试"></a>会话管理测试</h2><p>任何机遇Web的应用程序的核心组件是用来控制和维护网站用户与其交互状态的一种机制，这种机制被称作会话管理，直观讲就是Cookie和Session。渗透测试中如果能够拿下Cookie就约等于拿下了账号，不过现在安全性高的系统都会避免这种情况的发生，将替换Cookie就可登录归为了一种漏洞叫做Cookie越权。但是在绝大多数中小型公网系统上普遍存在替换Cookie登陆，因此Cookie的安全性至关重要。</p>
+<h3 id="会话框架绕过"><a href="#会话框架绕过" class="headerlink" title="会话框架绕过"></a>会话框架绕过</h3><p>Cookie中会保存一些信息比如用户id，权限标识，token等等，但通常是经过算法进行加密的。首先可以从前端JS代码中找找有没有泄露Cookie生成逻辑的，一遍扫描器就可以发现。如果没有的话可以尝试搜集大量Cookie寻找一定的规律进行暴力破解攻击，但是此种方法极其不推荐，效率太低了，在日常繁重的渗透测试中我认为完全没有必要。</p>
+<p>还有一种思路，虽然所有的传输数据包中都带着Cookie，但是有些地方对Cookie的验证非常奇葩，删掉Cookie也可能导致绕过。</p>
+<p>数据包中的Cookie强制要求加密传输，如果不加密安全性几乎为0。特殊情况就是Cookie中有一个8位以上随机的用户id，后台根据id鉴别权限。</p>
+<h3 id="Cookie属性"><a href="#Cookie属性" class="headerlink" title="Cookie属性"></a>Cookie属性</h3><p>Chrome有个插件叫做<code>Edit This Cookie</code><a href="https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg/related?hl=en-US可以查看Cookie中的属性。以CSDN为例，上面可以修改Cookie对应每一个Key的Value值，下面可以查看Cookie中的几个关键属性是否进行了设置。这里的Cookie是未登陆状态。" target="_blank" rel="noopener">https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg/related?hl=en-US可以查看Cookie中的属性。以CSDN为例，上面可以修改Cookie对应每一个Key的Value值，下面可以查看Cookie中的几个关键属性是否进行了设置。这里的Cookie是未登陆状态。</a></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210806174242.png" alt></p>
+<p>Secure属性是高速浏览器只在请求通过HTTPS的安全通道发送时才加入Cookie，这可以防止Cookie明文传输；HttpOnly属性可以防止XSS获取Cookie，不允许客户端通过脚本语言例如Js操作Cookie；Domain属性应该设置为需要接受改Cookie的服务器，注意要特指到某一个服务器上，而不是整个2级，3级域名；Expries属性管理Cookie过期时间，要把此项值设置到一个合理的区间上。</p>
+<h3 id="会话固化测试"><a href="#会话固化测试" class="headerlink" title="会话固化测试"></a>会话固化测试</h3><p>当应用程序在用户成功认证之后未更新会话Cookie，攻击者就有可能找到一个回家固定漏洞，迫使用户使用攻击者已知的Cookie进行登陆。这样当登录成功时Cookie没有发生变化，用户的Cookie自然就泄漏了。测试过程中注意观察登陆成功前后Cookie有没有发生变化。</p>
+<h3 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h3><p>CSRF漏洞也属于会话管理不当导致的。这里就不介绍CSRF的原理了，不知道的可以自行查询。在实际挖掘的过程中，我们要重点关注核心功能处是否存在CSRF。比如修改密码，重置密码，转账，购买，删除，添加等等。这里是一个非常繁琐的过程，不能仅仅从数据包里有没有Refer字段来判断，因为有些应用由团队开发，不同的程序员负责不同的功能模块，程序员的安全开发水平不尽相同。有些程序员不会对数据包中传输的Refer字段做校验。</p>
+<p>这里我分享一下我的经验。在渗透测试过程中，每开始测试一个新功能/模块，我都会进行SQL注入/XSS的尝试。有些安全开发水平比较高的程序员会进行SQL语句参数化查询，XSS前端转义的防御方法。对于这种安全水平很高的程序员开发的模块，我会去验证一到两个CSRF漏洞是否存在，如果都对Refer进行了校验那么我就会认为这个模块不存在CSRF。而对于还存在SQL注入过滤关键词，XSS黑名单过滤等等不是很安全的防御方法所在的模块，我会尽可能的去测试每一个有CSRF漏洞的点。这个经验虽然不能有助于提升CSRF检测的准确性，但是可以大大的提升整个渗透测试流程的效率。</p>
+<p>CSRF存在于每一个GET/POST请求，JSON格式的数据也可以有CSRF，这里分享我写的另一篇文章<a href="https://ama666.cn/2021/02/08/JSON%E6%83%85%E6%99%AF%E4%B8%8B%E7%9A%84CSRF%E6%94%BB%E5%87%BB/#more">JSON情境下的CSRF攻击</a>。使用BurpSuite集成的CSRF POC Generator可以快速的生成测试POC。</p>
+<h2 id="输入验证测试"><a href="#输入验证测试" class="headerlink" title="输入验证测试"></a>输入验证测试</h2><p>我在学习渗透测试的过程中听到的第一句话就是“所有的输入都是不安全的”，这句话很经典，是我们在渗透过程中的心法。SQL注入、XSS、文件上传、RCE等等都是源于用户的输入，本节主要总结的就是面对各种各样的接受输入的功能，作为测试者怎样快速精确的找到漏洞。</p>
+<h3 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h3><p>XSS可能是大家在渗透测试中最经常见到的漏洞了，从测试方法来说没有什么稀奇的。如果前端转义了就可以不看，过滤的话就Fuzz一下看看。我认为XSS在测试中更重要的是覆盖面一定要广，有机会写入HTML的地方都要试试XSS。不仅仅是评论区，比如上传图片/文件名称，还有各种想不到的地方。我见过最奇特的一个XSS是一个调度公告栏，在编辑公告的页面发送编辑数据包，其中有一个key叫做class，大概是分类的意思。我在这个key对应的value地方尝试加入XSS，发送后在该页面没有XSS显示，甚至没找到回显在哪。当我后退到浏览所有公告标题的页面时出发了XSS，F12看了一下源码发现class得value在这个页面被插入到了HTML代码中。</p>
+<p>更自动化一些的XSS测试建议使用Xray联动，P牛主持开发的被动扫描器真的非常好用，缺点是会插入几百条XSS，如果后续还要对该功能测试可能会有些麻烦。</p>
+<h3 id="HTTP方法篡改"><a href="#HTTP方法篡改" class="headerlink" title="HTTP方法篡改"></a>HTTP方法篡改</h3><p>在HTTP1.1所有的HTTP请求方法，除了第一条其他的都尽量禁止。</p>
+<ul>
+<li>GET、POST 正常业务支持的方法</li>
+<li>OPTIONS 查询支持的HTTP方法，在不同目录下执行可能会有不同效果</li>
+<li>PUT 可以用此请求想服务器上传文件</li>
+<li>DELETE 可以删除文件</li>
+<li>TRACE 可以穿越防火墙和代理，回环诊断</li>
+<li>CONNECT CONNECT方法是HTTP/1.1协议预留的，能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接与非加密的HTTP代理服务器的通信。</li>
+</ul>
+<p>大多数情况HTTP危险方法都可以由扫描器直接发现，扫描器的覆盖面肯定要比人来得更广。当有些业务系统需要登录才能访问某些路径而扫描器不支持登陆扫描的时候，要收工对这些登陆后可访问目录进行测试。</p>
+<h3 id="HTTP参数污染"><a href="#HTTP参数污染" class="headerlink" title="HTTP参数污染"></a>HTTP参数污染</h3><p>多个HTTP参数使用相同的名称可能导致应用以不可预料的方式运行。该漏洞曾经对ModSecurity SQL注入的核心规则库造成了影响。ModSecurity过滤器可以正常过滤字符串<code>select 1,2,3 from table</code>，所以当次字符串出现在URL中进行GET请求查询数据库的时候会被过滤。但是攻击者可以让ModSecurity过滤器接受多个同名输入，可以构造这样的URL<code>http://domain/?query=select 1&amp;query=2,3 from table</code>不会出发过滤器，但是在应用层可以组成完整的SQL查询语句。</p>
+<p>这里是不同语言/中间件对于同名参数的处理方式，有些是在中间加上如逗号的特殊符号分割，有些是只取第一个，有些只取最后一个。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210807011015.png" alt></p>
+<p>测试的时候根据此表比对进行测试。</p>
+<h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><p>SQL注入相信大家一定不陌生，这个应该是学习安全入门的第一个漏洞，也是被讨论的最频繁的漏洞之一，早起比较猖獗，随着安全意识的提升SQL注入漏洞的数量在下降，但是依然存在。原理就不细说了，具体的测试、绕过技术也不详细讨论，网上能找到的已经足够用了，本节只谈谈对于寻找SQL注入的经验和提升效率的方法。</p>
+<p>拿到一套业务系统，首先要熟悉这套业务系统的发包参数。如同代码审计先看安装文件和路由一样，黑盒测试虽然看不到代码，但是可以看到一些几乎存在于每一个数据包，或者绝大多数数据包中的参数。首先对这些参数进行SQL注入的尝试，这样后面再遇到同样的参数就可以跳过。其次尽量找到一些很不明显的和数据库有交互的参数点，不要漏过每一个数据包。</p>
+<p>建议使用BurpSuite插件联动SQLmap，有件直接将数据包发送到SQLmap中跑一遍，很有效率。插件的名字叫做``。</p>
+<p>另外就是二次注入是一个很容易被忽视的点，要结合具体的业务系统进行分析。</p>
+<p>如果存在SQL注入漏洞，并且用户拥有写文件权限并且单引号不被转码，可以使用<code>select * from table into outfile &#39;/tmp/file&#39;</code>写文件，这种攻击可以作为一个额外技术，获取一个查询的结果信息或写入文件，可以在Web服务器的目录执行<strong>1 limit 1 into outfile `/var/www/root/test.jsp’ FIELDS ENCLOSED BY `//‘ LINES TERMINATED BY `\n&lt;%jsp code here&amp;&gt;’;</strong>，这样就使用MySQL用户的权限创建了一个文件，里面包含以下内容</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//fiedl value//</span></span><br><span class="line">&lt;%jsp code here%&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>load_file</code>是一个用来读取本地文件的函数，如果用户拥有文件读权限的话，可以使用这个函数来读取文件。</p>
+<p>对于单引号，MySQL终有一个标准的方式绕过单引号，加入想获得Password字段的值<code>password like &#39;A%&#39;</code>，可以使用ASCII<code>password like 0x4125</code>，也可以<code>password like char(65,37)</code>。</p>
+<h3 id="LDAP测试"><a href="#LDAP测试" class="headerlink" title="LDAP测试"></a>LDAP测试</h3><p>我在很早以前曾经复现过一次LDAP注入的漏洞<code>CVE-2017-14596</code>，当时是为了完成红日安全代码审计小组的任务，所以就没有发在博客上，现在很可惜原稿已经找不到了。LDAP是一个轻目录访问协议，Windows域内的认证方式就属于LDAP的一种。LDAP查询有自己的独特的一套语法，如果是刚接触渗透测试时间不久的同学可能还不太了解，我在这里简单介绍一下。</p>
+<p>LDAP协议中会用带很多缩写</p>
+<ul>
+<li>dn(Distinguish Name) 一条位置的记录，对比SQL来说就是一条查询语句，在LDAP中表示一个位置</li>
+<li>dc(Domain Component) 一条记录所属的区域，域名部分</li>
+<li>ou(Organization Unit) 一条记录所属的组织</li>
+<li>cn(Common Name) 用户名或者服务器名</li>
+</ul>
+<p>假如有一个Web应用程序使用了一个搜索过滤器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchfilter=&quot;(cn=&quot; + user +&quot;)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>从URL的角度看传参是这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://domain.com/ldapsearchfilter?user=</span><br></pre></td></tr></table></figure>
+
+<p>如果我们在user后面不输入用户名，而是用一个<code>*</code>代替，在查询代码中就会变成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchfilter=&quot;(cn=*)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样就变成了通配符，辉县市全部用户的属性或者部分用户，这就要去绝育应用程序的执行流了。</p>
+<p>我本人测到的LDAP注入也仅仅只有两个，都是在进行用户身份认证的时候发现的，使用<code>(、\、| 、&amp; 、*</code>等等字符可以测试出LDAP注入。我个人建议使用Burpsuite的Intruder功能，在SQL注入前面加上LDAP注入的测试自负，fuzz一下就可以测出结果。</p>
+<h3 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h3><p>XXE本身需要服务器解析XML文件，在测试的过程中经常看到返回包中的<code>Accept-Content</code>字段中包含XML，但并不是只要包含了XML就能解析，这个需要手动的去测试一下，有时候经常在文件上传的位置发现XXE。</p>
+<p>在测试XXE的时候最好找开发要一个处在同一个网段下的服务器来作为接受带外数据的服务器。因为绝大多数XXE是没有回显的，需要查看Web日志从而获取带外数据信息。开发网和外网是隔绝开的，用外网VPS是接不到带外数据的。</p>
+<h3 id="代码注入"><a href="#代码注入" class="headerlink" title="代码注入"></a>代码注入</h3><p>有些Web功能页面允许用户在Web页面输入代码，并触发Web服务器执行该代码。在代码注入测试中，测试人员提交输入，然后Web服务器把这些输入作为动态代码或者包含文件接受处理。这里所指的代码注入包含了常说的命令注入，经常在Web后台发现。不仅仅是Web应用，有些主机设备的后台管理页面也频繁出现代码注入功能。与Web不同，主机设备的更多是对终端Shell的命令注入，因为主机设备往往不配备数据库，而是使用命令行进行身份认证或是代码执行。</p>
+<p>Web应用上的代码执行更多的是要凭着敏锐的嗅觉找到有可能命令执行的点。这里我把Web应用分为两个大类，第一类就是大开源CMS，类似于ThinkPHP、WordPress、Laravel等等。这一类的开源CMS大多是经历过无数的安全专家进行代码审计以及漏洞挖掘，如果不是功底深厚很难挖掘到代码注入的问题。如果在工作中遇到此类的二次开源CMS，需要重点关注与原生CMS不同的新增功能，调用原生的过滤函数是否恰当，从黑盒的角度就是要去测试新增的与原始CMS不同的功能页面。第二类则是自己开发的Web应用，这些应用中存在代码注入的可能性远远大于第一类，从前端黑盒的角度去推理后端功能代码，找到可能存在代码注入的点进行测试。这种测试要多多寻找，因为你不知道开发的思路是多么的清奇（无贬义）。</p>
+<p>测试代码注入的时候最有效率的方法我认为是连同SQL注入、LDAP注入一起进行Fuzz测试，加入一些例如<code>sleep</code>之类的命令，不得不说Fuzz测试总能带给人惊喜。</p>
+<h3 id="缓冲区域出"><a href="#缓冲区域出" class="headerlink" title="缓冲区域出"></a>缓冲区域出</h3><p>严格来说缓冲区溢出也算在注入类漏洞里面，但是我认为缓冲区溢出靠手工测试很难测出，也许是我能力不够才会有这样的想法。在现代SDLC中，黑盒测试之前是白盒代码审计，缓冲区域出应当扼杀在代码审计的过程中。在黑盒测试的时候，通过扫描器也可以发现缓冲区溢出漏洞，DOS也是同理。</p>
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>文件上传漏洞从寻找的角度来说是非常容易寻找的，因为上传功能从会出现在那么几个固定位置上，头像上传，个人资料上传，数据表但上传等等。但是根据我的经验，我认为文件上传的定义应该再广一些。有些日志可以写入，这样如果日志文件路径暴露也会存在利用危险。还有些工程管理类型的应用也可以创建工单，如果工单存储为一个单独的文件也可以归类为文件上传。有些语言例如CSS，不需要一个完整的文件都符合CSS语法，只需要其中的一部分符合即可。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2021/09/01/OWASP渗透测试秘籍/" title="OWASP渗透测试秘籍">http://ama666.cn/2021/09/01/OWASP渗透测试秘籍/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/01/SSRF之Request-Splitting攻击/" rel="next" title="SSRF之Request Splitting攻击">
+                <i class="fa fa-chevron-left"></i> SSRF之Request Splitting攻击
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#《渗透测试》"><span class="nav-number">1.</span> <span class="nav-text">《渗透测试》</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#信息收集"><span class="nav-number">1.1.</span> <span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#谷歌搜索"><span class="nav-number">1.1.1.</span> <span class="nav-text">谷歌搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务器指纹"><span class="nav-number">1.1.2.</span> <span class="nav-text">Web服务器指纹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务器元文件"><span class="nav-number">1.1.3.</span> <span class="nav-text">Web服务器元文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举Web服务器应用"><span class="nav-number">1.1.4.</span> <span class="nav-text">枚举Web服务器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#识别应用入口"><span class="nav-number">1.1.5.</span> <span class="nav-text">识别应用入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#映射应用程序的执行路径"><span class="nav-number">1.1.6.</span> <span class="nav-text">映射应用程序的执行路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#识别Web应用框架"><span class="nav-number">1.1.7.</span> <span class="nav-text">识别Web应用框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">1.1.8.</span> <span class="nav-text">工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置管理测试"><span class="nav-number">1.2.</span> <span class="nav-text">配置管理测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络与基础设施"><span class="nav-number">1.2.1.</span> <span class="nav-text">网络与基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用平台配置"><span class="nav-number">1.2.2.</span> <span class="nav-text">应用平台配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">1.2.3.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#敏感文件"><span class="nav-number">1.2.4.</span> <span class="nav-text">敏感文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP方法测试"><span class="nav-number">1.2.5.</span> <span class="nav-text">HTTP方法测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#身份管理测试"><span class="nav-number">1.3.</span> <span class="nav-text">身份管理测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册"><span class="nav-number">1.3.1.</span> <span class="nav-text">注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#账户枚举"><span class="nav-number">1.3.2.</span> <span class="nav-text">账户枚举</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#认证测试"><span class="nav-number">1.4.</span> <span class="nav-text">认证测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传输测试"><span class="nav-number">1.4.1.</span> <span class="nav-text">传输测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#账号密码测试"><span class="nav-number">1.4.2.</span> <span class="nav-text">账号密码测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认证绕过"><span class="nav-number">1.4.3.</span> <span class="nav-text">认证绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#授权测试"><span class="nav-number">1.5.</span> <span class="nav-text">授权测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目录遍历-文件包含"><span class="nav-number">1.5.1.</span> <span class="nav-text">目录遍历/文件包含</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#授权绕过"><span class="nav-number">1.5.2.</span> <span class="nav-text">授权绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限提升"><span class="nav-number">1.5.3.</span> <span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#会话管理测试"><span class="nav-number">1.6.</span> <span class="nav-text">会话管理测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#会话框架绕过"><span class="nav-number">1.6.1.</span> <span class="nav-text">会话框架绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie属性"><span class="nav-number">1.6.2.</span> <span class="nav-text">Cookie属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#会话固化测试"><span class="nav-number">1.6.3.</span> <span class="nav-text">会话固化测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF"><span class="nav-number">1.6.4.</span> <span class="nav-text">CSRF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入验证测试"><span class="nav-number">1.7.</span> <span class="nav-text">输入验证测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS"><span class="nav-number">1.7.1.</span> <span class="nav-text">XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP方法篡改"><span class="nav-number">1.7.2.</span> <span class="nav-text">HTTP方法篡改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP参数污染"><span class="nav-number">1.7.3.</span> <span class="nav-text">HTTP参数污染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL注入"><span class="nav-number">1.7.4.</span> <span class="nav-text">SQL注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDAP测试"><span class="nav-number">1.7.5.</span> <span class="nav-text">LDAP测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XXE"><span class="nav-number">1.7.6.</span> <span class="nav-text">XXE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码注入"><span class="nav-number">1.7.7.</span> <span class="nav-text">代码注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓冲区域出"><span class="nav-number">1.7.8.</span> <span class="nav-text">缓冲区域出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传"><span class="nav-number">1.7.9.</span> <span class="nav-text">文件上传</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

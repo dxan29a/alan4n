@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="**                                                           计算机网络** 序： 其实本来是打算看看防火墙，后来发现有点困难，问了问群里的表哥们决定还是先学习一下计算机网络这些的基础知识吧。感觉要真正走得远，除了工具熟练运用之外底层的一些基础概念，架构什么的真的要精通才行。 这篇笔记是阅读户根勤的《网络是怎样连接的》前两章整理出来的纯手">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" 关于计算机网络的一些理解（上）		">
+<meta property="og:url" content="http://ama666.cn/2018/07/18/关于计算机网络的一些理解（上）/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="**                                                           计算机网络** 序： 其实本来是打算看看防火墙，后来发现有点困难，问了问群里的表哥们决定还是先学习一下计算机网络这些的基础知识吧。感觉要真正走得远，除了工具熟练运用之外底层的一些基础概念，架构什么的真的要精通才行。 这篇笔记是阅读户根勤的《网络是怎样连接的》前两章整理出来的纯手">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T21:07:14.594Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" 关于计算机网络的一些理解（上）		">
+<meta name="twitter:description" content="**                                                           计算机网络** 序： 其实本来是打算看看防火墙，后来发现有点困难，问了问群里的表哥们决定还是先学习一下计算机网络这些的基础知识吧。感觉要真正走得远，除了工具熟练运用之外底层的一些基础概念，架构什么的真的要精通才行。 这篇笔记是阅读户根勤的《网络是怎样连接的》前两章整理出来的纯手">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2018/07/18/关于计算机网络的一些理解（上）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> 关于计算机网络的一些理解（上）		 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2018/07/18/关于计算机网络的一些理解（上）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> 关于计算机网络的一些理解（上）		
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-19 08:20:19" itemprop="dateCreated datePublished" datetime="2018-07-19T08:20:19+08:00">2018-07-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-28 05:07:14" itemprop="dateModified" datetime="2019-08-28T05:07:14+08:00">2019-08-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读书笔记/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>**                                                           计算机网络** <strong>序：</strong> 其实本来是打算看看防火墙，后来发现有点困难，问了问群里的表哥们决定还是先学习一下计算机网络这些的基础知识吧。感觉要真正走得远，除了工具熟练运用之外底层的一些基础概念，架构什么的真的要精通才行。 这篇笔记是阅读户根勤的《网络是怎样连接的》前两章整理出来的纯手打白话文，基本上都是我的理解，比较适合对于计算机网络理解不够深入的看一看。书安利给大家，配上书里的图会看的更清楚。书看了一半不到，后边大概还会继续写。我有写的理解的不对的地方恳请大佬谅解并指正，欢迎一起讨论一起进步。 <strong>URL**</strong>：** 每天都在用URL从来没真正好好深入的了解一下。HTTP:<a href="http://www.example.com:port/path/index.phpurl中包含协议，规范，域名，端口号，文件路径和文件" target="_blank" rel="noopener">www.example.com:port/path/index.phpurl中包含协议，规范，域名，端口号，文件路径和文件</a> 重点说说文件路径 其实日常输入url例如<a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a>都省略了文件路径，完整的url应该<a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a>  “/”代表着跟目录。根目录没有一个特定的名字。如果没有添加“/”，服务器一般会设置一个默认访问的文件例如index.html或default.html <strong>IP**</strong>：** IP地址的概念之前也很熟悉了，就是计算机的网络通信地址，是由路由器分配给计算机的。但是一般还会有一个叫做子网掩码的东西存在，例如255.255.255.0 可以把子网掩码转换成二进制11111111。11111111.11111111.00000000 这样理解起来就非常简单 子网掩码为1的地方是网络号，为0的地方就是主机号。例如10.11.12.13/255.255.255.0 其中对应的网络号就是10.11.12，主机号就是13.也可以这样表示10.11.12.13/24 其中24表示的是“1”的个数。特别的，如果主机号全0，代表的是某一个子网而不是一台主机，若主机号都为1，表示的是这个地址对整个子网进行广播。 <strong>DNS**</strong>：** 与IP相对应的就是DNS了。DNS解析域名是分层的。例如<a href="http://www.nikkeibp.co.jp" target="_blank" rel="noopener">www.nikkeibp.co.jp</a>这样一个URL，域是从右向左依次包含的，最上层的jp域代表日本这个国家，co可能是日本国内进行分类的代表公司的域，而nikkeibp就是代表co分配给某个公司的域，www则是这个公司服务器的名称。DNS在进行解析的时候每一个DNS都保管着根域的地址，当请求DNS查询的时候首先找到最近的DNS服务器假设它叫做A，A中保存着根域DNS服务器的地址，A找到根域DNS服务器查询，根域DNS将一级域DNS服务器地址发回给A，一级域服务器中可以查询到二级域服务器的信息，将此信息返回A，A在去访问二级域DNS服务器。以此类推知道查询到IP，A将此IP返回客户端计算机，一次DNS查询完成。 <strong>协议栈：</strong> 我们无论是通过浏览器，还是通过应用程序访问网络，都必须通过协议栈发送网络请求。协议栈是写在操作系统里面的，可以通过Socket库里的方法调用。TCP连接等等都是通过协议栈完成的。协议栈第一层包含了TCP/UDP协议，用来给数据包添加TCP/UDP数据包头。在下一层是IP协议，负责给数据包添加IP包头。协议栈操作网卡发送数据。 <strong>创建套接字：</strong> 套接字中记录了用于控制通信的各种信息，这就是套接字的概念。在连接或者数据传输的一开始先要创建套接字，应用程序调用Socket库中的方法操作协议栈在内存中开辟出一块存储空间（注意此时里面没有内容，是空的）。套接字就创建完成了。 <strong>连接：</strong> 与其叫做连接其实叫做准备更为合适。连接的实际意义就是想通信用的各种控制信息写入到协议栈刚刚开辟出的内存空间中去。首先客户端要发送一个SYN标志位为1的数据包表示请求连接（包里包括了客户端的ip地址，端口号），另一端回复一个SYH=1，ACK=1的数据包表示同意连接（写入客户端的ip/端口并将自己的ip/端口发送给客户端）。客户端再发送一个ACK=1的数据包表示收到同意连接请求（将服务器的ip/端口写入套接字）将连接状态改为正在连接并写入套接字。 <strong>传输：</strong> 数据包的传输过程可能伴随着各种意外，因此TCP协议下有一个数据包收到确认机制ACK码。简单地说ACK表示的是从对放=方那里收到数据的数量。例如客户端一共发送了3000字节的数据包（可能是很多个包，一共3000个字节），服务器在返回的包中ACK=3000，客户端就可以确认服务器收到了所有的包。同样客户端也会给服务器发送ACK确认码。每一个包都有一个序列号，序列号代表着已经发送出去的字节数量。有这样一个公式 收到包ACK = 发送包序列号+发送包字节长度。为了防止根据序列号推算出发送字节长度而带来的安全隐患，第一个包（SYN=1）中要告知服务器一个随机序列号，相应的，服务器也要告知客户端一个序列号（SYN=1，ACK=1）。由于有这样一个确认机制，所以路由器，集线器，网卡等没有错误补偿机制，一旦发生错误便会将包丢弃。但是当网络传输比较忙时，ACK返回速度会变慢，需要动态的调整ACK数据包的等待时间。因此实际上客户端不需要等待ACK的到来就可以将下一个包发出。 实际网络传输的时候，协议栈收到数据包，会先把数据放入缓冲区，然后计算ACK值返回，然后将数据款组合发送给应用程序。如果这些操作还未完成下一个数据包就来了，下一个数据包也会被放入缓冲区。因为为了避免缓冲区溢出，需要及时告知对方缓冲区剩余存储量。每当缓冲区更新时（或者将要存满），就应该将缓冲区剩余量合并入ACK包中一并返回，这种机制叫做滑动窗口。 <strong>断开连接：</strong> 发起断开的一方发送一个FIN=1的数据包，接收方发送ACK号表示收到并发送一个FIN=1的数据包同时断开连接，接受方在返回一个ACK号确认收到。到此一次TCP传输结束。套接字不会立刻删除，因为如果返回的ACK号丢失，那么另一方会再次发送FIN=1来回应。如果新的连接端口号和旧连接一样，那么新连接会误以为是另一方请求断开连接。因为为了避免这种情况的发生，套接字一般会等待几分钟再删除。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="/62.html" title=" 关于计算机网络的一些理解（上）		">62.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/29/关于php反序列化漏洞的学习/" rel="next" title=" 关于php反序列化漏洞的学习		">
+                <i class="fa fa-chevron-left"></i>  关于php反序列化漏洞的学习		
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/19/关于计算机网络的一些理解（下）/" rel="prev" title=" 关于计算机网络的一些理解（下）		">
+                 关于计算机网络的一些理解（下）		 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

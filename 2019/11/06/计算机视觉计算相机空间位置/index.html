@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言这篇博客源自于机器人课的一个作业，所以是全英文的文档。使用了aruco库中的函数和marker来实际评估摄像头在空间中的位置。 Question 1 What is the accuracy of your estimation?  Answer 1​                   ​                         theoretical_gsc = 12345671.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机视觉计算相机空间位置">
+<meta property="og:url" content="http://ama666.cn/2019/11/06/计算机视觉计算相机空间位置/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="前言这篇博客源自于机器人课的一个作业，所以是全英文的文档。使用了aruco库中的函数和marker来实际评估摄像头在空间中的位置。 Question 1 What is the accuracy of your estimation?  Answer 1​                   ​                         theoretical_gsc = 12345671.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001244.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001303.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001328.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001349.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001408.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001505.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001527.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001613.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001632.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001653.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001718.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001738.png">
+<meta property="og:updated_time" content="2019-11-11T06:17:51.782Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机视觉计算相机空间位置">
+<meta name="twitter:description" content="前言这篇博客源自于机器人课的一个作业，所以是全英文的文档。使用了aruco库中的函数和marker来实际评估摄像头在空间中的位置。 Question 1 What is the accuracy of your estimation?  Answer 1​                   ​                         theoretical_gsc = 12345671.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001244.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2019/11/06/计算机视觉计算相机空间位置/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>计算机视觉计算相机空间位置 | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2019/11/06/计算机视觉计算相机空间位置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">计算机视觉计算相机空间位置
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-07 02:00:24" itemprop="dateCreated datePublished" datetime="2019-11-07T02:00:24+08:00">2019-11-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-11-11 14:17:51" itemprop="dateModified" datetime="2019-11-11T14:17:51+08:00">2019-11-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这篇博客源自于机器人课的一个作业，所以是全英文的文档。使用了<strong>aruco</strong>库中的函数和<code>marker</code>来实际评估摄像头在空间中的位置。</p>
+<h3 id="Question-1"><a href="#Question-1" class="headerlink" title="Question 1"></a>Question 1</h3><ul>
+<li>What is the accuracy of your estimation?</li>
+</ul>
+<h3 id="Answer-1"><a href="#Answer-1" class="headerlink" title="Answer 1"></a><strong>Answer 1</strong></h3><p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001244.png" alt>      </p>
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001303.png" alt>            </p>
+<p><strong>theoretical_gsc</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.0000  0        0        0</span><br><span class="line"></span><br><span class="line">0       1.0000   0        0</span><br><span class="line"></span><br><span class="line">0       0        1.0000  -0.6920</span><br><span class="line"></span><br><span class="line">0       0        0        1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>computed_gsc</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9870  -0.0178  0.0866   0.0315</span><br><span class="line"></span><br><span class="line"> 0.0065   0.9967  0.0061   0.0118</span><br><span class="line"></span><br><span class="line">-0.0856  -0.0067  0.9840  -0.9053</span><br><span class="line"></span><br><span class="line"> 0        0       0        1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>accuracy</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.0130  0.0178  -0.0866  -0.0315</span><br><span class="line"></span><br><span class="line">-0.0065  0.0033  -0.0061  -0.0118</span><br><span class="line"></span><br><span class="line"> 0.0856  0.0067   0.0160   0.2133</span><br><span class="line"></span><br><span class="line"> 0       0        0        0</span><br></pre></td></tr></table></figure>
+
+<p><strong>As the data above, accuracy of the estimation is equal to theoretical <code>gsc</code> minus computed <code>gsc</code>.</strong> </p>
+<h3 id="Question-2"><a href="#Question-2" class="headerlink" title="Question 2"></a>Question 2</h3><ul>
+<li>Do you get better accuracy with more markers in step 7? Compare the localization results derived from an image with only 1 marker, 2 markers and 3 markers by averaging the exponential coordinates. Justify with experiment.</li>
+</ul>
+<h3 id="Answer-2"><a href="#Answer-2" class="headerlink" title="Answer 2"></a><strong>Answer 2</strong></h3><p>​           <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001328.png" alt>            </p>
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001349.png" alt>            </p>
+<p><strong>computed_gsc1</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9978    -0.0190    0.0634    0.0164</span><br><span class="line"></span><br><span class="line"> 0.0321    0.9767    -0.2120    0.2187</span><br><span class="line"></span><br><span class="line">-0.0579    0.2136     0.9752   -1.0359</span><br><span class="line"></span><br><span class="line"> 0         0          0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>accuracy1</strong> =</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.0022    0.0190   -0.0634   -0.0164</span><br><span class="line"></span><br><span class="line">-0.0321    0.0233    0.2120   -0.2187</span><br><span class="line"></span><br><span class="line"> 0.0579   -0.2136    0.0248    0.3439</span><br><span class="line"></span><br><span class="line"> 0         0         0         0</span><br></pre></td></tr></table></figure>
+
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001408.png" alt>            </p>
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001505.png" alt>            </p>
+<p><strong>computed_gsc2</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9870   -0.0178    0.0866    0.0315</span><br><span class="line"></span><br><span class="line"> 0.0065    0.9967    0.0061    0.0118</span><br><span class="line"></span><br><span class="line">-0.0856   -0.0067    0.9840   -0.9053</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>accuracy2</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.0130    0.0178   -0.0866   -0.0315</span><br><span class="line"></span><br><span class="line">-0.0065    0.0033   -0.0061   -0.0118</span><br><span class="line"></span><br><span class="line">0.0856     0.0067    0.0160    0.2133</span><br><span class="line"></span><br><span class="line">0          0         0         0</span><br></pre></td></tr></table></figure>
+
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001527.png" alt>            </p>
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001548.png" alt>            </p>
+<p><strong>computed_gsc3</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9918   -0.0150    0.0853    0.0195</span><br><span class="line"></span><br><span class="line"> 0.0086    0.9954    0.0060    0.0076</span><br><span class="line"></span><br><span class="line">-0.0851   -0.0061    0.9875   -0.9382</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>accuracy3</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.0082    0.0150   -0.0853   -0.0195</span><br><span class="line"></span><br><span class="line">-0.0086    0.0046   -0.0060   -0.0076</span><br><span class="line"></span><br><span class="line"> 0.0851    0.0061    0.0125    0.2462</span><br><span class="line"></span><br><span class="line"> 0         0         0         0</span><br></pre></td></tr></table></figure>
+
+<p>When a marker is attached to another plane in three dimensions, the accuracy of the elements in the matrix generated by the computer program is improved. This precise degree of improvement is precisely the same as the matrix generated by multiple marker programs in the same 3D plane.</p>
+<h3 id="Question-3"><a href="#Question-3" class="headerlink" title="Question 3"></a><strong>Question 3</strong></h3><ul>
+<li>In step 7, do you get better accuracy if you combine the results from multiple photos taken at the same position?</li>
+</ul>
+<h3 id="Answer-3"><a href="#Answer-3" class="headerlink" title="Answer 3"></a><strong>Answer 3</strong></h3><p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001613.png" alt>            </p>
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001632.png" alt>            </p>
+<p><strong>computed_gsc1</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9856   -0.0194    0.1244    0.0006</span><br><span class="line"></span><br><span class="line"> 0.0109    0.9984    0.0502   -0.0390</span><br><span class="line"></span><br><span class="line">-0.1250   -0.0494    0.9843   -0.8955</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001653.png" alt>            </p>
+<p><strong>computed_gsc2</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9857   -0.0152    0.1298   -0.0059</span><br><span class="line"></span><br><span class="line"> 0.0064    0.9985    0.0442   -0.0317</span><br><span class="line"></span><br><span class="line">-0.1301   -0.0436    0.9844   -0.8949</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p>​            <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001718.png" alt>            </p>
+<p><strong>computed_gsc3</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9863   -0.0164    0.1275   -0.0044</span><br><span class="line"></span><br><span class="line"> 0.0081    0.9982    0.0584   -0.0475</span><br><span class="line"></span><br><span class="line">-0.1281   -0.0577    0.9847   -0.8919</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>computed_gsc</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.9859   -0.0170    0.1272   -0.0032</span><br><span class="line"></span><br><span class="line"> 0.0085    0.9984    0.0509   -0.0394</span><br><span class="line"></span><br><span class="line">-0.1277   -0.0503    0.9845   -0.8941</span><br><span class="line"></span><br><span class="line"> 0         0         0         1.0000</span><br></pre></td></tr></table></figure>
+
+<p><strong>accuracy</strong> =</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 0.0141    0.0170   -0.1272    0.0032</span><br><span class="line"></span><br><span class="line">-0.0085    0.0016   -0.0509    0.0394</span><br><span class="line"></span><br><span class="line"> 0.1277    0.0503    0.0155    0.2021</span><br><span class="line"></span><br><span class="line"> 0         0         0         0</span><br></pre></td></tr></table></figure>
+
+<p>When combining two images, the accuracy was not significantly increased. It may be because the difference between the two images is small. When we introduced the third image, the accuracy of some elements in the matrix did improve. It may be because we introduced more images, which balanced the accuracy problems caused by various problems. By analogy, we concluded that keeping the camera’s spatial position constant, <strong>combined with more images can be an exact improvement of certain elements in the matrix.</strong></p>
+<h3 id="Question-4"><a href="#Question-4" class="headerlink" title="Question 4"></a><strong>Question 4</strong></h3><ul>
+<li>Assume you are given a mobile robot with camera on board in a relatively large environment (i.e. you may not capture marker from every position of the robot). One possible option, you can use the same technique but placing as many markers as possible so that you will detect at least one marker from any instance. However, <strong>this will come at higher cost</strong>. How would you solve this problem? How you will optimize the usage of markers? Elaborate the strategy.</li>
+</ul>
+<h3 id="Answer-4"><a href="#Answer-4" class="headerlink" title="Answer 4"></a><strong>Answer 4</strong></h3><p>  <img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20191111001738.png" alt>            </p>
+<p>We have summarized <strong>three</strong> methods through multiple measurements. The first is to attach markers in all three three-dimensional planes, so that the z-axis detected by the program will be more accurate. The second method is to keep the position of the camera from multiple angles while maintaining the previous method. The third method is to increase the photo pixels. When the marker is far away from the camera, it will be difficult to recognize or the accuracy of the recognition will decrease. Increasing the camera pixels can improve the recognition accuracy.</p>
+<h3 id="The-difficulties-we-faced-amp-The-strategies-we-adopted"><a href="#The-difficulties-we-faced-amp-The-strategies-we-adopted" class="headerlink" title="The difficulties we faced &amp; The strategies we adopted"></a>The difficulties we faced &amp; The strategies we adopted</h3><ol>
+<li>At the time of encoding, we found that the functions we used in the opencv.aruco class were packaged, which meant that we could not understand the principles of these functions. Therefore, we have to read the documentation again and again to try to fully understand these features.</li>
+<li>Because these functions are written in C++ in tutorials, we have to translate them into python. And the features between C++ and Python raised some issues. For example, python cannot use undefined parameters. Therefore, we have to test each function in Python.</li>
+<li>The code in the tutorials is for “Charucoboard” and we need “Markers”. In order to achieve this goal, we must change some parameters. For example, change the function “ estimatePoseCharucoBoard” to “ estimatePoseSingleMarkers”. These two functions have different kinds of parameters.</li>
+<li>In order to find the spatial frame, we need to display origin[0 0 0] in the camera, which means we need to draw three axes, representing the x, y, and z axes. The problem is that the parameter used by the “estimatePoseSingleMarkers” function is of type numpy.ndarray, we have to create a matrix for that type, otherwise the program will declare an error.</li>
+<li>The program cannot recognize multiple markers at first,  until we loop the function “ drawAxis”. After modifying the code, the issue has been resolved.</li>
+<li>I can’t distinguish the “marker” IDs, so I use “cv2.putText” function to print the ID in the output image.</li>
+<li>Light is an important factor. Accuracy errors are caused by differences in light between calibration and estimation. When estimating, I will try to imitate the same lighting environment.</li>
+<li>We use a Macbook camera, but the camera is already embedded in the laptop. So even we made the camera parallel to the space frame, it is hard to measure the exact distance from the camera to the space frame.</li>
+<li>We use the “Photo Booth” app to capture images. We found that the size of the image output using the “cv2.VideoCapture” function is different from the output image. Therefore, the input images we use are all taken by the same application.</li>
+<li>We don’t have a tape measure, so we made it ourselves. Therefore the distence may not be very accurate. And we also don’t have protractors. Therefore, we can only make the camera perpendicular to the space frame.</li>
+</ol>
+<h4 id="“test-py”"><a href="#“test-py”" class="headerlink" title="“test.py”"></a><strong>“test.py”</strong></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pdb</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">from</span> calculate <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> scipy.linalg <span class="keyword">import</span> expm</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> cv2.aruco <span class="keyword">as</span> aruco</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开摄像头</span></span><br><span class="line">cap = cv2.imread(<span class="string">"../images/image2.jpg"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下三个函数功能为读取FileStorge对象文档中的不同格式数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_node_real</span><span class="params">(reader,name)</span>:</span></span><br><span class="line">	node = reader.getNode(name)</span><br><span class="line">	<span class="keyword">return</span> node.real()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_node_string</span><span class="params">( reader, name )</span>:</span></span><br><span class="line">	node = reader.getNode( name )</span><br><span class="line">	<span class="keyword">return</span> node.string()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_node_matrix</span><span class="params">( reader, name )</span>:</span></span><br><span class="line">	node = reader.getNode( name )</span><br><span class="line">	<span class="keyword">return</span> node.mat()</span><br><span class="line"></span><br><span class="line"><span class="comment"># read defaultConfig.xml presented to</span></span><br><span class="line"><span class="comment"># opencv_interactive-calibration</span></span><br><span class="line"><span class="comment"># 使用FileStorge模块持久化保存数据</span></span><br><span class="line"><span class="comment"># 新建一个FileStorge对象</span></span><br><span class="line">config_reader = cv2.FileStorage()</span><br><span class="line">config_reader.open(<span class="string">"defaultConfig.xml"</span>,cv2.FileStorage_READ)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个cv2.aruco_DetectorParameters类</span></span><br><span class="line"><span class="comment"># 从defaultConfig文件中读取预置信息</span></span><br><span class="line">aruco_parameters = aruco.DetectorParameters_create()</span><br><span class="line"><span class="comment"># name of special dictionary, which has been used for generation of chAruco pattern</span></span><br><span class="line">aruco_dict_num = int(read_node_real(config_reader,<span class="string">"charuco_dict"</span>))</span><br><span class="line"><span class="comment"># 获取指定的字典</span></span><br><span class="line">aruco_dict = aruco.Dictionary_get(aruco_dict_num)</span><br><span class="line"><span class="comment"># size of square on chAruco board (in pixels)</span></span><br><span class="line">charuco_square_length = int(read_node_real( config_reader, <span class="string">"charuco_square_lenght"</span> ))</span><br><span class="line"><span class="comment"># size of Aruco markers on chAruco board</span></span><br><span class="line">charuco_marker_size = int(read_node_real( config_reader, <span class="string">"charuco_marker_size"</span> ))</span><br><span class="line"><span class="comment"># 释放读取链接</span></span><br><span class="line">config_reader.release()</span><br><span class="line"></span><br><span class="line"><span class="comment"># TODO clean this up and use config parameters?</span></span><br><span class="line"><span class="comment"># look up definition o charuco_square_lenght, charuco_marker_size</span></span><br><span class="line"><span class="comment"># 5 was width (x) passed to interactive-calibration</span></span><br><span class="line"><span class="comment"># 7 was height (y) passed to interactive-calibration</span></span><br><span class="line"><span class="comment"># .034 is square_length (meters)</span></span><br><span class="line"><span class="comment"># .02 is marker_size (meters)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># read the cameraParameters.xml file generated by</span></span><br><span class="line"><span class="comment"># opencv_interactive-calibration</span></span><br><span class="line">camera_reader = cv2.FileStorage()</span><br><span class="line">camera_reader.open(<span class="string">"cameraParameters.xml"</span>,cv2.FileStorage_READ)</span><br><span class="line">camera_matrix = read_node_matrix( camera_reader, <span class="string">"cameraMatrix"</span> )</span><br><span class="line">dist_coeffs = read_node_matrix( camera_reader, <span class="string">"dist_coeffs"</span> )</span><br><span class="line">camera_reader.release()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Read frame from Camera</span></span><br><span class="line"><span class="comment"># convert frame to grayscale</span></span><br><span class="line"><span class="comment">#ret, frame = imread(cap)</span></span><br><span class="line">gray = cv2.cvtColor(cap, cv2.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在已经转化为灰度图的输入图像中进行检测，检测输入图像中的Marker，</span></span><br><span class="line"><span class="comment"># 这个Marker应该是在marker dictionary中的，通过参数中指定marker dictionary和其参数信息</span></span><br><span class="line">corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=aruco_parameters) <span class="comment"># 调试成功</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#if(ids is not None):</span></span><br><span class="line">	<span class="comment">#gray = aruco.drawDetectedMarkers(gray, corners)</span></span><br><span class="line">	<span class="comment">#ret, ch_corners, ch_ids = aruco.interpolateCornersCharuco(corners, ids, gray, charuco_board)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(cap <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>):</span><br><span class="line">	rvec,tvec, retval = aruco.estimatePoseSingleMarkers(corners,<span class="number">0.062</span>, camera_matrix, dist_coeffs)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(rvec)):</span><br><span class="line">	frame = aruco.drawAxis(cap,camera_matrix,dist_coeffs,rvec[i],tvec[i],<span class="number">0.03</span>)</span><br><span class="line">	font=cv2.FONT_HERSHEY_SIMPLEX</span><br><span class="line">	frame=cv2.putText(frame,str(ids[i][<span class="number">0</span>]),tuple(corners[i][<span class="number">0</span>][<span class="number">0</span>]),font,<span class="number">1.2</span>,(<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>),<span class="number">3</span>)</span><br><span class="line">	print(ids[i])</span><br><span class="line">	g = find_g(rvec[i],tvec[i])</span><br><span class="line">	print(g)</span><br><span class="line">	print()</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">	cv2.imshow(<span class="string">'frame'</span>, frame)</span><br><span class="line">	<span class="keyword">if</span>( cv2.waitKey(<span class="number">100</span>)==<span class="number">113</span>):</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cap.release()</span><br><span class="line">cv2.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<h4 id="“image1-m”"><a href="#“image1-m”" class="headerlink" title="“image1.m”"></a><strong>“image1.m”</strong></h4><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">gsa = [<span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0.051</span>; <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span> <span class="number">0.139</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span>];</span><br><span class="line">gsb = [<span class="number">0</span> <span class="number">0</span> <span class="number">-1</span> <span class="number">0.155</span>; <span class="number">-1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0.024</span>; <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">-0.356</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span>];</span><br><span class="line">gsd = [<span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">-0.149</span>; <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span> <span class="number">0.133</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span>];</span><br><span class="line">gsc = [<span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">-0.692</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Question 1</span></span><br><span class="line">gca = [[ <span class="number">0.99854884</span> <span class="number">-0.02330514</span> <span class="number">-0.04854972</span> <span class="number">-0.02551754</span>]</span><br><span class="line"> [<span class="number">-0.02677398</span> <span class="number">-0.99704017</span> <span class="number">-0.07206973</span>  <span class="number">0.14063053</span>]</span><br><span class="line"> [<span class="number">-0.04672643</span>  <span class="number">0.07326501</span> <span class="number">-0.99621729</span>  <span class="number">1.02275981</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.01021082</span> <span class="number">-0.21982584</span> <span class="number">-0.97548569</span>  <span class="number">0.12012036</span>]</span><br><span class="line"> [<span class="number">-0.99629306</span> <span class="number">-0.08556718</span>  <span class="number">0.00885396</span>  <span class="number">0.03596653</span>]</span><br><span class="line"> [<span class="number">-0.08541589</span>  <span class="number">0.97177922</span> <span class="number">-0.21988467</span>  <span class="number">0.4696211</span> ]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">computed_gsc = (gsc_a + gsc_b)/<span class="number">2</span></span><br><span class="line">accuracy = gsc - computed_gsc </span><br><span class="line">    </span><br><span class="line"><span class="comment">%% Question 2</span></span><br><span class="line"><span class="comment">% one marker</span></span><br><span class="line">gca = [[ <span class="number">0.99780721</span> <span class="number">-0.03211503</span>  <span class="number">0.05787395</span> <span class="number">-0.02799517</span>]</span><br><span class="line"> [<span class="number">-0.01904964</span> <span class="number">-0.97674173</span> <span class="number">-0.2135713</span>   <span class="number">0.14271754</span>]</span><br><span class="line"> [ <span class="number">0.06338675</span>  <span class="number">0.21200051</span> <span class="number">-0.97521172</span>  <span class="number">1.02927619</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">computed_gsc1 = gsc_a</span><br><span class="line">accuracy1 = gsc - computed_gsc1 </span><br><span class="line"></span><br><span class="line"><span class="comment">% two markers</span></span><br><span class="line">gca = [[ <span class="number">0.99854884</span> <span class="number">-0.02330514</span> <span class="number">-0.04854972</span> <span class="number">-0.02551754</span>]</span><br><span class="line"> [<span class="number">-0.02677398</span> <span class="number">-0.99704017</span> <span class="number">-0.07206973</span>  <span class="number">0.14063053</span>]</span><br><span class="line"> [<span class="number">-0.04672643</span>  <span class="number">0.07326501</span> <span class="number">-0.99621729</span>  <span class="number">1.02275981</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.01021082</span> <span class="number">-0.21982584</span> <span class="number">-0.97548569</span>  <span class="number">0.12012036</span>]</span><br><span class="line"> [<span class="number">-0.99629306</span> <span class="number">-0.08556718</span>  <span class="number">0.00885396</span>  <span class="number">0.03596653</span>]</span><br><span class="line"> [<span class="number">-0.08541589</span>  <span class="number">0.97177922</span> <span class="number">-0.21988467</span>  <span class="number">0.4696211</span> ]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">computed_gsc2 = (gsc_a + gsc_b)/<span class="number">2</span></span><br><span class="line">accuracy2 = gsc - computed_gsc2 </span><br><span class="line"></span><br><span class="line"><span class="comment">% three markers</span></span><br><span class="line">gca = [[ <span class="number">0.99908683</span> <span class="number">-0.02579108</span>  <span class="number">0.03406361</span> <span class="number">-0.02550511</span>]</span><br><span class="line"> [<span class="number">-0.02784908</span> <span class="number">-0.99772514</span>  <span class="number">0.06139205</span>  <span class="number">0.14009828</span>]</span><br><span class="line"> [ <span class="number">0.03240276</span> <span class="number">-0.06228463</span> <span class="number">-0.9975323</span>   <span class="number">1.01798917</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"><span class="built_in">gcd</span> = [[ <span class="number">0.99988767</span> <span class="number">-0.01394673</span>  <span class="number">0.00549023</span> <span class="number">-0.22912949</span>]</span><br><span class="line"> [<span class="number">-0.01314839</span> <span class="number">-0.99201848</span> <span class="number">-0.12540515</span>  <span class="number">0.1297706</span> ]</span><br><span class="line"> [ <span class="number">0.00719541</span>  <span class="number">0.12531888</span> <span class="number">-0.99209042</span>  <span class="number">1.01415894</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.01382854</span> <span class="number">-0.2158119</span>  <span class="number">-0.97633703</span>  <span class="number">0.12000649</span>]</span><br><span class="line"> [<span class="number">-0.99660632</span> <span class="number">-0.08221543</span>  <span class="number">0.00405747</span>  <span class="number">0.03598915</span>]</span><br><span class="line"> [<span class="number">-0.08114561</span>  <span class="number">0.97296755</span> <span class="number">-0.21621642</span>  <span class="number">0.46882808</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">gsc_d = gsd * <span class="built_in">gcd</span>^<span class="number">-1</span>;</span><br><span class="line">computed_gsc3 = (gsc_a + gsc_b + gsc_d)/<span class="number">3</span></span><br><span class="line">accuracy3 = gsc - computed_gsc3 </span><br><span class="line"></span><br><span class="line"><span class="comment">%% Question 3</span></span><br><span class="line"><span class="comment">% first picture</span></span><br><span class="line">gca = [[ <span class="number">0.99959482</span> <span class="number">-0.02535118</span>  <span class="number">0.01294272</span> <span class="number">-0.02845354</span>]</span><br><span class="line"> [<span class="number">-0.02573156</span> <span class="number">-0.99921498</span>  <span class="number">0.03012158</span>  <span class="number">0.14133341</span>]</span><br><span class="line"> [ <span class="number">0.01216894</span> <span class="number">-0.03044241</span> <span class="number">-0.99946244</span>  <span class="number">1.01763545</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.00352658</span> <span class="number">-0.23696025</span> <span class="number">-0.97151294</span>  <span class="number">0.11782594</span>]</span><br><span class="line"> [<span class="number">-0.99754813</span> <span class="number">-0.06873821</span>  <span class="number">0.01314475</span>  <span class="number">0.03733213</span>]</span><br><span class="line"> [<span class="number">-0.06989484</span>  <span class="number">0.96908457</span> <span class="number">-0.23662167</span>  <span class="number">0.46667682</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">computed_gsc1 = (gsc_a + gsc_b)/<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% second picture</span></span><br><span class="line">gca = [[ <span class="number">0.99951179</span> <span class="number">-0.01861803</span>  <span class="number">0.02509074</span> <span class="number">-0.02849498</span>]</span><br><span class="line"> [<span class="number">-0.01901059</span> <span class="number">-0.99969914</span>  <span class="number">0.01549919</span>  <span class="number">0.14049457</span>]</span><br><span class="line"> [ <span class="number">0.02479463</span> <span class="number">-0.01596861</span> <span class="number">-0.99956502</span>  <span class="number">1.01300827</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.00576316</span> <span class="number">-0.23507061</span> <span class="number">-0.97196121</span>  <span class="number">0.11774883</span>]</span><br><span class="line"> [<span class="number">-0.99735577</span> <span class="number">-0.07176713</span>  <span class="number">0.01144328</span>  <span class="number">0.03712797</span>]</span><br><span class="line"> [<span class="number">-0.07244485</span>  <span class="number">0.96932517</span> <span class="number">-0.23486264</span>  <span class="number">0.46739323</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">computed_gsc2 = (gsc_a + gsc_b)/<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% third picture</span></span><br><span class="line">gca = [[ <span class="number">0.99944167</span> <span class="number">-0.02066014</span>  <span class="number">0.02625849</span> <span class="number">-0.02849319</span>]</span><br><span class="line"> [<span class="number">-0.02195326</span> <span class="number">-0.99851036</span>  <span class="number">0.04995111</span>  <span class="number">0.14034252</span>]</span><br><span class="line"> [ <span class="number">0.02518738</span> <span class="number">-0.05049968</span> <span class="number">-0.99840642</span>  <span class="number">1.01302279</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line">gcb = [[ <span class="number">0.00447023</span> <span class="number">-0.23001903</span> <span class="number">-0.97317586</span>  <span class="number">0.11738079</span>]</span><br><span class="line"> [<span class="number">-0.99779231</span> <span class="number">-0.06551089</span>  <span class="number">0.01090079</span>  <span class="number">0.037154</span>  ]</span><br><span class="line"> [<span class="number">-0.06626101</span>  <span class="number">0.97097866</span> <span class="number">-0.22980407</span>  <span class="number">0.46557739</span>]</span><br><span class="line"> [ <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">0.</span>          <span class="number">1.</span>        ]];</span><br><span class="line"></span><br><span class="line">gsc_a = gsa * gca^<span class="number">-1</span>;</span><br><span class="line">gsc_b = gsb * gcb^<span class="number">-1</span>;</span><br><span class="line">computed_gsc3 = (gsc_a + gsc_b)/<span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">computed_gsc = (computed_gsc1 + computed_gsc2 + computed_gsc3)/<span class="number">3</span></span><br><span class="line">accuracy = gsc - computed_gsc</span><br></pre></td></tr></table></figure>
+
+<h4 id="“calculate-py”"><a href="#“calculate-py”" class="headerlink" title="“calculate.py”"></a><strong>“calculate.py”</strong></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.linalg <span class="keyword">import</span> expm</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">norm</span><span class="params">(rvec)</span>:</span></span><br><span class="line">    result = np.linalg.norm(rvec)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_g</span><span class="params">(rvec,tvec)</span>:</span></span><br><span class="line">    rvec = rvec.tolist()[<span class="number">0</span>]</span><br><span class="line">    tvec = tvec.tolist()[<span class="number">0</span>]</span><br><span class="line">    theta = np.linalg.norm(rvec)</span><br><span class="line">    omega_hat = [[<span class="number">0</span>,rvec[<span class="number">2</span>],-rvec[<span class="number">1</span>]],[-rvec[<span class="number">2</span>],<span class="number">0</span>,rvec[<span class="number">0</span>]],[rvec[<span class="number">1</span>],-rvec[<span class="number">0</span>],<span class="number">0</span>]]</span><br><span class="line">    omega_hat = np.matrix(omega_hat)</span><br><span class="line">    rotation_matrix = expm(omega_hat)</span><br><span class="line">    transfer_matrix = np.vstack((rotation_matrix,tvec))</span><br><span class="line">    bottom = np.array([[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>]])</span><br><span class="line">    g = np.insert(transfer_matrix,<span class="number">3</span>,values=bottom,axis=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> g.T</span><br></pre></td></tr></table></figure>
+
+<h4 id="“cameraParameters-xml”"><a href="#“cameraParameters-xml”" class="headerlink" title="“cameraParameters.xml”"></a><strong>“cameraParameters.xml”</strong></h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">opencv_storage</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">calibrationDate</span>&gt;</span>"Sun Nov  3 19:03:29 2019"<span class="tag">&lt;/<span class="name">calibrationDate</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">framesCount</span>&gt;</span>28<span class="tag">&lt;/<span class="name">framesCount</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">cameraResolution</span>&gt;</span></span><br><span class="line">  1280 720<span class="tag">&lt;/<span class="name">cameraResolution</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">cameraMatrix</span> <span class="attr">type_id</span>=<span class="string">"opencv-matrix"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">rows</span>&gt;</span>3<span class="tag">&lt;/<span class="name">rows</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">cols</span>&gt;</span>3<span class="tag">&lt;/<span class="name">cols</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dt</span>&gt;</span>d<span class="tag">&lt;/<span class="name">dt</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">    1.3995684115870210e+03 0. 6.4042196433282515e+02 0.</span><br><span class="line">    1.3995684115870210e+03 3.2833469737463264e+02 0. 0. 1.<span class="tag">&lt;/<span class="name">data</span>&gt;</span><span class="tag">&lt;/<span class="name">cameraMatrix</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">cameraMatrix_std_dev</span> <span class="attr">type_id</span>=<span class="string">"opencv-matrix"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">rows</span>&gt;</span>4<span class="tag">&lt;/<span class="name">rows</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">cols</span>&gt;</span>1<span class="tag">&lt;/<span class="name">cols</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dt</span>&gt;</span>d<span class="tag">&lt;/<span class="name">dt</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">    0. 6.8886840740860379e+01 8.2270976171403483e+00</span><br><span class="line">    1.1045163357904878e+01<span class="tag">&lt;/<span class="name">data</span>&gt;</span><span class="tag">&lt;/<span class="name">cameraMatrix_std_dev</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dist_coeffs</span> <span class="attr">type_id</span>=<span class="string">"opencv-matrix"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">rows</span>&gt;</span>1<span class="tag">&lt;/<span class="name">rows</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">cols</span>&gt;</span>5<span class="tag">&lt;/<span class="name">cols</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dt</span>&gt;</span>d<span class="tag">&lt;/<span class="name">dt</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">    -6.2986200034727241e-02 -7.2876457858523658e-01</span><br><span class="line">    -1.9906188024616939e-02 5.1892453909485681e-03</span><br><span class="line">    -1.8703042483566668e-01<span class="tag">&lt;/<span class="name">data</span>&gt;</span><span class="tag">&lt;/<span class="name">dist_coeffs</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dist_coeffs_std_dev</span> <span class="attr">type_id</span>=<span class="string">"opencv-matrix"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">rows</span>&gt;</span>5<span class="tag">&lt;/<span class="name">rows</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">cols</span>&gt;</span>1<span class="tag">&lt;/<span class="name">cols</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dt</span>&gt;</span>d<span class="tag">&lt;/<span class="name">dt</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">    4.8185464427045591e-02 3.8077815287665395e-01 2.7947511854687353e-03</span><br><span class="line">    2.2180924065219663e-03 9.8407816225896971e-01<span class="tag">&lt;/<span class="name">data</span>&gt;</span><span class="tag">&lt;/<span class="name">dist_coeffs_std_dev</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">avg_reprojection_error</span>&gt;</span>9.6218256866092677e-01<span class="tag">&lt;/<span class="name">avg_reprojection_error</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">opencv_storage</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="“defaultConfig-xml”"><a href="#“defaultConfig-xml”" class="headerlink" title="“defaultConfig.xml”"></a>“defaultConfig.xml”</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">opencv_storage</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">charuco_dict</span>&gt;</span>10<span class="tag">&lt;/<span class="name">charuco_dict</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">charuco_square_lenght</span>&gt;</span>200<span class="tag">&lt;/<span class="name">charuco_square_lenght</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">charuco_marker_size</span>&gt;</span>100<span class="tag">&lt;/<span class="name">charuco_marker_size</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">calibration_step</span>&gt;</span>1<span class="tag">&lt;/<span class="name">calibration_step</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">max_frames_num</span>&gt;</span>30<span class="tag">&lt;/<span class="name">max_frames_num</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">min_frames_num</span>&gt;</span>10<span class="tag">&lt;/<span class="name">min_frames_num</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">solver_eps</span>&gt;</span>1e-7<span class="tag">&lt;/<span class="name">solver_eps</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">solver_max_iters</span>&gt;</span>30<span class="tag">&lt;/<span class="name">solver_max_iters</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">fast_solver</span>&gt;</span>0<span class="tag">&lt;/<span class="name">fast_solver</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">frame_filter_conv_param</span>&gt;</span>0.1<span class="tag">&lt;/<span class="name">frame_filter_conv_param</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">camera_resolution</span>&gt;</span>1280 720<span class="tag">&lt;/<span class="name">camera_resolution</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">opencv_storage</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2019/11/06/计算机视觉计算相机空间位置/" title="计算机视觉计算相机空间位置">http://ama666.cn/2019/11/06/计算机视觉计算相机空间位置/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/25/注入环境/" rel="next" title="宽字节注入">
+                <i class="fa fa-chevron-left"></i> 宽字节注入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/12/反序列化详解-实战/" rel="prev" title="反序列化详解&实战">
+                反序列化详解&实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-1"><span class="nav-number">1.0.1.</span> <span class="nav-text">Question 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Answer-1"><span class="nav-number">1.0.2.</span> <span class="nav-text">Answer 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-2"><span class="nav-number">1.0.3.</span> <span class="nav-text">Question 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Answer-2"><span class="nav-number">1.0.4.</span> <span class="nav-text">Answer 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-3"><span class="nav-number">1.0.5.</span> <span class="nav-text">Question 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Answer-3"><span class="nav-number">1.0.6.</span> <span class="nav-text">Answer 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-4"><span class="nav-number">1.0.7.</span> <span class="nav-text">Question 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Answer-4"><span class="nav-number">1.0.8.</span> <span class="nav-text">Answer 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-difficulties-we-faced-amp-The-strategies-we-adopted"><span class="nav-number">1.0.9.</span> <span class="nav-text">The difficulties we faced &amp; The strategies we adopted</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#“test-py”"><span class="nav-number">1.0.9.1.</span> <span class="nav-text">“test.py”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#“image1-m”"><span class="nav-number">1.0.9.2.</span> <span class="nav-text">“image1.m”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#“calculate-py”"><span class="nav-number">1.0.9.3.</span> <span class="nav-text">“calculate.py”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#“cameraParameters-xml”"><span class="nav-number">1.0.9.4.</span> <span class="nav-text">“cameraParameters.xml”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#“defaultConfig-xml”"><span class="nav-number">1.0.9.5.</span> <span class="nav-text">“defaultConfig.xml”</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
