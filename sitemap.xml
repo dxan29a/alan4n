@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ama666.cn/about/index.html</loc>
+    
+    <lastmod>2021-09-14</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ama666.cn/2021/09/13/%E5%A6%82%E4%BD%95%E7%BB%95%E8%BF%87addslashes/</loc>
     
     <lastmod>2021-09-14</lastmod>
@@ -215,13 +222,6 @@
     <loc>http://ama666.cn/2019/10/25/%E6%B3%A8%E5%85%A5%E7%8E%AF%E5%A2%83/</loc>
     
     <lastmod>2019-10-27</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ama666.cn/about/index.html</loc>
-    
-    <lastmod>2019-10-26</lastmod>
     
   </url>
   
