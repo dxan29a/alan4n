@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ama666.cn/2021/09/13/%E5%A6%82%E4%BD%95%E7%BB%95%E8%BF%87addslashes/</loc>
+    <lastmod>2021-09-14</lastmod>
+  </url>
+  <url>
+    <loc>http://ama666.cn/2021/09/07/SQLInjection-%E7%BB%95%E8%BF%87%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2021-09-12</lastmod>
+  </url>
+  <url>
     <loc>http://ama666.cn/2021/09/01/OWASP%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%A7%98%E7%B1%8D/</loc>
     <lastmod>2021-09-02</lastmod>
   </url>

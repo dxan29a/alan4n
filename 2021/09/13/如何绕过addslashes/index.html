@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何绕过addslashes">
+<meta property="og:url" content="http://ama666.cn/2021/09/13/如何绕过addslashes/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024202.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024502.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914025943.png">
+<meta property="og:updated_time" content="2021-09-14T07:59:53.863Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何绕过addslashes">
+<meta name="twitter:description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2021/09/13/如何绕过addslashes/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>如何绕过addslashes | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2021/09/13/如何绕过addslashes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何绕过addslashes
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-09-14 02:07:07 / 修改时间：15:59:53" itemprop="dateCreated datePublished" datetime="2021-09-14T02:07:07+08:00">2021-09-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="如何绕过addslashes"><a href="#如何绕过addslashes" class="headerlink" title="如何绕过addslashes"></a>如何绕过addslashes</h1><p>相信单反接触过一点点代码审计的朋友都会经常见到<code>addslashes</code>函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住<code>Hack The Box</code>上面的一道题来给大家提供一种绕过addslashes函数的方法。</p>
+<h2 id="LoveTok"><a href="#LoveTok" class="headerlink" title="LoveTok"></a>LoveTok</h2><p>打开网页之后没有可以输入的地方，页面最下方有一个倒计时，看起来距离我找到真爱的时间并不长了，但我是不可能等那么久的。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png" alt></p>
+<p>这道题是一道代码审计的题目，将源代码下载下来打开，从路由开始看起。<code>new</code>函数将有可能出现的批量输入存入数组中，<code>match</code>函数依次执行特定的类中的方法。看到这里我以为是跟反序列化有关的题目，还在仔细研究解析过程，准备为以后构建反序列化字符串铺路。但是路由文件一直看到最底下也没有什么可以利用的地方，最后一个<code>view</code>函数包含了当前路径下的某个php文件，于是我的思路又被引诱到了文件包含漏洞中去。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Router</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $routes = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">new</span><span class="params">($method, $route, $controller)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $r = [</span><br><span class="line">            <span class="string">'method'</span> =&gt; $method,</span><br><span class="line">            <span class="string">'route'</span>  =&gt; $route,</span><br><span class="line">        ];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (is_callable($controller))</span><br><span class="line">        &#123;</span><br><span class="line">            $r[<span class="string">'controller'</span>]    = $controller;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;routes[]     = $r;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (strpos($controller, <span class="string">'@'</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            $split      = explode(<span class="string">'@'</span>, $controller);</span><br><span class="line">            $class      = $split[<span class="number">0</span>];</span><br><span class="line">            $function   = $split[<span class="number">1</span>];</span><br><span class="line">            </span><br><span class="line">            $r[<span class="string">'controller'</span>] = [</span><br><span class="line">                <span class="string">'class'</span>     =&gt; $class,</span><br><span class="line">                <span class="string">'function'</span>  =&gt; $function</span><br><span class="line">            ];</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">$this</span>-&gt;routes[] = $r;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>(<span class="string">'Invalid controller'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">match</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span>(<span class="keyword">$this</span>-&gt;routes <span class="keyword">as</span> $route)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;_match_route($route[<span class="string">'route'</span>]))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> ($route[<span class="string">'method'</span>] != $_SERVER[<span class="string">'REQUEST_METHOD'</span>])</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">$this</span>-&gt;abort(<span class="number">405</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                $params = <span class="keyword">$this</span>-&gt;getRouteParameters($route[<span class="string">'route'</span>]);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (is_array($route[<span class="string">'controller'</span>]))</span><br><span class="line">                &#123;</span><br><span class="line">                    $controller = $route[<span class="string">'controller'</span>];</span><br><span class="line">                    $class      = $controller[<span class="string">'class'</span>];</span><br><span class="line">                    $function   = $controller[<span class="string">'function'</span>];</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> (<span class="keyword">new</span> $class)-&gt;$function(<span class="keyword">$this</span>,$params);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> $route[<span class="string">'controller'</span>](<span class="keyword">$this</span>,$params);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">$this</span>-&gt;abort(<span class="number">404</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">_match_route</span><span class="params">($route)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $uri = explode(<span class="string">'/'</span>, strtok($_SERVER[<span class="string">'REQUEST_URI'</span>], <span class="string">'?'</span>));</span><br><span class="line">        $route = explode(<span class="string">'/'</span>, $route);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (count($uri) != count($route)) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> ($route <span class="keyword">as</span> $key =&gt; $value)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> ($uri[$key] != $value &amp;&amp; $value != <span class="string">'&#123;param&#125;'</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getRouteParameters</span><span class="params">($route)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $params = [];</span><br><span class="line">        $uri = explode(<span class="string">'/'</span>, strtok($_SERVER[<span class="string">'REQUEST_URI'</span>], <span class="string">'?'</span>));</span><br><span class="line">        $route = explode(<span class="string">'/'</span>, $route);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> ($route <span class="keyword">as</span> $key =&gt; $value)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> ($uri[$key] == $value) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> ($value == <span class="string">'&#123;param&#125;'</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> ($uri[$key] == <span class="string">''</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">$this</span>-&gt;abort(<span class="number">404</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                $params[] = $uri[$key];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> $params;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">abort</span><span class="params">($code)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        http_response_code($code);</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">view</span><span class="params">($view, $data = [])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        extract($data);</span><br><span class="line">        <span class="keyword">include</span> <span class="keyword">__DIR__</span>.<span class="string">"/views/$&#123;view&#125;.php"</span>;</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>路由文件没有什么收获，于是我把目光转到了index.php文件中。文件下方调用了<code>new</code>函数，<code>new</code>调用了TimeController类中的index函数，但是函数但是输入都是不可控的。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">date_default_timezone_set(<span class="string">'UTC'</span>);</span><br><span class="line"></span><br><span class="line">spl_autoload_register(<span class="function"><span class="keyword">function</span> <span class="params">($name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (preg_match(<span class="string">'/Controller$/'</span>, $name))</span><br><span class="line">    &#123;</span><br><span class="line">        $name = <span class="string">"controllers/$&#123;name&#125;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (preg_match(<span class="string">'/Model$/'</span>, $name))</span><br><span class="line">    &#123;</span><br><span class="line">        $name = <span class="string">"models/$&#123;name&#125;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">include_once</span> <span class="string">"$&#123;name&#125;.php"</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$router = <span class="keyword">new</span> Router();</span><br><span class="line">$router-&gt;new(<span class="string">'GET'</span>, <span class="string">'/'</span>, <span class="string">'TimeController@index'</span>);</span><br><span class="line"></span><br><span class="line">$response = $router-&gt;match();</span><br><span class="line"></span><br><span class="line"><span class="keyword">die</span>($response);</span><br></pre></td></tr></table></figure>
+
+<p>打开TimeController类文件，终于发现了用户可控的输入<code>format</code>，这个输入被传参传进了TimeModel函数中，被作为<code>date</code>的标识为生命时间的表示方式。到这里问题来了，<code>getTime</code>函数使用了<code>eval</code>这个php危险函数，并且将用户可控输入fromat以拼接的方式传入到了参数中。这里自然想到了RCE，但是很可惜，format在拼接到字符串里面之前经过了addslashes函数，引号前面的反斜线会让eval函数无法正确执行php命令。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TimeController.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeController</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">($router)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $format = <span class="keyword">isset</span>($_GET[<span class="string">'format'</span>]) ? $_GET[<span class="string">'format'</span>] : <span class="string">'r'</span>;</span><br><span class="line">        $time = <span class="keyword">new</span> TimeModel($format);</span><br><span class="line">        <span class="keyword">return</span> $router-&gt;view(<span class="string">'index'</span>, [<span class="string">'time'</span> =&gt; $time-&gt;getTime()]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// TimeModel.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeModel</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($format)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;format = addslashes($format);</span><br><span class="line"></span><br><span class="line">        [ $d, $h, $m, $s ] = [ rand(<span class="number">1</span>, <span class="number">6</span>), rand(<span class="number">1</span>, <span class="number">23</span>), rand(<span class="number">1</span>, <span class="number">59</span>), rand(<span class="number">1</span>, <span class="number">69</span>) ];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;prediction = <span class="string">"+$&#123;d&#125; day +$&#123;h&#125; hour +$&#123;m&#125; minute +$&#123;s&#125; second"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getTime</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="string">'$time = date("'</span> . <span class="keyword">$this</span>-&gt;format . <span class="string">'", strtotime("'</span> . <span class="keyword">$this</span>-&gt;prediction . <span class="string">'"));'</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">isset</span>($time) ? $time : <span class="string">'Something went terribly wrong'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用复杂变量绕过addslashes"><a href="#使用复杂变量绕过addslashes" class="headerlink" title="使用复杂变量绕过addslashes"></a>使用复杂变量绕过addslashes</h2><p>这里介绍一种方法：使用复杂变量绕过addslashes。在PHP中有着很灵活的变量命名方式，可以直接在代码中声明变量名称，也可以用更隐晦的方式来声明变量名称，这种技术在写能过绕过waf的webshell时经常用到。</p>
+<p>PHP中单引号包裹的字符串内容不会被解析，双引号包裹的字符串中变量形式的字符串会被解析。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024202.png" alt></p>
+<p>PHP中任何带有字符串表达式，数组元素或者是对象属性的标量变量都可以使用下面这种语法。只需要将表达式写在字符串之外，然后将其括在花括号中，并带上美元符号<code>${}</code>，花括号中的变量就会被当作变量名称解析。</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024502.png" alt></p>
+<p>接下来我们会到上面的题目中.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;format = addslashes($format);</span><br><span class="line"><span class="keyword">eval</span>(<span class="string">'$time = date("'</span> . <span class="keyword">$this</span>-&gt;format . <span class="string">'", strtotime("'</span> . <span class="keyword">$this</span>-&gt;prediction . <span class="string">'"));'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>为了绕过addslashes函数，我们需要自己定义一个<strong>不会经过addslashes函数的变量</strong>，这个变量的值就是我们想要执行的bash命令结果。以下面的命令为例</p>
+<p><code>123 = system(&#39;whoami&#39;);</code></p>
+<p>变量<code>123</code>并不经过addslashes函数，接下来执行这个变量中的内容。</p>
+<p><code>eval($_GET[123])</code></p>
+<p>注意观察，从一开始的第一条命令中有两个单引号，到现在完全没有任何引号。我们将这个命令的结果写入到花括号之中，让php去解析。</p>
+<p><code>format=${eval($GET[1213])}</code></p>
+<p>到此，原始代码的<code>eval</code>函数应该如下。<code>system(&#39;whoami&#39;)</code>会先执行，结果作为变量<code>123</code>的值拼接进入字符串。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">eval</span>(<span class="string">'$time = date("$&#123;eval($_GET[123])&#125;;", strtotime($this-&gt;prediction));'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看看结果</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914025943.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2021/09/13/如何绕过addslashes/" title="如何绕过addslashes">http://ama666.cn/2021/09/13/如何绕过addslashes/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/07/SQLInjection-绕过技术原理/" rel="next" title="SQLInjection 绕过技术原理">
+                <i class="fa fa-chevron-left"></i> SQLInjection 绕过技术原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">68</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何绕过addslashes"><span class="nav-number">1.</span> <span class="nav-text">如何绕过addslashes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LoveTok"><span class="nav-number">1.1.</span> <span class="nav-text">LoveTok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用复杂变量绕过addslashes"><span class="nav-number">1.2.</span> <span class="nav-text">使用复杂变量绕过addslashes</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
