@@ -99,21 +99,21 @@
 
 
 
-  <meta name="description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+  <meta name="description" content="如何绕过addslashes相信但凡接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何绕过addslashes">
 <meta property="og:url" content="http://ama666.cn/2021/09/13/如何绕过addslashes/index.html">
 <meta property="og:site_name" content="ama666">
-<meta property="og:description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+<meta property="og:description" content="如何绕过addslashes相信但凡接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024202.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914024502.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210914025943.png">
-<meta property="og:updated_time" content="2021-09-14T07:59:53.863Z">
+<meta property="og:updated_time" content="2021-09-14T08:01:22.888Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何绕过addslashes">
-<meta name="twitter:description" content="如何绕过addslashes相信单反接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
+<meta name="twitter:description" content="如何绕过addslashes相信但凡接触过一点点代码审计的朋友都会经常见到addslashes函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住Hack The Box上面的一道题来给大家提供一种绕过addslashes函数的方法。 LoveTok打开网页之后没有可以输入的地方，页面最下方有一个倒计">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png">
 
 
@@ -412,7 +412,7 @@
                 
               
 
-              <time title="创建时间：2021-09-14 02:07:07 / 修改时间：15:59:53" itemprop="dateCreated datePublished" datetime="2021-09-14T02:07:07+08:00">2021-09-14</time>
+              <time title="创建时间：2021-09-14 02:07:07 / 修改时间：16:01:22" itemprop="dateCreated datePublished" datetime="2021-09-14T02:07:07+08:00">2021-09-14</time>
             
 
             
@@ -458,7 +458,7 @@
       
 
       
-        <h1 id="如何绕过addslashes"><a href="#如何绕过addslashes" class="headerlink" title="如何绕过addslashes"></a>如何绕过addslashes</h1><p>相信单反接触过一点点代码审计的朋友都会经常见到<code>addslashes</code>函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住<code>Hack The Box</code>上面的一道题来给大家提供一种绕过addslashes函数的方法。</p>
+        <h1 id="如何绕过addslashes"><a href="#如何绕过addslashes" class="headerlink" title="如何绕过addslashes"></a>如何绕过addslashes</h1><p>相信但凡接触过一点点代码审计的朋友都会经常见到<code>addslashes</code>函数，并且对这个函数又爱又恨。爱它是因为在写报告中的解决方法的时候直接加上addslashes完事，恨它是因为多少条攻击链都折在这个函数下了。今天接住<code>Hack The Box</code>上面的一道题来给大家提供一种绕过addslashes函数的方法。</p>
 <h2 id="LoveTok"><a href="#LoveTok" class="headerlink" title="LoveTok"></a>LoveTok</h2><p>打开网页之后没有可以输入的地方，页面最下方有一个倒计时，看起来距离我找到真爱的时间并不长了，但我是不可能等那么久的。</p>
 <p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/Screen%20Shot%202021-09-14%20at%202.23.37%20AM.png" alt></p>
 <p>这道题是一道代码审计的题目，将源代码下载下来打开，从路由开始看起。<code>new</code>函数将有可能出现的批量输入存入数组中，<code>match</code>函数依次执行特定的类中的方法。看到这里我以为是跟反序列化有关的题目，还在仔细研究解析过程，准备为以后构建反序列化字符串铺路。但是路由文件一直看到最底下也没有什么可以利用的地方，最后一个<code>view</code>函数包含了当前路径下的某个php文件，于是我的思路又被引诱到了文件包含漏洞中去。</p>
