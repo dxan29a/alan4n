@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ama666.cn/2021/05/19/CVE-2021-3129%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2021-10-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ama666.cn/2020/07/31/Hack-The-Box-Magic/</loc>
     
     <lastmod>2021-10-23</lastmod>
@@ -68,13 +75,6 @@
     <loc>http://ama666.cn/2021/09/01/OWASP%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%A7%98%E7%B1%8D/</loc>
     
     <lastmod>2021-10-23</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ama666.cn/2021/05/19/CVE-2021-3129%E8%AF%A6%E8%A7%A3/</loc>
-    
-    <lastmod>2021-10-22</lastmod>
     
   </url>
   
