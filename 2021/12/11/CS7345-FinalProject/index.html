@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="wD6I1h8lGi">
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="GitHub &amp;amp; HexoWhat is Hexo? The explanation of the official website is: hexo is a fast, concise and efficient blog framework. Hexo uses Markdown (or other rendering engines) to parse articles, and">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS7345 FinalProject">
+<meta property="og:url" content="http://ama666.cn/2021/12/11/CS7345-FinalProject/index.html">
+<meta property="og:site_name" content="ama666">
+<meta property="og:description" content="GitHub &amp;amp; HexoWhat is Hexo? The explanation of the official website is: hexo is a fast, concise and efficient blog framework. Hexo uses Markdown (or other rendering engines) to parse articles, and">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024250.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024305.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024321.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024339.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image005.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image006.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image007.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image008.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image009.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image010.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image011.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image012.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image013.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image014.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image015.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image016.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image017.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image018.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image019.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image020.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image021.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image022.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image023.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image024.png">
+<meta property="og:updated_time" content="2021-12-12T08:51:06.989Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CS7345 FinalProject">
+<meta name="twitter:description" content="GitHub &amp;amp; HexoWhat is Hexo? The explanation of the official website is: hexo is a fast, concise and efficient blog framework. Hexo uses Markdown (or other rendering engines) to parse articles, and">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024250.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://ama666.cn/2021/12/11/CS7345-FinalProject/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>CS7345 FinalProject | ama666</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ama666</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">平时多喝点茶</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ama666.cn/2021/12/11/CS7345-FinalProject/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安大侠">
+      <meta itemprop="description" content="每天挣扎的活着">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ama666">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CS7345 FinalProject
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-12-12 02:39:27 / 修改时间：16:51:06" itemprop="dateCreated datePublished" datetime="2021-12-12T02:39:27+08:00">2021-12-12</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GitHub-amp-Hexo"><a href="#GitHub-amp-Hexo" class="headerlink" title="GitHub &amp; Hexo"></a>GitHub &amp; Hexo</h1><p>What is Hexo? The explanation of the official website is: hexo is a fast, concise and efficient blog framework. Hexo uses Markdown (or other rendering engines) to parse articles, and within a few seconds, you can generate static web pages with beautiful themes. My understanding: First, create a warehouse (username.github.io) on the GitHub platform to store the material of the blog, then install git and git-desktop on the personal PC, install the hexo blog framework on the personal PC through git, we are here Write a blog (markdown file) in the local framework, and then push these files to github, and the blog content will be published on the github web page.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024250.png" alt></p>
+<p>Check if Node.JS has been installed in PC.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024305.png" alt></p>
+<p>Install Hexo. Because I have used hexo once, hexo has been installed on my computer.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024321.png" alt></p>
+<p>I made a new folder for this website on desktop. Initialize this directory as the hexo directory.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20211212024339.png" alt></p>
+<p>I can test it on localhost. It has an error because my node.js version is 10.0 not 12.0.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image005.png" alt></p>
+<p>I can fix this error by update Node.JS to 12 or turn off highlight in _config.yml file.</p>
+<p>Then visit localhost:4000 to see the website.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image006.png" alt></p>
+<p>Edit the deploy node in the blog configuration file _config.yml. Remember to replace username with your own username.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image007.png" alt></p>
+<p>Note: The repo in this form is after the SSH Key is configured. If it is not configured, the Https form of address is used.</p>
+<p>In order to be able to deploy Hexo to GitHub, you need to install a plug-in, run the following command in the blog directory</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image008.png" alt></p>
+<p>Execute:</p>
+<p>hexo clean</p>
+<p>hexo g -d</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image009.png" alt></p>
+<p>At this point, the settings of hexo and Github are complete.</p>
+<h1 id="Website"><a href="#Website" class="headerlink" title="Website"></a>Website</h1><p>Since github can only support the use of usernames to access websites in the form of URLs, and has been maintaining the blog I built with hexo+Github, so I will use my blog as the carrier of this final project, based on the original needs to be improved.</p>
+<p>I purchased a domain name on Godaddy, and I have done DNS resolution.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image010.png" alt></p>
+<p>So the website can be visited using this URL:</p>
+<p><a href="https://ama666.cn">https://ama666.cn</a></p>
+<h2 id="Some-awesome-website"><a href="#Some-awesome-website" class="headerlink" title="Some awesome website"></a>Some awesome website</h2><p>I think the official websites of Apple (<a href="https://www.apple.com/" target="_blank" rel="noopener">https://www.apple.com/</a>) and Tesla (<a href="https://www.tesla.com/" target="_blank" rel="noopener">https://www.tesla.com/</a>) give users a very good experience when displaying products. As the user pulls down the webpage, the details of the product are shown to the user bit by bit.</p>
+<p>I still think</p>
+<h2 id="Change-theme"><a href="#Change-theme" class="headerlink" title="Change theme"></a>Change theme</h2><p>Then use the clone method to download the desired theme. (I chose the NexT theme)</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image011.png" alt></p>
+<p>After git cloning is complete, open the “_config.yml” configuration file in the current directory.</p>
+<p>Find the configuration options of the theme, usually at the end of the file. After that, configure the theme option to our newly downloaded next theme. (“:” The space after the colon is indispensable)</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image012.png" alt></p>
+<p>I have tried other themes, but I think the nexT theme is the most suitable for my blog.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image013.png" alt></p>
+<h2 id="Website-Overview"><a href="#Website-Overview" class="headerlink" title="Website Overview"></a>Website Overview</h2><p>The structure of my website is shown in the figure below. The front page is the first page you see when you click into the website, and it contains articles I wrote recently, allowing users to quickly find things of interest. It can also contain the latest research and development products.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image014.png" alt></p>
+<p>The following About is a simple self-introduction to let users know who I am.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image015.png" alt></p>
+<p>Then the Classification tag classifies all the articles in my blog to help users quickly locate the articles they want to read.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image016.png" alt></p>
+<p>Users can click “Read the full text” to read the full text. Only the abstract of the article is provided in the front page, which allows users to quickly understand what the article is about.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image017.png" alt></p>
+<p>My website also provides access control. Some articles are classified or have not yet been published. Because some of the articles are about vulnerabilities, and these vulnerabilities have not been disclosed, encryption is required. Enter the password to see the entire content of the article.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image018.png" alt></p>
+<p>Because people always try new technologies, it is often necessary to migrate blog content. For example, my blog is migrated from Wordpress. The subsequent problem is that the publication date of the article will become the same day. My blog can sort articles according to the date specified in the article and display the specified date. In this way, you only need to write the date in accordance with the format when writing the article, and there will be no trouble mentioned above.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image019.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image020.png" alt></p>
+<h1 id="Custom-Page"><a href="#Custom-Page" class="headerlink" title="Custom Page"></a>Custom Page</h1><p>The articles in the Hexo series of blogs are all static web pages rendered by Hexo themes. Therefore, most of Hexo blogs show a high degree of uniformity and standardization. However, Hexo provides a skip rendering function, which allows us to put custom web pages directly in the blog.</p>
+<p>For example, put pictures in the blog, customize 404.html, customize About page, resume, etc.</p>
+<p>The webpage can be written by yourself, or it can be the source code of others (download the page you like).</p>
+<p>After the web page is written, create a folder in the hexo\source directory (the folder name is arbitrary, for example, I created the “lab” folder. After the deployment is complete, visit <a href="https://ama666.cn/lab/show.html">https://ama666.cn/lab/show.html</a> to see to effect, and so on)</p>
+<p>Place the html file in this folder and rename it to show.html.</p>
+<p>Skip rendering</p>
+<p>There are two ways to skip rendering:</p>
+<p>Add a skip rendering instruction in the html file</p>
+<p>Use an editor to open the show.html file placed in the folder created by \Hexo\source, and add the following code at the beginning</p>
+<p>-–</p>
+<p>layout: false</p>
+<p>-–</p>
+<p>After adding this command, the show.html file will be skipped when the hexo g command is executed, so that show.html is not affected by the current hexo theme and is completely an independent web page. If the web page references css or js, css and js are required Use external links or put css js files into show.html and reference in the same directory.</p>
+<p>Set skip_render in the _config.yml file</p>
+<p>Use an editor to open the _config.yml file in the Hexo directory and find skip_render</p>
+<p>skip_render generally has the following four commonly used parameters:</p>
+<p>Skip test.html in the source directory: skip_render: test.html</p>
+<p>Skip all files in the test folder in the source directory: skip_render: test/*</p>
+<p>Skip all files in the test folder in the source directory, including subfolders and files in subfolders: skip_render: test/**</p>
+<p>Skip multiple paths:</p>
+<p>skip_render:</p>
+<p> -test.html</p>
+<p> -test/*</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image021.png" alt></p>
+<h2 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h2><p>However, it is not possible to put the js file directly in the lab directory. The problem of not being able to reference js will occur. You need to put the js file in the hexo/themes/hexo-theme-next/js/ path.</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image022.png" alt></p>
+<p>This time the custom page is working fine.<img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image023.png" alt></p>
+<p>But don’t enter a number greater than 18, it will cause a error</p>
+<p><img src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/clip_image024.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>安大侠</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://ama666.cn/2021/12/11/CS7345-FinalProject/" title="CS7345 FinalProject">http://ama666.cn/2021/12/11/CS7345-FinalProject/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/13/bypass addslashes/" rel="next" title="How to bypass “addslashes()" 如何绕过addslashes">
+                <i class="fa fa-chevron-left"></i> How to bypass “addslashes()"/如何绕过addslashes
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/Annnnnnnnn/images/master/img/20190616124508.png" alt="安大侠">
+            
+              <p class="site-author-name" itemprop="name">安大侠</p>
+              <div class="site-description motion-element" itemprop="description">每天挣扎的活着</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">67</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://hengyud.cn" title="https://hengyud.cn" rel="noopener" target="_blank">小P</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.lookupes.cn" title="http://blog.lookupes.cn" rel="noopener" target="_blank">孙哥</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://timeshu.github.io" title="https://timeshu.github.io" rel="noopener" target="_blank">Time</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zo1ro.github.io" title="http://zo1ro.github.io" rel="noopener" target="_blank">imy0r1in</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jgeek.cn/" title="https://jgeek.cn/" rel="noopener" target="_blank">\0x584A</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GitHub-amp-Hexo"><span class="nav-number">1.</span> <span class="nav-text">GitHub &amp; Hexo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Website"><span class="nav-number">2.</span> <span class="nav-text">Website</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-awesome-website"><span class="nav-number">2.1.</span> <span class="nav-text">Some awesome website</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Change-theme"><span class="nav-number">2.2.</span> <span class="nav-text">Change theme</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Website-Overview"><span class="nav-number">2.3.</span> <span class="nav-text">Website Overview</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Custom-Page"><span class="nav-number">3.</span> <span class="nav-text">Custom Page</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JS"><span class="nav-number">3.1.</span> <span class="nav-text">JS</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安大侠</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
