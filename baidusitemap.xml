@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ama666.cn/2021/09/01/OWASP%20pentest/</loc>
+    <lastmod>2021-10-26</lastmod>
+  </url>
+  <url>
     <loc>http://ama666.cn/2021/05/19/Research%20on%20CVE-2021-3129/</loc>
     <lastmod>2021-10-23</lastmod>
   </url>
@@ -38,10 +42,6 @@
   </url>
   <url>
     <loc>http://ama666.cn/2021/09/13/bypass%20addslashes/</loc>
-    <lastmod>2021-10-23</lastmod>
-  </url>
-  <url>
-    <loc>http://ama666.cn/2021/09/01/OWASP%20pentest/</loc>
     <lastmod>2021-10-23</lastmod>
   </url>
   <url>

@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ama666.cn/lab/show.html</loc>
+    
+    <lastmod>2021-12-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ama666.cn/2021/09/01/OWASP%20pentest/</loc>
+    
+    <lastmod>2021-10-26</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ama666.cn/2021/05/19/Research%20on%20CVE-2021-3129/</loc>
     
     <lastmod>2021-10-23</lastmod>
@@ -66,13 +80,6 @@
   
   <url>
     <loc>http://ama666.cn/2021/09/13/bypass%20addslashes/</loc>
-    
-    <lastmod>2021-10-23</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ama666.cn/2021/09/01/OWASP%20pentest/</loc>
     
     <lastmod>2021-10-23</lastmod>
     
@@ -501,7 +508,7 @@
 
   <url>
     <loc>http://ama666.cn/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -509,21 +516,21 @@
   
   <url>
     <loc>http://ama666.cn/tags/%E7%BA%A2%E9%98%9F%E5%AE%9E%E9%AA%8C%E7%BF%BB%E8%AF%91/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/tags/php%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90%E4%B8%8A/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/tags/%E5%B0%8F%E7%99%BD%E6%88%90%E9%95%BF%E8%AE%A1%E5%88%92/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -532,84 +539,84 @@
   
   <url>
     <loc>http://ama666.cn/categories/php%E5%AE%A1%E8%AE%A1/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/%E7%BA%A2%E9%98%9F%E5%AE%9E%E9%AA%8C%E7%BF%BB%E8%AF%91/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/LDAP/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/SQL%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/CTF%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/Python/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/%E4%BB%8EPoc%E5%BC%80%E5%A7%8B/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/%E5%B0%8F%E7%99%BD%E6%88%90%E9%95%BF%E8%AE%A1%E5%88%92/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/php%E5%AE%A1%E8%AE%A1-CTF%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://ama666.cn/categories/php%E5%AE%A1%E8%AE%A1-%E4%BB%8EPoc%E5%BC%80%E5%A7%8B/</loc>
-    <lastmod>2021-10-23</lastmod>
+    <lastmod>2021-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
