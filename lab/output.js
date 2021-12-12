@@ -883,12 +883,19 @@ function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
     // See http://unicode.org/faq/utf_bom.html#utf16-3
     // For UTF8 byte structure, see http://en.wikipedia.org/wiki/UTF-8#Description and https://www.ietf.org/rfc/rfc2279.txt and https://tools.ietf.org/html/rfc3629
     var u = str.charCodeAt(i); // possibly a lead surrogate
-    if (u >= 0xD800 && u <= 0xdfff) { var u1="str.charCodeAt(++i);" u="0x10000" + ((u & 0x3ff) << 10) | (u1 0x3ff); } if (u <="0x7F)" (outidx>= endIdx) break;
+    if (u >= 0xD800 && u <= 0xDFFF) {
+      var u1 = str.charCodeAt(++i);
+      u = 0x10000 + ((u & 0x3FF) << 10) | (u1 & 0x3FF);
+    }
+    if (u <= 0x7F) {
+      if (outIdx >= endIdx) break;
       heap[outIdx++] = u;
-    } else if (u <= 1 0x7ff) { if (outidx +>= endIdx) break;
+    } else if (u <= 0x7FF) {
+      if (outIdx + 1 >= endIdx) break;
       heap[outIdx++] = 0xC0 | (u >> 6);
       heap[outIdx++] = 0x80 | (u & 63);
-    } else if (u <= 2 0xffff) { if (outidx +>= endIdx) break;
+    } else if (u <= 0xFFFF) {
+      if (outIdx + 2 >= endIdx) break;
       heap[outIdx++] = 0xE0 | (u >> 12);
       heap[outIdx++] = 0x80 | ((u >> 6) & 63);
       heap[outIdx++] = 0x80 | (u & 63);
@@ -923,7 +930,28 @@ function lengthBytesUTF8(str) {
     // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! So decode UTF16->UTF32->UTF8.
     // See http://unicode.org/faq/utf_bom.html#utf16-3
     var u = str.charCodeAt(i); // possibly a lead surrogate
-    if (u >= 0xD800 && u <= 0xdfff) u="0x10000" + ((u & 0x3ff) << 10) | (str.charcodeat(++i) 0x3ff); if (u <="0x7F)" ++len; else len } return len; end include: runtime_strings.js runtime_strings_extra.js runtime_strings_extra.js: strings related runtime functions that are available only in regular runtime. given a pointer 'ptr' to null-terminated ascii-encoded string the emscripten heap, returns copy of as javascript object. function asciitostring(ptr) { var str ; while (1) ch="HEAPU8[((ptr++)">>0)];
+    if (u >= 0xD800 && u <= 0xDFFF) u = 0x10000 + ((u & 0x3FF) << 10) | (str.charCodeAt(++i) & 0x3FF);
+    if (u <= 0x7F) ++len;
+    else if (u <= 0x7FF) len += 2;
+    else if (u <= 0xFFFF) len += 3;
+    else len += 4;
+  }
+  return len;
+}
+
+// end include: runtime_strings.js
+// include: runtime_strings_extra.js
+
+
+// runtime_strings_extra.js: Strings related runtime functions that are available only in regular runtime.
+
+// Given a pointer 'ptr' to a null-terminated ASCII-encoded string in the emscripten HEAP, returns
+// a copy of that string as a Javascript String object.
+
+function AsciiToString(ptr) {
+  var str = '';
+  while (1) {
+    var ch = HEAPU8[((ptr++)>>0)];
     if (!ch) return str;
     str += String.fromCharCode(ch);
   }
@@ -979,7 +1007,24 @@ function UTF16ToString(ptr, maxBytesToRead) {
 //   outPtr: Byte address in Emscripten HEAP where to write the string to.
 //   maxBytesToWrite: The maximum number of bytes this function can write to the array. This count should include the null
 //                    terminator, i.e. if maxBytesToWrite=2, only the null terminator will be written and nothing else.
-//                    maxBytesToWrite<2 2="=" does not write any bytes to the output, even null terminator. returns number of written, excluding function stringtoutf16(str, outptr, maxbytestowrite) { assert(outptr % 0, 'pointer passed stringtoutf16 must be aligned two bytes!'); assert(typeof maxbytestowrite="=" 'number', 'stringtoutf16(str, is missing third parameter that specifies length output buffer!'); backwards compatibility: if max specified, assume unsafe unbounded allowed. (maxbytestowrite="==" undefined) } < 2) return 0; -="2;" var startptr="outPtr;" numcharstowrite="(maxBytesToWrite" str.length*2) ? : str.length; for (var i="0;" numcharstowrite; ++i) charcodeat a utf-16 encoded code unit, so it can directly written heap. codeunit="str.charCodeAt(i);" possibly lead surrogate heap16[((outptr)>>1)] = codeUnit;
+//                    maxBytesToWrite<2 does not write any bytes to the output, not even the null terminator.
+// Returns the number of bytes written, EXCLUDING the null terminator.
+
+function stringToUTF16(str, outPtr, maxBytesToWrite) {
+  assert(outPtr % 2 == 0, 'Pointer passed to stringToUTF16 must be aligned to two bytes!');
+  assert(typeof maxBytesToWrite == 'number', 'stringToUTF16(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
+  // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
+  if (maxBytesToWrite === undefined) {
+    maxBytesToWrite = 0x7FFFFFFF;
+  }
+  if (maxBytesToWrite < 2) return 0;
+  maxBytesToWrite -= 2; // Null terminator.
+  var startPtr = outPtr;
+  var numCharsToWrite = (maxBytesToWrite < str.length*2) ? (maxBytesToWrite / 2) : str.length;
+  for (var i = 0; i < numCharsToWrite; ++i) {
+    // charCodeAt returns a UTF-16 encoded code unit, so it can be directly written to the HEAP.
+    var codeUnit = str.charCodeAt(i); // possibly a lead surrogate
+    HEAP16[((outPtr)>>1)] = codeUnit;
     outPtr += 2;
   }
   // Null-terminate the pointer to the HEAP.
@@ -1024,7 +1069,28 @@ function UTF32ToString(ptr, maxBytesToRead) {
 //   outPtr: Byte address in Emscripten HEAP where to write the string to.
 //   maxBytesToWrite: The maximum number of bytes this function can write to the array. This count should include the null
 //                    terminator, i.e. if maxBytesToWrite=4, only the null terminator will be written and nothing else.
-//                    maxBytesToWrite<4 4="=" does not write any bytes to the output, even null terminator. returns number of written, excluding function stringtoutf32(str, outptr, maxbytestowrite) { assert(outptr % 0, 'pointer passed stringtoutf32 must be aligned four bytes!'); assert(typeof maxbytestowrite="=" 'number', 'stringtoutf32(str, is missing third parameter that specifies length output buffer!'); backwards compatibility: if max specified, assume unsafe unbounded allowed. (maxbytestowrite="==" undefined) } < 4) return 0; var startptr="outPtr;" endptr="startPtr" + - 4; for (var i="0;" str.length; ++i) gotcha: charcodeat a 16-bit word utf-16 encoded code unit, unicode point character! we decode string utf-32 heap. see http: unicode.org faq utf_bom.html#utf16-3 codeunit="str.charCodeAt(i);" possibly lead surrogate (codeunit>= 0xD800 && codeUnit <= 0xdfff) { var trailsurrogate="str.charCodeAt(++i);" codeunit="0x10000" + ((codeunit & 0x3ff) << 10) | (trailsurrogate 0x3ff); } heap32[((outptr)>>2)] = codeUnit;
+//                    maxBytesToWrite<4 does not write any bytes to the output, not even the null terminator.
+// Returns the number of bytes written, EXCLUDING the null terminator.
+
+function stringToUTF32(str, outPtr, maxBytesToWrite) {
+  assert(outPtr % 4 == 0, 'Pointer passed to stringToUTF32 must be aligned to four bytes!');
+  assert(typeof maxBytesToWrite == 'number', 'stringToUTF32(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
+  // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
+  if (maxBytesToWrite === undefined) {
+    maxBytesToWrite = 0x7FFFFFFF;
+  }
+  if (maxBytesToWrite < 4) return 0;
+  var startPtr = outPtr;
+  var endPtr = startPtr + maxBytesToWrite - 4;
+  for (var i = 0; i < str.length; ++i) {
+    // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! We must decode the string to UTF-32 to the heap.
+    // See http://unicode.org/faq/utf_bom.html#utf16-3
+    var codeUnit = str.charCodeAt(i); // possibly a lead surrogate
+    if (codeUnit >= 0xD800 && codeUnit <= 0xDFFF) {
+      var trailSurrogate = str.charCodeAt(++i);
+      codeUnit = 0x10000 + ((codeUnit & 0x3FF) << 10) | (trailSurrogate & 0x3FF);
+    }
+    HEAP32[((outPtr)>>2)] = codeUnit;
     outPtr += 4;
     if (outPtr + 4 > endPtr) break;
   }
@@ -1041,7 +1107,53 @@ function lengthBytesUTF32(str) {
     // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! We must decode the string to UTF-32 to the heap.
     // See http://unicode.org/faq/utf_bom.html#utf16-3
     var codeUnit = str.charCodeAt(i);
-    if (codeUnit >= 0xD800 && codeUnit <= 0xdfff) ++i; possibly a lead surrogate, so skip over the tail surrogate. len +="4;" } return len; allocate heap space for js string, and write it there. is responsibility of caller to free() that memory. function allocateutf8(str) { var size="lengthBytesUTF8(str)" 1; ret="_malloc(size);" if (ret) stringtoutf8array(str, heap8, ret, size); ret; stack allocateutf8onstack(str) deprecated: this should not be called because unsafe does provide maximum length limit how many bytes allowed write. prefer calling stringtoutf8array() instead, which takes in can used secure from out bounds writes. ** @deprecated @param {boolean="}" dontaddnull * writestringtomemory(string, buffer, dontaddnull) warnonce('writestringtomemory deprecated called! use stringtoutf8() instead!'); @type {number} lastchar, end; (dontaddnull) stringtoutf8array always appends null. we don't want do that, remember character existed at location where null will placed, restore after (below). end="buffer" lengthbytesutf8(string); lastchar="HEAP8[end];" stringtoutf8(string, infinity); heap8[end]="lastChar;" value under character. writearraytomemory(array, buffer) assert(array.length>= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
+    if (codeUnit >= 0xD800 && codeUnit <= 0xDFFF) ++i; // possibly a lead surrogate, so skip over the tail surrogate.
+    len += 4;
+  }
+
+  return len;
+}
+
+// Allocate heap space for a JS string, and write it there.
+// It is the responsibility of the caller to free() that memory.
+function allocateUTF8(str) {
+  var size = lengthBytesUTF8(str) + 1;
+  var ret = _malloc(size);
+  if (ret) stringToUTF8Array(str, HEAP8, ret, size);
+  return ret;
+}
+
+// Allocate stack space for a JS string, and write it there.
+function allocateUTF8OnStack(str) {
+  var size = lengthBytesUTF8(str) + 1;
+  var ret = stackAlloc(size);
+  stringToUTF8Array(str, HEAP8, ret, size);
+  return ret;
+}
+
+// Deprecated: This function should not be called because it is unsafe and does not provide
+// a maximum length limit of how many bytes it is allowed to write. Prefer calling the
+// function stringToUTF8Array() instead, which takes in a maximum length that can be used
+// to be secure from out of bounds writes.
+/** @deprecated
+    @param {boolean=} dontAddNull */
+function writeStringToMemory(string, buffer, dontAddNull) {
+  warnOnce('writeStringToMemory is deprecated and should not be called! Use stringToUTF8() instead!');
+
+  var /** @type {number} */ lastChar, /** @type {number} */ end;
+  if (dontAddNull) {
+    // stringToUTF8Array always appends null. If we don't want to do that, remember the
+    // character that existed at the location where the null will be placed, and restore
+    // that after the write (below).
+    end = buffer + lengthBytesUTF8(string);
+    lastChar = HEAP8[end];
+  }
+  stringToUTF8(string, buffer, Infinity);
+  if (dontAddNull) HEAP8[end] = lastChar; // Restore the value under the null character.
+}
+
+function writeArrayToMemory(array, buffer) {
+  assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
   HEAP8.set(array, buffer);
 }
 
@@ -1368,7 +1480,7 @@ function abort(what) {
   throw e;
 }
 
-// 
+// {{MEM_INITIALIZER}}
 
 // include: memoryprofiler.js
 
@@ -2195,7 +2307,10 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
         var prevCapacity = node.contents ? node.contents.length : 0;
         if (prevCapacity >= newCapacity) return; // No need to expand, the storage was already large enough.
         // Don't expand strictly to the given requested limit if it's only a very small increase, but instead geometrically grow capacity.
-        // For small filesizes (<1mb), perform size*2 geometric increase, but for large sizes, do a much more conservative size*1.125 increase to avoid overshooting the allocation cap by very margin. var capacity_doubling_max="1024" * 1024; newcapacity="Math.max(newCapacity," (prevcapacity < ? 2.0 : 1.125))>>> 0);
+        // For small filesizes (<1MB), perform size*2 geometric increase, but for large sizes, do a much more conservative size*1.125 increase to
+        // avoid overshooting the allocation cap by a very large margin.
+        var CAPACITY_DOUBLING_MAX = 1024 * 1024;
+        newCapacity = Math.max(newCapacity, (prevCapacity * (prevCapacity < CAPACITY_DOUBLING_MAX ? 2.0 : 1.125)) >>> 0);
         if (prevCapacity != 0) newCapacity = Math.max(newCapacity, 256); // At minimum allocate 256b for each file when expanding.
         var oldContents = node.contents;
         node.contents = new Uint8Array(newCapacity); // Allocate new storage.
@@ -2332,7 +2447,60 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
               node.contents = buffer.slice(offset, offset + length);
               node.usedBytes = length;
               return length;
-            } else if (position + length <= node.usedbytes) { writing to an already allocated and used subrange of the file? node.contents.set(buffer.subarray(offset, offset + length), position); return length; } appending existing file we need reallocate, or source data did not come as a typed array. memfs.expandfilestorage(node, position+length); if (node.contents.subarray && buffer.subarray) use array write which is available. else for (var i="0;" < i++) node.contents[position i]="buffer[offset" i]; fall back manual not. node.usedbytes="Math.max(node.usedBytes," position length); },llseek:function(stream, offset, whence) var (whence="==" 1) 2) (fs.isfile(stream.node.mode)) (position 0) throw new fs.errnoerror(28); position; },allocate:function(stream, length) memfs.expandfilestorage(stream.node, stream.node.usedbytes="Math.max(stream.node.usedBytes," },mmap:function(stream, address, length, position, prot, flags) (address !="=" don't currently support location hints address mapping (!fs.isfile(stream.node.mode)) fs.errnoerror(43); ptr; allocated; contents="stream.node.contents;" only make copy when map_private specified. (!(flags & contents.buffer="==" buffer) can't emulate map_shared backed by buffer we're (e.g. heap buffer). ptr="contents.byteOffset;" try avoid unnecessary slices.> 0 || position + length < contents.length) {
+            } else if (position + length <= node.usedBytes) { // Writing to an already allocated and used subrange of the file?
+              node.contents.set(buffer.subarray(offset, offset + length), position);
+              return length;
+            }
+          }
+  
+          // Appending to an existing file and we need to reallocate, or source data did not come as a typed array.
+          MEMFS.expandFileStorage(node, position+length);
+          if (node.contents.subarray && buffer.subarray) {
+            // Use typed array write which is available.
+            node.contents.set(buffer.subarray(offset, offset + length), position);
+          } else {
+            for (var i = 0; i < length; i++) {
+             node.contents[position + i] = buffer[offset + i]; // Or fall back to manual write if not.
+            }
+          }
+          node.usedBytes = Math.max(node.usedBytes, position + length);
+          return length;
+        },llseek:function(stream, offset, whence) {
+          var position = offset;
+          if (whence === 1) {
+            position += stream.position;
+          } else if (whence === 2) {
+            if (FS.isFile(stream.node.mode)) {
+              position += stream.node.usedBytes;
+            }
+          }
+          if (position < 0) {
+            throw new FS.ErrnoError(28);
+          }
+          return position;
+        },allocate:function(stream, offset, length) {
+          MEMFS.expandFileStorage(stream.node, offset + length);
+          stream.node.usedBytes = Math.max(stream.node.usedBytes, offset + length);
+        },mmap:function(stream, address, length, position, prot, flags) {
+          if (address !== 0) {
+            // We don't currently support location hints for the address of the mapping
+            throw new FS.ErrnoError(28);
+          }
+          if (!FS.isFile(stream.node.mode)) {
+            throw new FS.ErrnoError(43);
+          }
+          var ptr;
+          var allocated;
+          var contents = stream.node.contents;
+          // Only make a new copy when MAP_PRIVATE is specified.
+          if (!(flags & 2) && contents.buffer === buffer) {
+            // We can't emulate MAP_SHARED when the file is not backed by the buffer
+            // we're mapping to (e.g. the HEAP buffer).
+            allocated = false;
+            ptr = contents.byteOffset;
+          } else {
+            // Try to avoid unnecessary slices.
+            if (position > 0 || position + length < contents.length) {
               if (contents.subarray) {
                 contents = contents.subarray(position, position + length);
               } else {
@@ -2599,7 +2767,57 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
       },MAX_OPEN_FDS:4096,nextfd:function(fd_start, fd_end) {
         fd_start = fd_start || 0;
         fd_end = fd_end || FS.MAX_OPEN_FDS;
-        for (var fd = fd_start; fd <= fd_end; fd++) { if (!fs.streams[fd]) return fd; } throw new fs.errnoerror(33); },getstream:function(fd) fs.streams[fd]; },createstream:function(stream, fd_start, fd_end) (!fs.fsstream) fs.fsstream="/**" @constructor * function(){}; fs.fsstream.prototype="{" object: get: function() this.node; }, set: function(val) this.node="val;" isread: (this.flags & 2097155) !="=" 1; iswrite: 0; isappend: 1024); }; clone it, so we can an instance of fsstream var newstream="new" fs.fsstream(); for (var p in stream) newstream[p]="stream[p];" stream="newStream;" fd="FS.nextfd(fd_start," fd_end); stream.fd="fd;" fs.streams[fd]="stream;" stream; },closestream:function(fd) },chrdev_stream_ops:{open:function(stream) device="FS.getDevice(stream.node.rdev);" override node's ops with the device's stream.stream_ops="device.stream_ops;" forward open call (stream.stream_ops.open) stream.stream_ops.open(stream); },llseek:function() fs.errnoerror(70); }},major:function(dev) ((dev)>> 8);
+        for (var fd = fd_start; fd <= fd_end; fd++) {
+          if (!FS.streams[fd]) {
+            return fd;
+          }
+        }
+        throw new FS.ErrnoError(33);
+      },getStream:function(fd) {
+        return FS.streams[fd];
+      },createStream:function(stream, fd_start, fd_end) {
+        if (!FS.FSStream) {
+          FS.FSStream = /** @constructor */ function(){};
+          FS.FSStream.prototype = {
+            object: {
+              get: function() { return this.node; },
+              set: function(val) { this.node = val; }
+            },
+            isRead: {
+              get: function() { return (this.flags & 2097155) !== 1; }
+            },
+            isWrite: {
+              get: function() { return (this.flags & 2097155) !== 0; }
+            },
+            isAppend: {
+              get: function() { return (this.flags & 1024); }
+            }
+          };
+        }
+        // clone it, so we can return an instance of FSStream
+        var newStream = new FS.FSStream();
+        for (var p in stream) {
+          newStream[p] = stream[p];
+        }
+        stream = newStream;
+        var fd = FS.nextfd(fd_start, fd_end);
+        stream.fd = fd;
+        FS.streams[fd] = stream;
+        return stream;
+      },closeStream:function(fd) {
+        FS.streams[fd] = null;
+      },chrdev_stream_ops:{open:function(stream) {
+          var device = FS.getDevice(stream.node.rdev);
+          // override node's stream ops with the device's
+          stream.stream_ops = device.stream_ops;
+          // forward the open call
+          if (stream.stream_ops.open) {
+            stream.stream_ops.open(stream);
+          }
+        },llseek:function() {
+          throw new FS.ErrnoError(70);
+        }},major:function(dev) {
+        return ((dev) >> 8);
       },minor:function(dev) {
         return ((dev) & 0xff);
       },makedev:function(ma, mi) {
@@ -3280,7 +3498,129 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
         if (FS.isClosed(stream)) {
           throw new FS.ErrnoError(8);
         }
-        if (offset < 0 || length <= 0 6 0) { throw new fs.errnoerror(28); } if ((stream.flags & 2097155)="==" fs.errnoerror(8); (!fs.isfile(stream.node.mode) && !fs.isdir(stream.node.mode)) fs.errnoerror(43); (!stream.stream_ops.allocate) fs.errnoerror(138); stream.stream_ops.allocate(stream, offset, length); },mmap:function(stream, address, length, position, prot, flags) user requests writing to file (prot prot_write !="0)." checking we have permissions write the unless map_private flag is set. according posix spec it possible opened in read-only mode with flag, as all modifications will be visible only memory of current process. ((prot 2) (flags (stream.flags fs.errnoerror(2); 1) (!stream.stream_ops.mmap) return stream.stream_ops.mmap(stream, flags); },msync:function(stream, buffer, mmapflags) (!stream || !stream.stream_ops.msync) 0; stream.stream_ops.msync(stream, mmapflags); },munmap:function(stream) },ioctl:function(stream, cmd, arg) (!stream.stream_ops.ioctl) fs.errnoerror(59); stream.stream_ops.ioctl(stream, arg); },readfile:function(path, opts) opts="opts" {}; opts.flags="opts.flags" opts.encoding="opts.encoding" 'binary'; (opts.encoding 'utf8' 'binary') error('invalid encoding type "' + '"'); var ret; stream="FS.open(path," opts.flags); stat="FS.stat(path);" length="stat.size;" buf="new" uint8array(length); fs.read(stream, buf, 0, 0); 'utf8') ret="UTF8ArrayToString(buf," else fs.close(stream); },writefile:function(path, data, 577; opts.flags, opts.mode); (typeof data="==" 'string') uint8array(lengthbytesutf8(data)+1); actualnumbytes="stringToUTF8Array(data," buf.length); fs.write(stream, actualnumbytes, undefined, opts.canown); (arraybuffer.isview(data)) data.bytelength, error('unsupported type'); },cwd:function() fs.currentpath; },chdir:function(path) lookup="FS.lookupPath(path," follow: true }); (lookup.node="==" null) fs.errnoerror(44); (!fs.isdir(lookup.node.mode)) fs.errnoerror(54); errcode="FS.nodePermissions(lookup.node," 'x'); (errcode) fs.errnoerror(errcode); fs.currentpath="lookup.path;" },createdefaultdirectories:function() fs.mkdir(' tmp'); home'); home web_user'); },createdefaultdevices:function() create dev dev'); setup null fs.registerdevice(fs.makedev(1, 3), read: function() }, write: function(stream, pos) length; fs.mkdev(' null', fs.makedev(1, 3)); tty and tty1 stderr needs print output using err() rather than out() so register a second just for it. tty.register(fs.makedev(5, 0), tty.default_tty_ops); tty.register(fs.makedev(6, tty.default_tty1_ops); tty', fs.makedev(5, 0)); tty1', fs.makedev(6, [u]random random_device="getRandomDevice();" fs.createdevice(' dev', 'random', random_device); 'urandom', we're not going emulate actual shm device, tmp dirs that reside commonly shm'); },createspecialdirectories:function() proc self fd which allows> readlink gives the
+        if (offset < 0 || length <= 0) {
+          throw new FS.ErrnoError(28);
+        }
+        if ((stream.flags & 2097155) === 0) {
+          throw new FS.ErrnoError(8);
+        }
+        if (!FS.isFile(stream.node.mode) && !FS.isDir(stream.node.mode)) {
+          throw new FS.ErrnoError(43);
+        }
+        if (!stream.stream_ops.allocate) {
+          throw new FS.ErrnoError(138);
+        }
+        stream.stream_ops.allocate(stream, offset, length);
+      },mmap:function(stream, address, length, position, prot, flags) {
+        // User requests writing to file (prot & PROT_WRITE != 0).
+        // Checking if we have permissions to write to the file unless
+        // MAP_PRIVATE flag is set. According to POSIX spec it is possible
+        // to write to file opened in read-only mode with MAP_PRIVATE flag,
+        // as all modifications will be visible only in the memory of
+        // the current process.
+        if ((prot & 2) !== 0
+            && (flags & 2) === 0
+            && (stream.flags & 2097155) !== 2) {
+          throw new FS.ErrnoError(2);
+        }
+        if ((stream.flags & 2097155) === 1) {
+          throw new FS.ErrnoError(2);
+        }
+        if (!stream.stream_ops.mmap) {
+          throw new FS.ErrnoError(43);
+        }
+        return stream.stream_ops.mmap(stream, address, length, position, prot, flags);
+      },msync:function(stream, buffer, offset, length, mmapFlags) {
+        if (!stream || !stream.stream_ops.msync) {
+          return 0;
+        }
+        return stream.stream_ops.msync(stream, buffer, offset, length, mmapFlags);
+      },munmap:function(stream) {
+        return 0;
+      },ioctl:function(stream, cmd, arg) {
+        if (!stream.stream_ops.ioctl) {
+          throw new FS.ErrnoError(59);
+        }
+        return stream.stream_ops.ioctl(stream, cmd, arg);
+      },readFile:function(path, opts) {
+        opts = opts || {};
+        opts.flags = opts.flags || 0;
+        opts.encoding = opts.encoding || 'binary';
+        if (opts.encoding !== 'utf8' && opts.encoding !== 'binary') {
+          throw new Error('Invalid encoding type "' + opts.encoding + '"');
+        }
+        var ret;
+        var stream = FS.open(path, opts.flags);
+        var stat = FS.stat(path);
+        var length = stat.size;
+        var buf = new Uint8Array(length);
+        FS.read(stream, buf, 0, length, 0);
+        if (opts.encoding === 'utf8') {
+          ret = UTF8ArrayToString(buf, 0);
+        } else if (opts.encoding === 'binary') {
+          ret = buf;
+        }
+        FS.close(stream);
+        return ret;
+      },writeFile:function(path, data, opts) {
+        opts = opts || {};
+        opts.flags = opts.flags || 577;
+        var stream = FS.open(path, opts.flags, opts.mode);
+        if (typeof data === 'string') {
+          var buf = new Uint8Array(lengthBytesUTF8(data)+1);
+          var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
+          FS.write(stream, buf, 0, actualNumBytes, undefined, opts.canOwn);
+        } else if (ArrayBuffer.isView(data)) {
+          FS.write(stream, data, 0, data.byteLength, undefined, opts.canOwn);
+        } else {
+          throw new Error('Unsupported data type');
+        }
+        FS.close(stream);
+      },cwd:function() {
+        return FS.currentPath;
+      },chdir:function(path) {
+        var lookup = FS.lookupPath(path, { follow: true });
+        if (lookup.node === null) {
+          throw new FS.ErrnoError(44);
+        }
+        if (!FS.isDir(lookup.node.mode)) {
+          throw new FS.ErrnoError(54);
+        }
+        var errCode = FS.nodePermissions(lookup.node, 'x');
+        if (errCode) {
+          throw new FS.ErrnoError(errCode);
+        }
+        FS.currentPath = lookup.path;
+      },createDefaultDirectories:function() {
+        FS.mkdir('/tmp');
+        FS.mkdir('/home');
+        FS.mkdir('/home/web_user');
+      },createDefaultDevices:function() {
+        // create /dev
+        FS.mkdir('/dev');
+        // setup /dev/null
+        FS.registerDevice(FS.makedev(1, 3), {
+          read: function() { return 0; },
+          write: function(stream, buffer, offset, length, pos) { return length; }
+        });
+        FS.mkdev('/dev/null', FS.makedev(1, 3));
+        // setup /dev/tty and /dev/tty1
+        // stderr needs to print output using err() rather than out()
+        // so we register a second tty just for it.
+        TTY.register(FS.makedev(5, 0), TTY.default_tty_ops);
+        TTY.register(FS.makedev(6, 0), TTY.default_tty1_ops);
+        FS.mkdev('/dev/tty', FS.makedev(5, 0));
+        FS.mkdev('/dev/tty1', FS.makedev(6, 0));
+        // setup /dev/[u]random
+        var random_device = getRandomDevice();
+        FS.createDevice('/dev', 'random', random_device);
+        FS.createDevice('/dev', 'urandom', random_device);
+        // we're not going to emulate the actual shm device,
+        // just create the tmp dirs that reside in it commonly
+        FS.mkdir('/dev/shm');
+        FS.mkdir('/dev/shm/tmp');
+      },createSpecialDirectories:function() {
+        // create /proc/self/fd which allows /proc/self/fd/6 => readlink gives the
         // name of the stream for fd 6 (see test_unistd_ttyname)
         FS.mkdir('/proc');
         var proc_self = FS.mkdir('/proc/self');
@@ -3903,7 +4243,44 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
         FS.mknod(path, mode, dev);
         return 0;
       },doReadlink:function(path, buf, bufsize) {
-        if (bufsize <= 0) return -28; var ret="FS.readlink(path);" len="Math.min(bufsize," lengthbytesutf8(ret)); endchar="HEAP8[buf+len];" stringtoutf8(ret, buf, bufsize+1); readlink is one of the rare functions that write out a c string, but does never append null to output buffer(!) stringtoutf8() always appends byte, so restore character under byte after write. heap8[buf+len]="endChar;" len; },doaccess:function(path, amode) { if (amode & ~7) need valid mode } node; lookup="FS.lookupPath(path," follow: true }); node="lookup.node;" (!node) -44; perms ; 4) +="r" 2) 1) (perms * otherwise, they've just passed f_ok && fs.nodepermissions(node, perms)) -2; 0; },dodup:function(path, flags, suggestfd) suggest="FS.getStream(suggestFD);" (suggest) fs.close(suggest); fs.open(path, 0, suggestfd, suggestfd).fd; },doreadv:function(stream, iov, iovcnt, offset) for (var i="0;" < iovcnt; i++) ptr="HEAP32[(((iov)+(i*8))">>2)];
+        if (bufsize <= 0) return -28;
+        var ret = FS.readlink(path);
+  
+        var len = Math.min(bufsize, lengthBytesUTF8(ret));
+        var endChar = HEAP8[buf+len];
+        stringToUTF8(ret, buf, bufsize+1);
+        // readlink is one of the rare functions that write out a C string, but does never append a null to the output buffer(!)
+        // stringToUTF8() always appends a null byte, so restore the character under the null byte after the write.
+        HEAP8[buf+len] = endChar;
+  
+        return len;
+      },doAccess:function(path, amode) {
+        if (amode & ~7) {
+          // need a valid mode
+          return -28;
+        }
+        var node;
+        var lookup = FS.lookupPath(path, { follow: true });
+        node = lookup.node;
+        if (!node) {
+          return -44;
+        }
+        var perms = '';
+        if (amode & 4) perms += 'r';
+        if (amode & 2) perms += 'w';
+        if (amode & 1) perms += 'x';
+        if (perms /* otherwise, they've just passed F_OK */ && FS.nodePermissions(node, perms)) {
+          return -2;
+        }
+        return 0;
+      },doDup:function(path, flags, suggestFD) {
+        var suggest = FS.getStream(suggestFD);
+        if (suggest) FS.close(suggest);
+        return FS.open(path, flags, 0, suggestFD, suggestFD).fd;
+      },doReadv:function(stream, iov, iovcnt, offset) {
+        var ret = 0;
+        for (var i = 0; i < iovcnt; i++) {
+          var ptr = HEAP32[(((iov)+(i*8))>>2)];
           var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
           var curr = FS.read(stream, HEAP8,ptr, len, offset);
           if (curr < 0) return -1;
@@ -3993,7 +4370,7 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
   
       var DOUBLE_LIMIT = 0x20000000000000; // 2^53
       // we also check for equality since DOUBLE_LIMIT + 1 == DOUBLE_LIMIT
-      if (offset <= -double_limit || offset>= DOUBLE_LIMIT) {
+      if (offset <= -DOUBLE_LIMIT || offset >= DOUBLE_LIMIT) {
         return -61;
       }
   
@@ -4029,7 +4406,18 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
   
   function __arraySum(array, index) {
       var sum = 0;
-      for (var i = 0; i <= index; sum +="array[i++])" { no-op } return sum; var __month_days_leap="[31,29,31,30,31,30,31,31,30,31,30,31];" __month_days_regular="[31,28,31,30,31,30,31,31,30,31,30,31];" function __adddays(date, days) newdate="new" date(date.gettime()); while (days> 0) {
+      for (var i = 0; i <= index; sum += array[i++]) {
+        // no-op
+      }
+      return sum;
+    }
+  
+  var __MONTH_DAYS_LEAP = [31,29,31,30,31,30,31,31,30,31,30,31];
+  
+  var __MONTH_DAYS_REGULAR = [31,28,31,30,31,30,31,31,30,31,30,31];
+  function __addDays(date, days) {
+      var newDate = new Date(date.getTime());
+      while (days > 0) {
         var leap = __isLeapYear(newDate.getFullYear());
         var currentMonth = newDate.getMonth();
         var daysInCurrentMonth = (leap ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR)[currentMonth];
@@ -4168,7 +4556,64 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
           var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
           var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
   
-          if (compareByDay(firstWeekStartThisYear, thisDate) <= 1 1998 0) { this date is after the start of first week year if (comparebyday(firstweekstartnextyear, thisdate) <="0)" return thisdate.getfullyear()+1; } else thisdate.getfullyear(); thisdate.getfullyear()-1; var expansion_rules_2="{" '%a': function(date) weekdays[date.tm_wday].substring(0,3); }, weekdays[date.tm_wday]; '%b': months[date.tm_mon].substring(0,3); months[date.tm_mon]; '%c': leadingnulls((year 100)|0,2); '%d': leadingnulls(date.tm_mday, 2); '%e': leadingsomething(date.tm_mday, 2, ' '); '%g': %g, and %v give values according to iso 8601:2000 standard week-based year. in system, weeks begin on a monday that includes january 4th, which also thursday year, contains at least four days 2nd, 3rd, or preceding are part last year; thus, for saturday 2nd 1999, %g replaced by 53. december 29th, 30th, 31st monday, it any following tuesday 30th 1997, 01. getweekbasedyear(date).tostring().substring(2); getweekbasedyear(date); '%h': leadingnulls(date.tm_hour, '%i': twelvehour="date.tm_hour;" (twelvehour="="> 12) twelveHour -= 12;
+          if (compareByDay(firstWeekStartThisYear, thisDate) <= 0) {
+            // this date is after the start of the first week of this year
+            if (compareByDay(firstWeekStartNextYear, thisDate) <= 0) {
+              return thisDate.getFullYear()+1;
+            } else {
+              return thisDate.getFullYear();
+            }
+          } else {
+            return thisDate.getFullYear()-1;
+          }
+      }
+  
+      var EXPANSION_RULES_2 = {
+        '%a': function(date) {
+          return WEEKDAYS[date.tm_wday].substring(0,3);
+        },
+        '%A': function(date) {
+          return WEEKDAYS[date.tm_wday];
+        },
+        '%b': function(date) {
+          return MONTHS[date.tm_mon].substring(0,3);
+        },
+        '%B': function(date) {
+          return MONTHS[date.tm_mon];
+        },
+        '%C': function(date) {
+          var year = date.tm_year+1900;
+          return leadingNulls((year/100)|0,2);
+        },
+        '%d': function(date) {
+          return leadingNulls(date.tm_mday, 2);
+        },
+        '%e': function(date) {
+          return leadingSomething(date.tm_mday, 2, ' ');
+        },
+        '%g': function(date) {
+          // %g, %G, and %V give values according to the ISO 8601:2000 standard week-based year.
+          // In this system, weeks begin on a Monday and week 1 of the year is the week that includes
+          // January 4th, which is also the week that includes the first Thursday of the year, and
+          // is also the first week that contains at least four days in the year.
+          // If the first Monday of January is the 2nd, 3rd, or 4th, the preceding days are part of
+          // the last week of the preceding year; thus, for Saturday 2nd January 1999,
+          // %G is replaced by 1998 and %V is replaced by 53. If December 29th, 30th,
+          // or 31st is a Monday, it and any following days are part of week 1 of the following year.
+          // Thus, for Tuesday 30th December 1997, %G is replaced by 1998 and %V is replaced by 01.
+  
+          return getWeekBasedYear(date).toString().substring(2);
+        },
+        '%G': function(date) {
+          return getWeekBasedYear(date);
+        },
+        '%H': function(date) {
+          return leadingNulls(date.tm_hour, 2);
+        },
+        '%I': function(date) {
+          var twelveHour = date.tm_hour;
+          if (twelveHour == 0) twelveHour = 12;
+          else if (twelveHour > 12) twelveHour -= 12;
           return leadingNulls(twelveHour, 2);
         },
         '%j': function(date) {
@@ -4238,7 +4683,55 @@ function array_bounds_check_error(idx,size){ throw 'Array index ' + idx + ' out 
             return '53';
           }
   
-          if (compareByDay(firstWeekStartNextYear, endDate) <= 0 1 4 30 0) { if given date is after next years first week, then it belongs to the 01th week of year return '01'; } in between cw 01..53 this calendar var daysdifference; (firstweekstartthisyear.getfullyear() < date.tm_year+1900) starts last daysdifference="date.tm_yday+32-firstWeekStartThisYear.getDate()" else leadingnulls(math.ceil(daysdifference 7), 2); }, '%w': function(date) date.tm_wday; replaced by number as a decimal [00,53]. monday january day 1; days new before are 0. [ tm_year, tm_wday, tm_yday] janfirst="new" date(date.tm_year, 0, 1); firstmonday="janFirst.getDay()" =="=" ? : __adddays(janfirst, janfirst.getday()="==" 7-janfirst.getday()+1); enddate="new" date(date.tm_year+1900, date.tm_mon, date.tm_mday); target monday? (comparebyday(firstmonday, enddate) februaryfirstuntilendmonth="__arraySum(__isLeapYear(endDate.getFullYear())" __month_days_leap __month_days_regular, enddate.getmonth()-1)-31; firstmondayuntilendjanuary="31-firstMonday.getDate();" leadingnulls(math.ceil(days comparebyday(firstmonday, janfirst)="==" '01': '00'; '%y': two digits [00,99]. tm_year] (date.tm_year+1900).tostring().substring(2); (for example, 1997). date.tm_year+1900; '%z': offset from utc iso 8601:2000 standard format ( +hhmm or -hhmm ). for "-0430" means hours minutes behind (west greenwich). off="date.tm_gmtoff;" ahead="off">= 0;
+          if (compareByDay(firstWeekStartNextYear, endDate) <= 0) {
+            // if given date is after next years first week, then it belongs to the 01th week of next year
+            return '01';
+          }
+  
+          // given date is in between CW 01..53 of this calendar year
+          var daysDifference;
+          if (firstWeekStartThisYear.getFullYear() < date.tm_year+1900) {
+            // first CW of this year starts last year
+            daysDifference = date.tm_yday+32-firstWeekStartThisYear.getDate()
+          } else {
+            // first CW of this year starts this year
+            daysDifference = date.tm_yday+1-firstWeekStartThisYear.getDate();
+          }
+          return leadingNulls(Math.ceil(daysDifference/7), 2);
+        },
+        '%w': function(date) {
+          return date.tm_wday;
+        },
+        '%W': function(date) {
+          // Replaced by the week number of the year as a decimal number [00,53].
+          // The first Monday of January is the first day of week 1;
+          // days in the new year before this are in week 0. [ tm_year, tm_wday, tm_yday]
+          var janFirst = new Date(date.tm_year, 0, 1);
+          var firstMonday = janFirst.getDay() === 1 ? janFirst : __addDays(janFirst, janFirst.getDay() === 0 ? 1 : 7-janFirst.getDay()+1);
+          var endDate = new Date(date.tm_year+1900, date.tm_mon, date.tm_mday);
+  
+          // is target date after the first Monday?
+          if (compareByDay(firstMonday, endDate) < 0) {
+            var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth()-1)-31;
+            var firstMondayUntilEndJanuary = 31-firstMonday.getDate();
+            var days = firstMondayUntilEndJanuary+februaryFirstUntilEndMonth+endDate.getDate();
+            return leadingNulls(Math.ceil(days/7), 2);
+          }
+          return compareByDay(firstMonday, janFirst) === 0 ? '01': '00';
+        },
+        '%y': function(date) {
+          // Replaced by the last two digits of the year as a decimal number [00,99]. [ tm_year]
+          return (date.tm_year+1900).toString().substring(2);
+        },
+        '%Y': function(date) {
+          // Replaced by the year as a decimal number (for example, 1997). [ tm_year]
+          return date.tm_year+1900;
+        },
+        '%z': function(date) {
+          // Replaced by the offset from UTC in the ISO 8601:2000 standard format ( +hhmm or -hhmm ).
+          // For example, "-0430" means 4 hours 30 minutes behind UTC (west of Greenwich).
+          var off = date.tm_gmtoff;
+          var ahead = off >= 0;
           off = Math.abs(off) / 60;
           // convert from minutes into hhmm format (which means 60 minutes = 100 units)
           off = (off / 60)*100 + (off % 60);
@@ -5172,4 +5665,4 @@ Solution.prototype['grayCode'] = Solution.prototype.grayCode = /** @suppress {un
   Solution.prototype['__destroy__'] = Solution.prototype.__destroy__ = /** @suppress {undefinedVars, duplicate} @this{Object} */function() {
   var self = this.ptr;
   _emscripten_bind_Solution___destroy___0(self);
-};</=></=></space></space></=></=></=></number></generic></=></=></=></1mb),></=></=></4></2></=></=></=></=></number>
+};
